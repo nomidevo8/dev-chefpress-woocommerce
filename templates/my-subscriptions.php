@@ -18,6 +18,37 @@ if (!is_user_logged_in()) {
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
 
+function devchefpress_parse_duration_to_days( $duration ) {
+    $duration = strtolower( trim( $duration ) );
+
+    if ( strpos( $duration, 'week' ) !== false ) {
+        $weeks = (int) preg_replace( '/[^0-9]/', '', $duration );
+        return max( 1, $weeks ) * 7;
+    }
+
+    if ( strpos( $duration, 'month' ) !== false ) {
+        $months = (int) preg_replace( '/[^0-9]/', '', $duration );
+        return max( 1, $months ) * 30;
+    }
+
+    return 7;
+}
+
+function devchefpress_is_subscription_completed( $start_date, $plan_duration ) {
+    if ( empty( $start_date ) || empty( $plan_duration ) ) {
+        return false;
+    }
+
+    $start_ts = strtotime( $start_date );
+    if ( ! $start_ts ) {
+        return false;
+    }
+
+    $total_days = devchefpress_parse_duration_to_days( $plan_duration );
+    $end_ts = $start_ts + ( $total_days * DAY_IN_SECONDS );
+    return current_time( 'timestamp' ) >= $end_ts;
+}
+
 // Get subscriptions from the custom subscription table by current user
 $subscriptions = array();
 if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
@@ -100,6 +131,7 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
                                 $plan_name = $subscription->get_plan_name() ?: 'Meal Plan';
                                 $status = ucfirst( $subscription->get_status() ?? 'active' );
                                 $start_date = $subscription->get_delivery_details()['startDate'] ?? $state_data['startDate'] ?? '';
+                                $plan_duration = is_array( $state_data ) && isset( $state_data['planDuration'] ) ? $state_data['planDuration'] : '';
                                 $formatted_start = $start_date ? date('M j, Y', strtotime($start_date)) : '-';
 
                                 // Get current price and calculate with history adjustments
@@ -136,11 +168,19 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
                                                     <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                             </button>
-                                            <a href="<?php echo esc_url(home_url('/our-plans?booking_recipes=' . $order_id)); ?>" class="devchefpress-action-icon devchefpress-book-week" title="Book Current Week">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                            </a>
+                                            <?php if ( ! devchefpress_is_subscription_completed( $start_date, $plan_duration ) && $order_id ) : ?>
+                                                <a href="<?php echo esc_url(home_url('/our-plans?booking_recipes=' . $order_id)); ?>" class="devchefpress-action-icon devchefpress-book-week" title="Book Current Week">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </a>
+                                            <?php else : ?>
+                                                <button type="button" class="devchefpress-action-icon devchefpress-book-week devchefpress-action-icon--disabled" title="Subscription duration completed - booking disabled" disabled>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
