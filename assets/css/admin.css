@@ -1,0 +1,796 @@
+/* =============================================================================
+   Dev ChefPress for WooCommerce — Admin UI
+   Modern SaaS-style Recipe Builder
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   CSS Variables
+   -------------------------------------------------------------------------- */
+:root {
+  --cp-primary:        #E8562A;
+  --cp-primary-dark:   #c73e15;
+  --cp-primary-light:  #fff2ee;
+  --cp-accent:         #f7a649;
+  --cp-success:        #22c55e;
+  --cp-danger:         #ef4444;
+  --cp-warning:        #f59e0b;
+
+  --cp-bg:             #f5f6fa;
+  --cp-surface:        #ffffff;
+  --cp-border:         #e2e6ef;
+  --cp-border-light:   #f0f2f8;
+
+  --cp-text:           #1e293b;
+  --cp-text-muted:     #64748b;
+  --cp-text-light:     #94a3b8;
+
+  --cp-shadow-sm:      0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --cp-shadow:         0 4px 16px rgba(0,0,0,.08);
+  --cp-shadow-md:      0 8px 24px rgba(0,0,0,.10);
+  --cp-shadow-drag:    0 12px 32px rgba(232,86,42,.18);
+
+  --cp-radius:         12px;
+  --cp-radius-sm:      8px;
+  --cp-radius-xs:      5px;
+
+  --cp-font:           -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+
+  --cp-transition:     0.2s cubic-bezier(.4,0,.2,1);
+}
+
+/* --------------------------------------------------------------------------
+   Panel Wrapper
+   -------------------------------------------------------------------------- */
+#chefpress_recipe_data {
+  background: var(--cp-bg);
+  padding: 0 !important;
+  border: none !important;
+  font-family: var(--cp-font);
+}
+
+/* --------------------------------------------------------------------------
+   Sub-Navigation (Tab Bar)
+   -------------------------------------------------------------------------- */
+.cp-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  background: var(--cp-surface);
+  border-bottom: 2px solid var(--cp-border);
+  padding: 12px 20px 0;
+  position: sticky;
+  top: 32px;
+  z-index: 100;
+}
+
+.cp-subnav__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  background: transparent;
+  color: var(--cp-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--cp-font);
+  cursor: pointer;
+  border-radius: var(--cp-radius-sm) var(--cp-radius-sm) 0 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color var(--cp-transition), background var(--cp-transition), border-color var(--cp-transition);
+  white-space: nowrap;
+}
+
+.cp-subnav__btn:hover {
+  color: var(--cp-primary);
+  background: var(--cp-primary-light);
+}
+
+.cp-subnav__btn.active {
+  color: var(--cp-primary);
+  font-weight: 600;
+  border-bottom-color: var(--cp-primary);
+  background: var(--cp-primary-light);
+}
+
+.cp-subnav__icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Tab Content
+   -------------------------------------------------------------------------- */
+.cp-tab-content {
+  display: none;
+  animation: cpFadeIn .2s ease;
+}
+
+.cp-tab-content.active {
+  display: block;
+}
+
+@keyframes cpFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.cp-tab-inner {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
+.cp-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--cp-transition);
+}
+
+.cp-card:hover {
+  box-shadow: var(--cp-shadow);
+}
+
+.cp-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background var(--cp-transition), border-color var(--cp-transition);
+}
+
+.cp-card__header:hover {
+  background: var(--cp-bg);
+}
+
+.cp-card__header.is-open {
+  border-bottom-color: var(--cp-border-light);
+}
+
+.cp-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cp-card__icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.cp-card__title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--cp-text) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.4 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-card__arrow {
+  font-size: 11px;
+  color: var(--cp-text-muted);
+  transition: transform var(--cp-transition);
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.cp-card__header.is-open .cp-card__arrow {
+  transform: rotate(180deg);
+}
+
+/* Static header (no toggle) */
+.cp-card__header-static {
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid var(--cp-border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cp-card__subtitle {
+  font-size: 12px !important;
+  color: var(--cp-text-muted) !important;
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.cp-card__body {
+  padding: 20px 22px;
+}
+
+/* --------------------------------------------------------------------------
+   Fields
+   -------------------------------------------------------------------------- */
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cp-label--small {
+  font-size: 11px;
+}
+
+.cp-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--cp-border);
+  border-radius: var(--cp-radius-sm);
+  font-size: 13.5px;
+  font-family: var(--cp-font);
+  color: var(--cp-text);
+  background: var(--cp-surface);
+  transition: border-color var(--cp-transition), box-shadow var(--cp-transition);
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.cp-input:focus {
+  outline: none;
+  border-color: var(--cp-primary);
+  box-shadow: 0 0 0 3px rgba(232,86,42,.12);
+}
+
+.cp-input::placeholder {
+  color: var(--cp-text-light);
+}
+
+.cp-input--sm {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.cp-input--flex {
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+.cp-input--qty {
+  width: 80px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.cp-input--unit {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.cp-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--cp-border);
+  border-radius: var(--cp-radius-sm);
+  font-size: 13.5px;
+  font-family: var(--cp-font);
+  color: var(--cp-text);
+  background: var(--cp-surface);
+  resize: vertical;
+  min-height: 90px;
+  transition: border-color var(--cp-transition), box-shadow var(--cp-transition);
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.cp-textarea:focus {
+  outline: none;
+  border-color: var(--cp-primary);
+  box-shadow: 0 0 0 3px rgba(232,86,42,.12);
+}
+
+.cp-textarea::placeholder {
+  color: var(--cp-text-light);
+}
+
+.cp-hint {
+  font-size: 12px !important;
+  color: var(--cp-text-muted) !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+  line-height: 1.6 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Grid Layouts
+   -------------------------------------------------------------------------- */
+.cp-field-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cp-field-grid:last-child {
+  margin-bottom: 0;
+}
+
+.cp-field-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cp-field-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1100px) {
+  .cp-field-grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 782px) {
+  .cp-field-grid--2,
+  .cp-field-grid--4 { grid-template-columns: 1fr; }
+  .cp-subnav { top: 46px; }
+}
+
+/* --------------------------------------------------------------------------
+   Star Rating
+   -------------------------------------------------------------------------- */
+.cp-star-rating-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-star-preview {
+  display: flex;
+  gap: 2px;
+  font-size: 18px;
+}
+
+.cp-star-preview .full  { color: var(--cp-accent); }
+.cp-star-preview .half  { color: var(--cp-accent); opacity: .6; }
+.cp-star-preview .empty { color: var(--cp-border); }
+
+/* --------------------------------------------------------------------------
+   Tags / Labels
+   -------------------------------------------------------------------------- */
+.cp-tags-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cp-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.cp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--cp-primary-light);
+  border: 1px solid rgba(232,86,42,.2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cp-primary);
+  white-space: nowrap;
+}
+
+.cp-tag--danger {
+  background: #fff5f5;
+  border-color: rgba(239,68,68,.2);
+  color: var(--cp-danger);
+}
+
+.cp-tag__remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  opacity: .7;
+  transition: opacity var(--cp-transition);
+}
+
+.cp-tag__remove:hover { opacity: 1; }
+
+.cp-tag-input {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.cp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--cp-radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--cp-font);
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all var(--cp-transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cp-btn--primary {
+  background: var(--cp-primary);
+  color: #fff;
+  border-color: var(--cp-primary);
+}
+
+.cp-btn--primary:hover {
+  background: var(--cp-primary-dark);
+  border-color: var(--cp-primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232,86,42,.3);
+}
+
+.cp-btn--secondary {
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  border-color: var(--cp-border);
+}
+
+.cp-btn--secondary:hover {
+  background: var(--cp-bg);
+  border-color: var(--cp-primary);
+  color: var(--cp-primary);
+}
+
+.cp-btn--ghost {
+  background: transparent;
+  color: var(--cp-text-muted);
+  border-color: var(--cp-border);
+}
+
+.cp-btn--ghost:hover {
+  background: var(--cp-bg);
+  color: var(--cp-text);
+}
+
+.cp-btn--sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.cp-btn--danger {
+  background: #fff5f5;
+  color: var(--cp-danger);
+  border-color: rgba(239,68,68,.3);
+}
+
+.cp-btn--danger:hover {
+  background: var(--cp-danger);
+  color: #fff;
+  border-color: var(--cp-danger);
+}
+
+.cp-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--cp-radius-xs);
+  border: 1.5px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--cp-transition);
+  flex-shrink: 0;
+}
+
+.cp-icon-btn:hover {
+  border-color: var(--cp-primary);
+  color: var(--cp-primary);
+  background: var(--cp-primary-light);
+}
+
+.cp-icon-btn.cp-btn-remove:hover,
+.cp-icon-btn.cp-btn-remove-ingredient:hover {
+  border-color: var(--cp-danger);
+  color: var(--cp-danger);
+  background: #fff5f5;
+}
+
+.cp-add-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--cp-border);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.cp-hidden { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   Repeater Items (Steps & Groups)
+   -------------------------------------------------------------------------- */
+.cp-repeater-item {
+  background: var(--cp-surface);
+  border: 1.5px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  margin-bottom: 12px;
+  transition: box-shadow var(--cp-transition), border-color var(--cp-transition), transform var(--cp-transition);
+  overflow: hidden;
+}
+
+.cp-repeater-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--cp-shadow-sm);
+}
+
+.cp-repeater-item.is-dragging {
+  box-shadow: var(--cp-shadow-drag);
+  border-color: var(--cp-primary);
+  opacity: .85;
+  transform: scale(1.01) rotate(.5deg);
+  z-index: 9999;
+}
+
+.cp-repeater-item__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--cp-bg);
+  cursor: pointer;
+  user-select: none;
+  flex-wrap: nowrap;
+}
+
+.cp-repeater-item__badge {
+  background: var(--cp-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cp-repeater-item__preview-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cp-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.cp-repeater-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.cp-repeater-item__body {
+  padding: 20px;
+  border-top: 1px solid var(--cp-border-light);
+  animation: cpSlideDown .2s ease;
+}
+
+.cp-repeater-item__body.is-collapsed {
+  display: none;
+}
+
+@keyframes cpSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Drag handle */
+.cp-drag-handle {
+  font-size: 16px;
+  color: var(--cp-text-light);
+  cursor: grab;
+  line-height: 1;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.cp-drag-handle:active { cursor: grabbing; }
+
+.cp-drag-handle--sm {
+  font-size: 13px;
+}
+
+/* --------------------------------------------------------------------------
+   Ingredient Items (nested inside groups)
+   -------------------------------------------------------------------------- */
+.cp-ingredients-subheader {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--cp-text-muted);
+  margin: 16px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border-light);
+}
+
+.cp-ingredients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cp-ingredient-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cp-bg);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-xs);
+  padding: 8px 10px;
+  transition: all var(--cp-transition);
+}
+
+.cp-ingredient-item:hover {
+  border-color: var(--cp-primary);
+  background: var(--cp-primary-light);
+}
+
+.cp-ingredient-item.is-dragging {
+  box-shadow: var(--cp-shadow-md);
+  border-color: var(--cp-primary);
+  opacity: .85;
+}
+
+.cp-ingredient-fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   Steps List
+   -------------------------------------------------------------------------- */
+.cp-steps-list,
+.cp-groups-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   Media Uploader
+   -------------------------------------------------------------------------- */
+.cp-media-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cp-media-preview {
+  width: 100%;
+  max-width: 160px;
+  height: 100px;
+  border: 2px dashed var(--cp-border);
+  border-radius: var(--cp-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cp-bg);
+  overflow: hidden;
+  transition: border-color var(--cp-transition);
+  position: relative;
+}
+
+.cp-media-preview.has-image {
+  border-style: solid;
+  border-color: var(--cp-border);
+}
+
+.cp-media-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cp-media-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   Nutrition Table Grid (admin)
+   -------------------------------------------------------------------------- */
+.cp-nutr-table-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.cp-nutr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+@media (max-width: 1100px) {
+  .cp-nutr-table-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 782px) {
+  .cp-nutr-table-grid { grid-template-columns: 1fr; }
+}
+
+/* --------------------------------------------------------------------------
+   Sortable ghost / chosen states
+   -------------------------------------------------------------------------- */
+.sortable-ghost {
+  opacity: .35;
+  background: var(--cp-primary-light) !important;
+  border: 2px dashed var(--cp-primary) !important;
+}
+
+.sortable-chosen {
+  box-shadow: var(--cp-shadow-drag);
+}
+
+/* --------------------------------------------------------------------------
+   Duplicate Flash Animation
+   -------------------------------------------------------------------------- */
+@keyframes cpFlash {
+  0%   { border-color: var(--cp-primary); background: var(--cp-primary-light); }
+  100% { border-color: var(--cp-border);  background: var(--cp-surface); }
+}
+
+.cp-flash {
+  animation: cpFlash .6s ease;
+}
+
+/* --------------------------------------------------------------------------
+   WooCommerce Panel Overrides (ensure ChefPress tab shows correctly)
+   -------------------------------------------------------------------------- */
+#woocommerce-product-data ul.wc-tabs li.chefpress_recipe_options.active a::before,
+#woocommerce-product-data ul.wc-tabs li.chefpress_recipe_tab.active a::before {
+  color: var(--cp-primary) !important;
+}
+
+/* Make the WooCommerce product type dropdown recognise recipe_product */
+.show_if_recipe_product { display: none; }
