@@ -24,19 +24,19 @@ $nutr_table = $recipe->get_nutrition_table();
 	<!-- ╚══════════════════════════════════════╝ -->
 	<div class="cp-subnav">
 		<button type="button" class="cp-subnav__btn active" data-tab="cp-tab-overview">
-			<span class="cp-subnav__icon">🏠</span> <?php esc_html_e( 'Overview', 'dev-chefpress' ); ?>
+			<span class="cp-subnav__icon"></span> <?php esc_html_e( 'Overview', 'dev-chefpress' ); ?>
 		</button>
 		<button type="button" class="cp-subnav__btn" data-tab="cp-tab-ingredients">
-			<span class="cp-subnav__icon">🥦</span> <?php esc_html_e( 'Ingredients', 'dev-chefpress' ); ?>
+			<span class="cp-subnav__icon"></span> <?php esc_html_e( 'Ingredients', 'dev-chefpress' ); ?>
 		</button>
 		<button type="button" class="cp-subnav__btn" data-tab="cp-tab-instructions">
-			<span class="cp-subnav__icon">📋</span> <?php esc_html_e( 'Instructions', 'dev-chefpress' ); ?>
+			<span class="cp-subnav__icon"></span> <?php esc_html_e( 'Instructions', 'dev-chefpress' ); ?>
 		</button>
 		<button type="button" class="cp-subnav__btn" data-tab="cp-tab-nutrition">
-			<span class="cp-subnav__icon">📊</span> <?php esc_html_e( 'Nutrition', 'dev-chefpress' ); ?>
+			<span class="cp-subnav__icon"></span> <?php esc_html_e( 'Nutrition', 'dev-chefpress' ); ?>
 		</button>
 		<button type="button" class="cp-subnav__btn" data-tab="cp-tab-allergens">
-			<span class="cp-subnav__icon">⚠️</span> <?php esc_html_e( 'Allergens', 'dev-chefpress' ); ?>
+			<span class="cp-subnav__icon"></span> <?php esc_html_e( 'Allergens', 'dev-chefpress' ); ?>
 		</button>
 	</div>
 
@@ -50,7 +50,7 @@ $nutr_table = $recipe->get_nutrition_table();
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="hero-body">
 					<div class="cp-card__header-left">
-						<span class="cp-card__icon">🎯</span>
+						<span class="cp-card__icon"></span>
 						<h3 class="cp-card__title"><?php esc_html_e( 'Hero Section', 'dev-chefpress' ); ?></h3>
 					</div>
 					<span class="cp-card__arrow">▼</span>
@@ -104,7 +104,7 @@ $nutr_table = $recipe->get_nutrition_table();
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="nutr-summary-body">
 					<div class="cp-card__header-left">
-						<span class="cp-card__icon">⚡</span>
+						<span class="cp-card__icon"></span>
 						<h3 class="cp-card__title"><?php esc_html_e( 'Nutrition Summary', 'dev-chefpress' ); ?></h3>
 					</div>
 					<span class="cp-card__arrow">▼</span>
@@ -156,7 +156,7 @@ $nutr_table = $recipe->get_nutrition_table();
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="tags-body">
 					<div class="cp-card__header-left">
-						<span class="cp-card__icon">🏷️</span>
+						<span class="cp-card__icon"></span>
 						<h3 class="cp-card__title"><?php esc_html_e( 'Recipe Tags / Labels', 'dev-chefpress' ); ?></h3>
 					</div>
 					<span class="cp-card__arrow">▼</span>
@@ -183,7 +183,7 @@ $nutr_table = $recipe->get_nutrition_table();
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="before-body">
 					<div class="cp-card__header-left">
-						<span class="cp-card__icon">💡</span>
+						<span class="cp-card__icon"></span>
 						<h3 class="cp-card__title"><?php esc_html_e( 'Before You Start', 'dev-chefpress' ); ?></h3>
 					</div>
 					<span class="cp-card__arrow">▼</span>
@@ -209,7 +209,7 @@ $nutr_table = $recipe->get_nutrition_table();
 		<div class="cp-tab-inner">
 			<div class="cp-card">
 				<div class="cp-card__header-static">
-					<span class="cp-card__icon">🥦</span>
+					<span class="cp-card__icon"></span>
 					<h3 class="cp-card__title"><?php esc_html_e( 'Ingredient Groups', 'dev-chefpress' ); ?></h3>
 					<p class="cp-card__subtitle"><?php esc_html_e( 'Organise ingredients into groups (e.g. "For the sauce", "For the dough"). Drag to reorder.', 'dev-chefpress' ); ?></p>
 				</div>
@@ -239,7 +239,7 @@ $nutr_table = $recipe->get_nutrition_table();
 		<div class="cp-tab-inner">
 			<div class="cp-card">
 				<div class="cp-card__header-static">
-					<span class="cp-card__icon">📋</span>
+					<span class="cp-card__icon"></span>
 					<h3 class="cp-card__title"><?php esc_html_e( 'Cooking Steps', 'dev-chefpress' ); ?></h3>
 					<p class="cp-card__subtitle"><?php esc_html_e( 'Add step-by-step cooking instructions. Drag to reorder.', 'dev-chefpress' ); ?></p>
 				</div>
@@ -269,7 +269,7 @@ $nutr_table = $recipe->get_nutrition_table();
 		<div class="cp-tab-inner">
 			<div class="cp-card">
 				<div class="cp-card__header-static">
-					<span class="cp-card__icon">📊</span>
+					<span class="cp-card__icon"></span>
 					<h3 class="cp-card__title"><?php esc_html_e( 'Full Nutrition Table', 'dev-chefpress' ); ?></h3>
 					<p class="cp-card__subtitle"><?php esc_html_e( 'Detailed nutritional information per serving.', 'dev-chefpress' ); ?></p>
 				</div>
@@ -329,7 +329,7 @@ $nutr_table = $recipe->get_nutrition_table();
 		<div class="cp-tab-inner">
 			<div class="cp-card">
 				<div class="cp-card__header-static">
-					<span class="cp-card__icon">⚠️</span>
+					<span class="cp-card__icon"></span>
 					<h3 class="cp-card__title"><?php esc_html_e( 'Allergen Information', 'dev-chefpress' ); ?></h3>
 					<p class="cp-card__subtitle"><?php esc_html_e( 'Provide clear allergen warnings for your recipe.', 'dev-chefpress' ); ?></p>
 				</div>
