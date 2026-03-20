@@ -190,7 +190,85 @@
             });
         },
 
+        /**
+         * Remove TinyMCE / wp.editor instance for a step description field.
+         */
+        removeStepEditor: function (editorId) {
+            if (!editorId) return;
+            if (window.wp &&
+                wp.editor &&
+                typeof wp.editor.remove === 'function') {
+                try {
+                    wp.editor.remove(editorId);
+                } catch (ignore) { /* no instance */ }
+            }
+            if (window.tinymce && tinymce.get(editorId)) {
+                try {
+                    tinymce.execCommand('mceRemoveEditor', false, editorId);
+                } catch (ignore) { /* no instance */ }
+            }
+        },
+
+        /**
+         * Convert wp_editor wrappers to plain textareas so indices / cloning stay reliable.
+         */
+        normalizeDescriptionsToTextareas: function () {
+            if (window.tinymce && typeof tinymce.triggerSave === 'function') {
+                tinymce.triggerSave();
+            }
+            this.$list.children('.cp-step-item').each(function () {
+                var $wrap = $(this).find('.wp-editor-wrap');
+                if (!$wrap.length) return;
+
+                var $ta = $wrap.find('textarea.cp-step-description-field, textarea.wp-editor-area').first();
+                if (!$ta.length) return;
+
+                var id = $ta.attr('id');
+                var name = $ta.attr('name');
+                var val = $ta.val() || '';
+
+                if (id && window.tinymce && tinymce.get(id)) {
+                    val = tinymce.get(id).getContent();
+                    try {
+                        tinymce.execCommand('mceRemoveEditor', false, id);
+                    } catch (ignore) { /* */ }
+                } else if (id && window.wp && wp.editor && typeof wp.editor.remove === 'function') {
+                    try {
+                        wp.editor.remove(id);
+                    } catch (ignore) { /* */ }
+                    val = $ta.val() || val;
+                }
+
+                var $newTa = $('<textarea/>')
+                    .addClass('widefat cp-textarea cp-step-description-field')
+                    .attr({ rows: 6, name: name || '' })
+                    .val(val);
+                $wrap.replaceWith($newTa);
+            });
+        },
+
+        /**
+         * Attach visual editor to each step description after reindex / order change.
+         */
+        initDescriptionEditors: function () {
+            if (!window.wp || !wp.editor || typeof wp.editor.initialize !== 'function') return;
+
+            var settings = ChefPressAdmin.stepEditorSettings || {};
+            var self = this;
+
+            this.$list.children('.cp-step-item').each(function (idx) {
+                var $ta = $(this).find('textarea.cp-step-description-field').first();
+                if (!$ta.length) return;
+
+                var editorId = 'chefpress_step_desc_' + idx;
+                self.removeStepEditor(editorId);
+                $ta.attr('id', editorId);
+                wp.editor.initialize(editorId, settings);
+            });
+        },
+
         reindex: function () {
+            this.normalizeDescriptionsToTextareas();
             this.$list.children('.cp-step-item').each(function (newIdx) {
                 $(this).attr('data-index', newIdx);
                 $(this).find('[name]').each(function () {
@@ -201,6 +279,7 @@
                     }
                 });
             });
+            this.initDescriptionEditors();
         },
 
         updateBadges: function () {
@@ -501,7 +580,8 @@
 
             // Avoid duplicates.
             var exists = false;
-            $list.find('input[name="' + fieldName + '"]').each(function () {
+            $list.find('input[type="hidden"]').each(function () {
+                if ($(this).attr('name') !== fieldName) return;
                 if ($(this).val().toLowerCase() === val.toLowerCase()) {
                     exists = true;
                 }
@@ -513,13 +593,10 @@
                 return;
             }
 
-            var $tag = $(
-                '<span class="cp-tag">' +
-                    val +
-                    '<button type="button" class="cp-tag__remove" aria-label="Remove">×</button>' +
-                    '<input type="hidden" name="' + fieldName + '" value="' + $('<div>').text(val).html() + '" />' +
-                '</span>'
-            );
+            var $tag = $('<span class="cp-tag"></span>');
+            $tag.append(document.createTextNode(val));
+            $tag.append('<button type="button" class="cp-tag__remove" aria-label="Remove">×</button>');
+            $tag.append($('<input type="hidden" />').attr('name', fieldName).val(val));
 
             $list.append($tag);
             $input.val('');

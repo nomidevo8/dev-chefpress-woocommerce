@@ -109,15 +109,16 @@ class RecipeService {
 			if ( ! is_array( $step ) ) {
 				continue;
 			}
-			$title = Sanitizer::text( $step['step_title'] ?? '' );
-			// Skip completely empty steps.
-			if ( '' === $title && '' === Sanitizer::text( $step['step_description'] ?? '' ) ) {
+			$title       = Sanitizer::text( $step['step_title'] ?? '' );
+			$description = Sanitizer::html( (string) ( $step['step_description'] ?? '' ) );
+			// Skip completely empty steps (ignore HTML-only whitespace).
+			if ( '' === $title && '' === trim( wp_strip_all_tags( $description ) ) ) {
 				continue;
 			}
 			$steps[] = [
 				'step_number'      => absint( $step['step_number'] ?? 1 ),
 				'step_title'       => $title,
-				'step_description' => Sanitizer::textarea( $step['step_description'] ?? '' ),
+				'step_description' => $description,
 				'step_image_id'    => absint( $step['step_image_id'] ?? 0 ),
 				'step_tip'         => Sanitizer::textarea( $step['step_tip'] ?? '' ),
 			];
@@ -185,7 +186,7 @@ class RecipeService {
 	 */
 	private function save_allergens( array $post ): void {
 		$this->update_meta( '_chefpress_main_allergen', Sanitizer::text( $post['_chefpress_main_allergen'] ?? '' ) );
-		$this->update_meta( '_chefpress_allergen_description', Sanitizer::textarea( $post['_chefpress_allergen_description'] ?? '' ) );
+		$this->update_meta( '_chefpress_allergen_description', Sanitizer::html( (string) ( $post['_chefpress_allergen_description'] ?? '' ) ) );
 
 		$list = $this->normalize_terms( $post['_chefpress_allergen_list'] ?? [] );
 		$this->update_meta( '_chefpress_allergen_list', $list );

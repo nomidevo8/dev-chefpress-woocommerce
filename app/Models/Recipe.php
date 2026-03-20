@@ -98,7 +98,8 @@ class Recipe {
 	 */
 	public function get_tags(): array {
 		$terms = get_the_terms( $this->post_id, 'chefpress_recipe_tag' );
-		if ( is_array( $terms ) ) {
+		// wp_get_object_terms can return []; empty must fall back to meta (taxonomy sync may lag or fail).
+		if ( ! is_wp_error( $terms ) && is_array( $terms ) && ! empty( $terms ) ) {
 			return array_values(
 				array_filter(
 					array_map(
@@ -149,7 +150,7 @@ class Recipe {
 	 */
 	public function get_allergens(): array {
 		$terms = get_the_terms( $this->post_id, 'chefpress_allergen_tag' );
-		$list  = is_array( $terms )
+		$list  = ( ! is_wp_error( $terms ) && is_array( $terms ) && ! empty( $terms ) )
 			? array_values(
 				array_filter(
 					array_map(

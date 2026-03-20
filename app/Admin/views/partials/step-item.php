@@ -50,12 +50,33 @@ $step_tip         = $step['step_tip'] ?? '';
 					   placeholder="<?php esc_attr_e( 'e.g. Prepare the vegetables', 'dev-chefpress' ); ?>" />
 			</div>
 		</div>
-		<div class="cp-field">
+		<div class="cp-field cp-field--step-description">
 			<label class="cp-label"><?php esc_html_e( 'Description', 'dev-chefpress' ); ?></label>
-			<textarea name="_chefpress_steps[<?php echo esc_attr( (string) $si ); ?>][step_description]"
-					  class="cp-textarea"
-					  rows="4"
-					  placeholder="<?php esc_attr_e( 'Describe this cooking step in detail…', 'dev-chefpress' ); ?>"><?php echo esc_textarea( $step_description ); ?></textarea>
+			<?php
+			$is_tpl = ( '{{INDEX}}' === (string) $si );
+			if ( $is_tpl ) :
+				?>
+				<textarea id="chefpress_step_desc_{{INDEX}}"
+						  name="_chefpress_steps[{{INDEX}}][step_description]"
+						  class="widefat cp-textarea cp-step-description-field"
+						  rows="6"
+						  placeholder="<?php esc_attr_e( 'Describe this cooking step in detail…', 'dev-chefpress' ); ?>"></textarea>
+				<?php
+			else :
+				wp_editor(
+					(string) $step_description,
+					'chefpress_step_desc_' . (int) $si,
+					[
+						'textarea_name' => '_chefpress_steps[' . (int) $si . '][step_description]',
+						'textarea_rows' => 6,
+						'teeny'         => true,
+						'media_buttons' => false,
+						'quicktags'     => true,
+						'editor_class'  => 'cp-step-description-field',
+					]
+				);
+			endif;
+			?>
 		</div>
 		<div class="cp-field-grid cp-field-grid--2">
 			<div class="cp-field">

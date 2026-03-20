@@ -29,6 +29,8 @@ class Assets {
 			return;
 		}
 
+		wp_enqueue_editor();
+
 		// SortableJS from CDN.
 		wp_enqueue_script(
 			'sortablejs',
@@ -50,7 +52,7 @@ class Assets {
 		wp_enqueue_script(
 			'dev-chefpress-admin',
 			DEVCHEFPRESS_ASSETS_URL . 'js/admin.js',
-			[ 'jquery', 'sortablejs', 'wp-color-picker', 'media-upload' ],
+			[ 'jquery', 'sortablejs', 'wp-color-picker', 'media-upload', 'editor' ],
 			DEVCHEFPRESS_VERSION,
 			true
 		);
@@ -62,6 +64,19 @@ class Assets {
 		wp_localize_script( 'dev-chefpress-admin', 'ChefPressAdmin', [
 			'nonce'   => wp_create_nonce( 'dev_chefpress_nonce' ),
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'stepEditorSettings' => [
+				'tinymce'       => [
+					'wpautop'       => true,
+					'resize'        => true,
+					'branding'      => false,
+					'height'        => 200,
+					'toolbar1'      => 'bold,italic,bullist,numlist,link,unlink',
+					'toolbar2'      => '',
+					'block_formats' => 'Paragraph=p;Heading 3=h3;Heading 4=h4',
+				],
+				'quicktags'     => true,
+				'mediaButtons'  => false,
+			],
 			'strings' => [
 				'addStep'         => __( 'Add Step', 'dev-chefpress' ),
 				'addGroup'        => __( 'Add Ingredient Group', 'dev-chefpress' ),

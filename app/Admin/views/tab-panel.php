@@ -313,10 +313,20 @@ $nutr_table = $recipe->get_nutrition_table();
 					</div>
 					<div class="cp-field">
 						<label class="cp-label"><?php esc_html_e( 'Allergen Description', 'dev-chefpress' ); ?></label>
-						<textarea name="_chefpress_allergen_description"
-								  class="cp-textarea"
-								  rows="4"
-								  placeholder="<?php esc_attr_e( 'Describe allergen details, warnings, or substitution advice…', 'dev-chefpress' ); ?>"><?php echo esc_textarea( $allergens['allergen_description'] ?? '' ); ?></textarea>
+						<?php
+						wp_editor(
+							(string) ( $allergens['allergen_description'] ?? '' ),
+							'chefpress_allergen_description',
+							[
+								'textarea_name' => '_chefpress_allergen_description',
+								'textarea_rows' => 6,
+								'teeny'         => true,
+								'media_buttons' => false,
+								'quicktags'     => true,
+								'editor_class'  => 'cp-allergen-description-field',
+							]
+						);
+						?>
 					</div>
 				</div>
 			</div>

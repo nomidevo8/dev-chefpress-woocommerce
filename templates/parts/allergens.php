@@ -32,7 +32,9 @@ $list          = (array) ( $allergens['allergen_list'] ?? [] );
 			<?php endif; ?>
 
 			<?php if ( $description ) : ?>
-				<p class="cp-allergen-box__desc"><?php echo wp_kses_post( nl2br( esc_html( $description ) ) ); ?></p>
+				<div class="cp-allergen-box__desc cp-allergen-box__desc--richtext">
+					<?php echo wp_kses_post( $description ); ?>
+				</div>
 			<?php endif; ?>
 		</div>
 	</div>

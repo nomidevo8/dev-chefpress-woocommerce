@@ -25,7 +25,9 @@ defined( 'ABSPATH' ) || exit;
 						<h3 class="cp-step__title" itemprop="name"><?php echo esc_html( $step_title ); ?></h3>
 					<?php endif; ?>
 					<?php if ( $step_description ) : ?>
-						<p class="cp-step__desc" itemprop="text"><?php echo esc_html( $step_description ); ?></p>
+						<div class="cp-step__desc" itemprop="text">
+							<?php echo wp_kses_post( $step_description ); ?>
+						</div>
 					<?php endif; ?>
 					<?php if ( $step_tip ) : ?>
 						<div class="cp-step__tip">
