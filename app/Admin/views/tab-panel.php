@@ -100,58 +100,6 @@ $nutr_table = $recipe->get_nutrition_table();
 				</div>
 			</div><!-- /.cp-card Hero -->
 
-			<!-- Nutrition Summary Card -->
-			<div class="cp-card">
-				<div class="cp-card__header" data-toggle="nutr-summary-body">
-					<div class="cp-card__header-left">
-						<span class="cp-card__icon"></span>
-						<h3 class="cp-card__title"><?php esc_html_e( 'Nutrition Summary', 'dev-chefpress' ); ?></h3>
-					</div>
-					<span class="cp-card__arrow">▼</span>
-				</div>
-				<div class="cp-card__body" id="nutr-summary-body">
-					<p class="cp-hint"><?php esc_html_e( 'Quick-view values shown prominently at the top of the recipe page.', 'dev-chefpress' ); ?></p>
-					<div class="cp-field-grid cp-field-grid--4">
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Calories', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_calories"
-								   value="<?php echo esc_attr( $nutrition['calories'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Protein (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_protein"
-								   value="<?php echo esc_attr( $nutrition['protein'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Carbs (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_carbs"
-								   value="<?php echo esc_attr( $nutrition['carbs'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Fat (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_fat"
-								   value="<?php echo esc_attr( $nutrition['fat'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
-					</div>
-				</div>
-			</div><!-- /.cp-card Nutrition Summary -->
-
 			<!-- Tags Card -->
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="tags-body">
