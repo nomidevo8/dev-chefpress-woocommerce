@@ -46,9 +46,6 @@ class ProductHero {
      */
     public function render() {
         $image_url = $this->get_image_url();
-        echo "<pre>";
-        var_dump($image_url);
-        echo "</pre>";
         $cooking_time = $this->get_cooking_time();
         ?>
         <div class="cp_product_hero-image-container">
