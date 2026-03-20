@@ -86,29 +86,23 @@ class ProductSidebar {
                     </p>
                 <?php endif; ?>
                 <?php if ( ! empty( $allergens['description'] ) ) : ?>
-                    <p class="cp_product_allergens-text"><?php echo esc_html( $allergens['description'] ); ?></p>
+                    <div class="cp_product_allergens-text"><?php echo wp_kses_post( $allergens['description'] ); ?></div>
                 <?php endif; ?>
             </section>
 
             <section class="cp_product_nutrition-section">
                 <h2 class="cp_product_sidebar-section-title">Nutritional information</h2>
-                <table class="cp_product_nutrition-table">
-                    <thead>
-                        <tr class="cp_product_nutrition-row">
-                            <th class="cp_product_nutrition-header" colspan="2">
-                                <?php echo esc_html( $per_serving_label ?: 'Per Serving*' ); ?>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ( $nutrition as $row ) : ?>
-                            <tr class="cp_product_nutrition-row">
-                                <td class="cp_product_nutrition-cell"><?php echo esc_html( $row['label'] ); ?><?php if ( $row['unit'] ) echo ' (' . esc_html( $row['unit'] ) . ')'; ?></td>
-                                <td class="cp_product_nutrition-cell cp_product_nutrition-cell-right"><?php echo esc_html( $row['value'] ); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="cp_product_ingredients-card cp_product_nutrition-card">
+                    <h3 class="cp_product_ingredient-group-title"><?php echo esc_html( $per_serving_label ?: 'Per Serving*' ); ?></h3>
+
+                    <?php foreach ( $nutrition as $row ) : ?>
+                        <div class="cp_product_ingredient-row">
+                            <span class="cp_product_ingredient-name"><?php echo esc_html( $row['label'] ); ?><?php if ( $row['unit'] ) echo ' (' . esc_html( $row['unit'] ) . ')'; ?></span>
+                            <span class="cp_product_ingredient-amount"><?php echo esc_html( $row['value'] ); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
                 <?php if ( $nutrition_note ) : ?>
                     <p class="cp_product_nutrition-disclaimer"><?php echo esc_html( $nutrition_note ); ?></p>
                 <?php endif; ?>
