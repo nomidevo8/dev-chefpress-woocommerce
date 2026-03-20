@@ -117,7 +117,7 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 				</div>
 				<div class="cp-card__body" id="nutr-summary-body">
 					<p class="cp-hint"><?php esc_html_e( 'Quick-view values shown prominently at the top of the recipe page.', 'dev-chefpress' ); ?></p>
-					<div class="cp-field-grid cp-field-grid--4">
+					<div class="cp-field-grid cp-field-grid--2">
 						<div class="cp-field">
 							<label class="cp-label"><?php esc_html_e( 'Calories', 'dev-chefpress' ); ?></label>
 							<input type="number"
