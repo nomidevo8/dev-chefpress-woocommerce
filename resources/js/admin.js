@@ -287,6 +287,41 @@
                 $(this).find('> .cp-repeater-item__header .cp-repeater-item__badge')
                     .text(ChefPressAdmin.strings.stepLabel + ' ' + (idx + 1));
             });
+        },
+
+        /**
+         * Insert a preset ingredient into the first group’s list.
+         *
+         * @param {string} name
+         */
+        addIngredientFromPreset: function (name) {
+            name = String(name || '').trim();
+            if (!name) return;
+
+            var $groups = $('#cp-groups-list');
+            if (!$groups.length) return;
+
+            if (!$groups.children('.cp-group-item').length) {
+                window.alert(ChefPressAdmin.strings.addGroupFirst || 'Please add an ingredient group first.');
+                return;
+            }
+
+            var $group = $groups.children('.cp-group-item').first();
+            var gIdx = parseInt($group.attr('data-index'), 10);
+            if (isNaN(gIdx)) gIdx = 0;
+
+            var $ingList = $group.find('.cp-ingredients-list').first();
+            var newIngIdx = $ingList.children('.cp-ingredient-item').length;
+
+            var tpl = $('#cp-ingredient-template').html();
+            if (!tpl) return;
+
+            tpl = tpl.replace(/\{\{GROUP_INDEX\}\}/g, String(gIdx));
+            tpl = tpl.replace(/\{\{ING_INDEX\}\}/g, String(newIngIdx));
+            var $newIng = $(tpl);
+            $newIng.find('input[name*="[ingredient_name]"]').val(name);
+            $ingList.append($newIng);
+            GroupsRepeater.reindexIngredients($ingList, gIdx);
         }
     };
 
@@ -571,7 +606,38 @@
             // Remove tag on × click.
             $(document).on('click', '.cp-tag__remove', function () {
                 $(this).closest('.cp-tag').remove();
+                if (typeof PresetPicker !== 'undefined' && PresetPicker.refreshPresetButtonState) {
+                    PresetPicker.refreshPresetButtonState();
+                }
             });
+        },
+
+        /**
+         * Add a tag chip + hidden input (used by preset buttons).
+         *
+         * @param {jQuery} $list
+         * @param {string} fieldName
+         * @param {string} val
+         * @param {boolean} danger
+         */
+        addTagValue: function ($list, fieldName, val, danger) {
+            val = String(val || '').trim();
+            if (!val || !$list.length) return;
+
+            var exists = false;
+            $list.find('input[type="hidden"]').each(function () {
+                if ($(this).attr('name') !== fieldName) return;
+                if ($(this).val().toLowerCase() === val.toLowerCase()) {
+                    exists = true;
+                }
+            });
+            if (exists) return;
+
+            var $tag = $('<span/>').addClass(danger ? 'cp-tag cp-tag--danger' : 'cp-tag');
+            $tag.append(document.createTextNode(val));
+            $tag.append('<button type="button" class="cp-tag__remove" aria-label="Remove">×</button>');
+            $tag.append($('<input type="hidden" />').attr('name', fieldName).val(val));
+            $list.append($tag);
         },
 
         addTag: function ($input, $list, fieldName) {
@@ -659,6 +725,72 @@
     };
 
     /* ==========================================================================
+       Preset chips (global library: labels, allergens, ingredients)
+       ========================================================================== */
+    var PresetPicker = {
+        init: function () {
+            $(document).on('click', '.cp-preset-chip-btn', function (e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var kind = $btn.data('preset-kind');
+                var val = String($btn.data('value') || '').trim();
+                if (!val) return;
+
+                if (kind === 'recipe_label') {
+                    PresetPicker.toggleTag($('#cp-tags-list'), '_chefpress_tags[]', val);
+                } else if (kind === 'allergen') {
+                    PresetPicker.toggleTag($('#cp-allergen-tags-list'), '_chefpress_allergen_list[]', val, true);
+                } else if (kind === 'ingredient') {
+                    GroupsRepeater.addIngredientFromPreset(val);
+                }
+                PresetPicker.refreshPresetButtonState();
+            });
+
+            this.refreshPresetButtonState();
+        },
+
+        listHas: function ($list, fieldName, val) {
+            val = String(val).toLowerCase();
+            var on = false;
+            $list.find('input[type="hidden"]').each(function () {
+                if ($(this).attr('name') !== fieldName) return;
+                if (String($(this).val()).toLowerCase() === val) {
+                    on = true;
+                }
+            });
+            return on;
+        },
+
+        toggleTag: function ($list, fieldName, val, danger) {
+            danger = !!danger;
+            var had = false;
+            $list.find('input[type="hidden"]').each(function () {
+                if ($(this).attr('name') !== fieldName) return;
+                if (String($(this).val()).toLowerCase() === String(val).toLowerCase()) {
+                    had = true;
+                    $(this).closest('.cp-tag').remove();
+                }
+            });
+            if (!had) {
+                TagInput.addTagValue($list, fieldName, val, danger);
+            }
+        },
+
+        refreshPresetButtonState: function () {
+            $('.cp-preset-chip-btn[data-preset-kind="recipe_label"]').each(function () {
+                var $b = $(this);
+                var on = PresetPicker.listHas($('#cp-tags-list'), '_chefpress_tags[]', $b.data('value'));
+                $b.toggleClass('is-on', on);
+            });
+            $('.cp-preset-chip-btn[data-preset-kind="allergen"]').each(function () {
+                var $b = $(this);
+                var on = PresetPicker.listHas($('#cp-allergen-tags-list'), '_chefpress_allergen_list[]', $b.data('value'));
+                $b.toggleClass('is-on', on);
+            });
+        }
+    };
+
+    /* ==========================================================================
        Init
        ========================================================================== */
     $(function () {
@@ -674,6 +806,7 @@
         TagInput.init();
         StarRating.init();
         ProductTypeHandler.init();
+        PresetPicker.init();
 
         // Hide all repeater bodies by default (collapsed state).
         // Open the first one for UX.

@@ -6,6 +6,7 @@ namespace DevChefPress;
 use DevChefPress\Admin\Admin;
 use DevChefPress\Frontend\Frontend;
 use DevChefPress\Hooks\Loader;
+use DevChefPress\Services\PluginSettings;
 
 /**
  * Class Plugin
@@ -44,6 +45,7 @@ final class Plugin {
 	 */
 	private function init(): void {
 		$this->register_product_type();
+		$this->register_cpt();
 		$this->load_textdomain();
 
 		if ( is_admin() ) {
@@ -95,6 +97,40 @@ final class Plugin {
 		}
 
 		return $classname;
+	}
+
+	/**
+	 * Register internal CPT for future ChefPress features (REST, modules, etc.).
+	 * Hidden from menu — navigation uses custom admin pages under ChefPress.
+	 */
+	private function register_cpt(): void {
+		$this->loader->add_action( 'init', $this, 'register_chefpress_cpt' );
+	}
+
+	/**
+	 * Reserved post type; enable show_ui later or attach to ChefPress menu.
+	 */
+	public function register_chefpress_cpt(): void {
+		register_post_type(
+			PluginSettings::CPT_SLUG,
+			[
+				'labels'              => [
+					'name'          => __( 'ChefPress', 'dev-chefpress' ),
+					'singular_name' => __( 'ChefPress Item', 'dev-chefpress' ),
+				],
+				'description'         => __( 'Reserved for future ChefPress functionality.', 'dev-chefpress' ),
+				'public'              => false,
+				'publicly_queryable'  => false,
+				'show_ui'             => false,
+				'show_in_menu'        => false,
+				'show_in_rest'        => false,
+				'exclude_from_search' => true,
+				'capability_type'     => 'post',
+				'map_meta_cap'        => true,
+				'supports'            => [ 'title' ],
+				'has_archive'         => false,
+			]
+		);
 	}
 
 	/**

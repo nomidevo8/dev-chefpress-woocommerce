@@ -20,6 +20,7 @@ $wpdb->query(
 
 // Remove plugin options.
 delete_option( 'devchefpress_delete_data_on_uninstall' );
+delete_option( 'chefpress_plugin_settings' );
 
 // Drop cache.
 wp_cache_flush();

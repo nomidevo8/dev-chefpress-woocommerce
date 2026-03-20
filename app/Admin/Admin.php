@@ -16,12 +16,14 @@ class Admin {
 	private Assets $assets;
 	private MetaBoxes $meta_boxes;
 	private SaveHandler $save_handler;
+	private SettingsPage $settings_page;
 
 	public function __construct( Loader $loader ) {
-		$this->loader       = $loader;
-		$this->assets       = new Assets( $loader );
-		$this->meta_boxes   = new MetaBoxes( $loader );
-		$this->save_handler = new SaveHandler( $loader );
+		$this->loader         = $loader;
+		$this->assets         = new Assets( $loader );
+		$this->meta_boxes     = new MetaBoxes( $loader );
+		$this->save_handler   = new SaveHandler( $loader );
+		$this->settings_page  = new SettingsPage( $loader );
 
 		$this->register_hooks();
 	}

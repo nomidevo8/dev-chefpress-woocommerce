@@ -5,6 +5,7 @@ namespace DevChefPress\Services;
 
 use DevChefPress\Helpers\Sanitizer;
 use DevChefPress\Models\Recipe;
+use DevChefPress\Services\PluginSettings;
 
 /**
  * Class RecipeService
@@ -199,16 +200,31 @@ class RecipeService {
 	 * @param array<string, mixed> $post
 	 */
 	private function save_nutrition_table( array $post ): void {
-		$numeric_fields = [
-			'energy_kj', 'energy_kcal', 'fats', 'saturated_fats',
-			'carbs', 'sugars', 'fibers', 'proteins', 'salt',
-		];
-
-		foreach ( $numeric_fields as $field ) {
-			$key = '_chefpress_nutr_' . $field;
-			$val = (float) ( $post[ $key ] ?? 0 );
-			$val = max( 0.0, $val );
+		$allowed = [];
+		foreach ( PluginSettings::get_nutrition_fields() as $def ) {
+			$field          = $def['key'];
+			$allowed[]      = $field;
+			$key            = '_chefpress_nutr_' . $field;
+			$val            = (float) ( $post[ $key ] ?? 0 );
+			$val            = max( 0.0, $val );
 			$this->update_meta( $key, $val );
+		}
+
+		// Remove stored values for keys no longer in global schema.
+		$all_meta = get_post_meta( $this->post_id );
+		if ( is_array( $all_meta ) ) {
+			foreach ( array_keys( $all_meta ) as $meta_key ) {
+				if ( ! is_string( $meta_key ) || ! str_starts_with( $meta_key, '_chefpress_nutr_' ) ) {
+					continue;
+				}
+				$suffix = substr( $meta_key, strlen( '_chefpress_nutr_' ) );
+				if ( in_array( $suffix, [ 'per_serving_label', 'nutrition_note' ], true ) ) {
+					continue;
+				}
+				if ( ! in_array( $suffix, $allowed, true ) ) {
+					delete_post_meta( $this->post_id, $meta_key );
+				}
+			}
 		}
 
 		$this->update_meta( '_chefpress_per_serving_label', Sanitizer::text( $post['_chefpress_per_serving_label'] ?? '' ) );

@@ -57,7 +57,7 @@ do_action( 'devchefpress_before_recipe', $recipe, $product );
 		</div><!-- /.cp-recipe__two-col -->
 
 		<!-- Nutrition Table -->
-		<?php if ( array_filter( array_intersect_key( $nutr_tbl, array_flip( [ 'energy_kcal', 'fats', 'proteins', 'carbs' ] ) ) ) ) : ?>
+		<?php if ( $recipe->has_nutrition_table_content() ) : ?>
 			<?php $loader->render_part( 'nutrition', [ 'nutr_tbl' => $nutr_tbl ] ); ?>
 		<?php endif; ?>
 

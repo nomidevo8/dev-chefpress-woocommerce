@@ -88,6 +88,7 @@ class Assets {
 				'stepLabel'       => __( 'Step', 'dev-chefpress' ),
 				'groupLabel'      => __( 'Group', 'dev-chefpress' ),
 				'duplicated'      => __( 'Duplicated!', 'dev-chefpress' ),
+				'addGroupFirst'   => __( 'Add an ingredient group first, then click a preset ingredient.', 'dev-chefpress' ),
 			],
 		] );
 	}

@@ -6,6 +6,8 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+use DevChefPress\Services\PluginSettings;
+
 $hero       = $recipe->get_hero();
 $nutrition  = $recipe->get_nutrition();
 $tags       = $recipe->get_tags();
@@ -13,7 +15,11 @@ $before     = $recipe->get_before_start();
 $steps      = $recipe->get_steps();
 $groups     = $recipe->get_ingredients();
 $allergens  = $recipe->get_allergens();
-$nutr_table = $recipe->get_nutrition_table();
+$nutr_table         = $recipe->get_nutrition_table();
+$nutrition_field_defs = PluginSettings::get_nutrition_fields();
+$preset_ingredients   = PluginSettings::get_preset_ingredients();
+$preset_allergens_l   = PluginSettings::get_preset_allergens();
+$preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 ?>
 <div id="chefpress_recipe_data" class="panel woocommerce_options_panel chefpress-panel">
 
@@ -111,6 +117,18 @@ $nutr_table = $recipe->get_nutrition_table();
 				</div>
 				<div class="cp-card__body" id="tags-body">
 					<p class="cp-hint"><?php esc_html_e( 'Add labels like "Low Carb", "Vegan", "Gluten Free" etc. Press Enter or comma to add.', 'dev-chefpress' ); ?></p>
+					<?php if ( ! empty( $preset_recipe_l ) ) : ?>
+						<div class="cp-preset-row">
+							<span class="cp-preset-row__label"><?php esc_html_e( 'Quick add', 'dev-chefpress' ); ?></span>
+							<div class="cp-preset-chips" id="cp-preset-recipe-labels" role="group" aria-label="<?php esc_attr_e( 'Preset recipe labels', 'dev-chefpress' ); ?>">
+								<?php foreach ( $preset_recipe_l as $pl ) : ?>
+									<button type="button" class="cp-preset-chip-btn" data-preset-kind="recipe_label" data-value="<?php echo esc_attr( $pl ); ?>">
+										<?php echo esc_html( $pl ); ?>
+									</button>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					<?php endif; ?>
 					<div class="cp-tags-wrap">
 						<div class="cp-tags-list" id="cp-tags-list">
 							<?php foreach ( $tags as $tag ) : ?>
@@ -162,6 +180,19 @@ $nutr_table = $recipe->get_nutrition_table();
 					<p class="cp-card__subtitle"><?php esc_html_e( 'Organise ingredients into groups (e.g. "For the sauce", "For the dough"). Drag to reorder.', 'dev-chefpress' ); ?></p>
 				</div>
 				<div class="cp-card__body">
+					<?php if ( ! empty( $preset_ingredients ) ) : ?>
+						<div class="cp-preset-row cp-preset-row--ingredients">
+							<span class="cp-preset-row__label"><?php esc_html_e( 'From library', 'dev-chefpress' ); ?></span>
+							<p class="cp-preset-row__hint"><?php esc_html_e( 'Click to add to the first group (create a group first if needed).', 'dev-chefpress' ); ?></p>
+							<div class="cp-preset-chips" id="cp-preset-ingredients" role="group" aria-label="<?php esc_attr_e( 'Preset ingredients', 'dev-chefpress' ); ?>">
+								<?php foreach ( $preset_ingredients as $ping ) : ?>
+									<button type="button" class="cp-preset-chip-btn" data-preset-kind="ingredient" data-value="<?php echo esc_attr( $ping ); ?>">
+										<span class="cp-preset-chip-btn__plus">＋</span> <?php echo esc_html( $ping ); ?>
+									</button>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					<?php endif; ?>
 					<div id="cp-groups-list" class="cp-groups-list">
 						<?php if ( ! empty( $groups ) ) : ?>
 							<?php foreach ( $groups as $gi => $group ) : ?>
@@ -240,28 +271,26 @@ $nutr_table = $recipe->get_nutrition_table();
 					</div>
 
 					<div class="cp-nutr-table-grid">
-						<?php
-						$nutr_fields = [
-							'energy_kj'      => __( 'Energy (kJ)', 'dev-chefpress' ),
-							'energy_kcal'    => __( 'Energy (kcal)', 'dev-chefpress' ),
-							'fats'           => __( 'Fats (g)', 'dev-chefpress' ),
-							'saturated_fats' => __( 'of which Saturated (g)', 'dev-chefpress' ),
-							'carbs'          => __( 'Carbohydrates (g)', 'dev-chefpress' ),
-							'sugars'         => __( 'of which Sugars (g)', 'dev-chefpress' ),
-							'fibers'         => __( 'Fibre (g)', 'dev-chefpress' ),
-							'proteins'       => __( 'Protein (g)', 'dev-chefpress' ),
-							'salt'           => __( 'Salt (g)', 'dev-chefpress' ),
-						];
-						foreach ( $nutr_fields as $key => $label ) :
-						?>
+						<?php foreach ( $nutrition_field_defs as $ndef ) : ?>
+							<?php
+							$key   = $ndef['key'];
+							$label = $ndef['label'];
+							$unit  = $ndef['unit'] ?? '';
+							$ph    = $unit ? sprintf( /* translators: %s: unit */ __( '0 %s', 'dev-chefpress' ), $unit ) : '0';
+							?>
 							<div class="cp-nutr-field">
-								<label class="cp-label cp-label--small"><?php echo esc_html( $label ); ?></label>
+								<label class="cp-label cp-label--small">
+									<?php echo esc_html( $label ); ?>
+									<?php if ( $unit ) : ?>
+										<span class="cp-label-unit"> (<?php echo esc_html( $unit ); ?>)</span>
+									<?php endif; ?>
+								</label>
 								<input type="number"
 									   name="_chefpress_nutr_<?php echo esc_attr( $key ); ?>"
 									   value="<?php echo esc_attr( $nutr_table[ $key ] ?? '' ); ?>"
 									   class="cp-input cp-input--sm"
 									   min="0" step="0.01"
-									   placeholder="0" />
+									   placeholder="<?php echo esc_attr( $ph ); ?>" />
 							</div>
 						<?php endforeach; ?>
 					</div><!-- /.cp-nutr-table-grid -->
@@ -293,6 +322,18 @@ $nutr_table = $recipe->get_nutrition_table();
 						</div>
 						<div class="cp-field">
 							<label class="cp-label"><?php esc_html_e( 'Allergen Tags', 'dev-chefpress' ); ?></label>
+							<?php if ( ! empty( $preset_allergens_l ) ) : ?>
+								<div class="cp-preset-row">
+									<span class="cp-preset-row__label"><?php esc_html_e( 'Quick toggle', 'dev-chefpress' ); ?></span>
+									<div class="cp-preset-chips" id="cp-preset-allergens" role="group" aria-label="<?php esc_attr_e( 'Preset allergens', 'dev-chefpress' ); ?>">
+										<?php foreach ( $preset_allergens_l as $pa ) : ?>
+											<button type="button" class="cp-preset-chip-btn cp-preset-chip-btn--danger" data-preset-kind="allergen" data-value="<?php echo esc_attr( $pa ); ?>">
+												<?php echo esc_html( $pa ); ?>
+											</button>
+										<?php endforeach; ?>
+									</div>
+								</div>
+							<?php endif; ?>
 							<div class="cp-tags-wrap">
 								<div class="cp-tags-list" id="cp-allergen-tags-list">
 									<?php

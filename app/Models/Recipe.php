@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace DevChefPress\Models;
 
+use DevChefPress\Services\PluginSettings;
+
 /**
  * Class Recipe
  *
@@ -176,22 +178,33 @@ class Recipe {
 	 * @return array<string, mixed>
 	 */
 	public function get_nutrition_table(): array {
-		$fields = [
-			'energy_kj', 'energy_kcal', 'fats', 'saturated_fats',
-			'carbs', 'sugars', 'fibers', 'proteins', 'salt',
-			'per_serving_label', 'nutrition_note',
+		$result = [
+			'per_serving_label' => $this->get( '_chefpress_per_serving_label', '' ),
+			'nutrition_note'    => $this->get( '_chefpress_nutrition_note', '' ),
 		];
 
-		$result = [];
-		foreach ( $fields as $field ) {
-			$result[ $field ] = $this->get( '_chefpress_nutr_' . $field, '' );
+		foreach ( PluginSettings::get_nutrition_fields() as $def ) {
+			$key            = $def['key'];
+			$result[ $key ] = $this->get( '_chefpress_nutr_' . $key, '' );
 		}
 
-		// Also override with summary nutrition from hero fields.
-		$result['per_serving_label'] = $this->get( '_chefpress_per_serving_label', '' );
-		$result['nutrition_note']    = $this->get( '_chefpress_nutrition_note', '' );
-
 		return $result;
+	}
+
+	/**
+	 * Whether the nutrition block should render on the frontend.
+	 */
+	public function has_nutrition_table_content(): bool {
+		if ( trim( (string) $this->get( '_chefpress_nutrition_note', '' ) ) !== '' ) {
+			return true;
+		}
+		foreach ( PluginSettings::get_nutrition_fields() as $def ) {
+			$v = (float) $this->get( '_chefpress_nutr_' . $def['key'], 0 );
+			if ( $v > 0.0 ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

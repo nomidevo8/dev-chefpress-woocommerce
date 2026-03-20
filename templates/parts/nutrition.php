@@ -6,42 +6,60 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+use DevChefPress\Services\PluginSettings;
+
 $per_label = (string) ( $nutr_tbl['per_serving_label'] ?? '' );
 $note      = (string) ( $nutr_tbl['nutrition_note'] ?? '' );
+$defs      = PluginSettings::get_nutrition_fields();
 
-$rows = [
-	[ 'label' => __( 'Energy', 'dev-chefpress' ), 'value' => trim( ( $nutr_tbl['energy_kj'] ? $nutr_tbl['energy_kj'] . ' kJ' : '' ) . ' / ' . ( $nutr_tbl['energy_kcal'] ? $nutr_tbl['energy_kcal'] . ' kcal' : '' ) ), 'class' => '' ],
-	[ 'label' => __( 'Fat', 'dev-chefpress' ), 'value' => $nutr_tbl['fats'] ? $nutr_tbl['fats'] . 'g' : '', 'class' => '' ],
-	[ 'label' => __( 'of which Saturated', 'dev-chefpress' ), 'value' => $nutr_tbl['saturated_fats'] ? $nutr_tbl['saturated_fats'] . 'g' : '', 'class' => 'cp-nutr-row--sub' ],
-	[ 'label' => __( 'Carbohydrates', 'dev-chefpress' ), 'value' => $nutr_tbl['carbs'] ? $nutr_tbl['carbs'] . 'g' : '', 'class' => '' ],
-	[ 'label' => __( 'of which Sugars', 'dev-chefpress' ), 'value' => $nutr_tbl['sugars'] ? $nutr_tbl['sugars'] . 'g' : '', 'class' => 'cp-nutr-row--sub' ],
-	[ 'label' => __( 'Fibre', 'dev-chefpress' ), 'value' => $nutr_tbl['fibers'] ? $nutr_tbl['fibers'] . 'g' : '', 'class' => '' ],
-	[ 'label' => __( 'Protein', 'dev-chefpress' ), 'value' => $nutr_tbl['proteins'] ? $nutr_tbl['proteins'] . 'g' : '', 'class' => '' ],
-	[ 'label' => __( 'Salt', 'dev-chefpress' ), 'value' => $nutr_tbl['salt'] ? $nutr_tbl['salt'] . 'g' : '', 'class' => '' ],
-];
+$rows = [];
+foreach ( $defs as $def ) {
+	$key = $def['key'];
+	$raw = $nutr_tbl[ $key ] ?? '';
+	if ( '' === $raw || null === $raw ) {
+		continue;
+	}
+	$num = is_numeric( $raw ) ? (float) $raw : null;
+	$unit = (string) ( $def['unit'] ?? '' );
+	if ( null !== $num ) {
+		$val = ( abs( $num - round( $num ) ) < 0.0001 )
+			? (string) (int) round( $num )
+			: (string) $num;
+		if ( '' !== $unit ) {
+			$val .= ' ' . $unit;
+		}
+	} else {
+		$val = (string) $raw;
+	}
+	$rows[] = [
+		'label' => (string) ( $def['label'] ?? $key ),
+		'value' => $val,
+		'class' => '',
+	];
+}
 ?>
 <section class="cp-section cp-section--nutrition">
 	<h2 class="cp-section__title"><?php esc_html_e( 'Nutrition Information', 'dev-chefpress' ); ?></h2>
 
 	<div class="cp-nutr-table-wrap">
-		<table class="cp-nutr-table">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Nutrient', 'dev-chefpress' ); ?></th>
-					<th><?php echo esc_html( $per_label ?: __( 'Per Serving', 'dev-chefpress' ) ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( $rows as $row ) :
-					if ( '' === $row['value'] || '/' === trim( $row['value'], ' /' ) ) continue;
-				?>
-					<tr class="cp-nutr-row <?php echo esc_attr( $row['class'] ); ?>">
-						<td class="cp-nutr-row__label"><?php echo esc_html( $row['label'] ); ?></td>
-						<td class="cp-nutr-row__value"><?php echo esc_html( $row['value'] ); ?></td>
+		<?php if ( ! empty( $rows ) ) : ?>
+			<table class="cp-nutr-table">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Nutrient', 'dev-chefpress' ); ?></th>
+						<th><?php echo esc_html( $per_label ?: __( 'Per Serving', 'dev-chefpress' ) ); ?></th>
 					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php foreach ( $rows as $row ) : ?>
+						<tr class="cp-nutr-row <?php echo esc_attr( $row['class'] ); ?>">
+							<td class="cp-nutr-row__label"><?php echo esc_html( $row['label'] ); ?></td>
+							<td class="cp-nutr-row__value"><?php echo esc_html( $row['value'] ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
 		<?php if ( $note ) : ?>
 			<p class="cp-nutr-note"><?php echo esc_html( $note ); ?></p>
 		<?php endif; ?>

@@ -794,3 +794,237 @@
 
 /* Make the WooCommerce product type dropdown recognise recipe_product */
 .show_if_recipe_product { display: none; }
+
+/* --------------------------------------------------------------------------
+   Global settings screen (.chefpress-settings-wrap)
+   -------------------------------------------------------------------------- */
+.chefpress-settings-wrap {
+  font-family: var(--cp-font);
+  max-width: 1400px;
+  margin: 20px 20px 20px 0;
+}
+
+.chefpress-settings-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--cp-text);
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.chefpress-settings-title__brand { color: var(--cp-primary); }
+.chefpress-settings-title__sep { color: var(--cp-text-light); margin: 0 6px; font-weight: 400; }
+
+.chefpress-settings-lead {
+  color: var(--cp-text-muted);
+  font-size: 15px;
+  margin: 0 0 24px;
+  max-width: 720px;
+}
+
+.chefpress-notice--success {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: var(--cp-radius-sm);
+  margin-bottom: 20px;
+}
+
+.chefpress-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .chefpress-settings-grid { grid-template-columns: 1fr; }
+}
+
+.cp-card--settings {
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow-sm);
+  overflow: hidden;
+}
+
+.cp-card--settings .cp-card__header-static {
+  padding: 18px 22px;
+  background: var(--cp-surface);
+  border-bottom: 1px solid var(--cp-border-light);
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.cp-card--settings .cp-card__header-static .cp-card__title {
+  font-size: 16px !important;
+  white-space: normal;
+}
+
+.cp-card--settings .cp-card__body {
+  padding: 20px 22px;
+}
+
+.cp-card__icon--nutr::before { content: '📊'; }
+.cp-card__icon--ing::before { content: '🥕'; }
+.cp-card__icon--all::before { content: '⚠️'; }
+.cp-card__icon--tag::before { content: '🏷️'; }
+
+.chefpress-table-scroll {
+  overflow-x: auto;
+  margin-bottom: 14px;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-sm);
+}
+
+.chefpress-schema-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.chefpress-schema-table th,
+.chefpress-schema-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--cp-border-light);
+}
+
+.chefpress-schema-table th {
+  font-weight: 600;
+  color: var(--cp-text-muted);
+  background: var(--cp-bg);
+}
+
+.chefpress-col-actions { width: 48px; }
+
+.chefpress-settings-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chefpress-submit-wrap {
+  margin-top: 28px !important;
+  padding-top: 0 !important;
+}
+
+.chefpress-preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  min-height: 8px;
+}
+
+.chefpress-preset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--cp-primary-light);
+  color: var(--cp-primary-dark);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chefpress-preset-chip__x {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.chefpress-preset-chip__x:hover { opacity: 1; }
+
+.chefpress-preset-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.chefpress-preset-add .cp-input {
+  flex: 1;
+  min-width: 160px;
+}
+
+/* Product screen — preset quick picks */
+.cp-preset-row {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: var(--cp-primary-light);
+  border-radius: var(--cp-radius-sm);
+  border: 1px solid var(--cp-border-light);
+}
+
+.cp-preset-row__label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-primary-dark);
+  margin-bottom: 8px;
+}
+
+.cp-preset-row__hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--cp-text-muted);
+}
+
+.cp-preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cp-preset-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cp-text);
+  cursor: pointer;
+  font-family: var(--cp-font);
+  transition: background var(--cp-transition), border-color var(--cp-transition), box-shadow var(--cp-transition);
+}
+
+.cp-preset-chip-btn:hover {
+  border-color: var(--cp-primary);
+  color: var(--cp-primary);
+  box-shadow: var(--cp-shadow-sm);
+}
+
+.cp-preset-chip-btn.is-on {
+  background: var(--cp-primary);
+  border-color: var(--cp-primary);
+  color: #fff;
+}
+
+.cp-preset-chip-btn--danger.is-on {
+  background: var(--cp-danger);
+  border-color: var(--cp-danger);
+}
+
+.cp-preset-chip-btn__plus {
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.cp-label-unit {
+  font-weight: 400;
+  color: var(--cp-text-muted);
+  font-size: 12px;
+}
