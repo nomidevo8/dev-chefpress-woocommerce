@@ -131,6 +131,9 @@ final class Plugin {
 				'show_in_rest'        => false,
 				'exclude_from_search' => true,
 				'capability_type'     => 'post',
+				'capabilities' => [
+					'create_posts' => 'do_not_allow',
+				],
 				'map_meta_cap'        => true,
 				'supports'            => [ 'title' ],
 				'has_archive'         => false,
