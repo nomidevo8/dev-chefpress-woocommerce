@@ -55,7 +55,7 @@ class Admin {
 	 */
 	public function add_recipe_tab( array $tabs ): array {
 		$tabs['chefpress_recipe'] = [
-			'label'    => __( '🍳 Recipe Builder', 'dev-chefpress' ),
+			'label'    => __( 'Recipe Builder', 'dev-chefpress' ),
 			'target'   => 'chefpress_recipe_data',
 			'class'    => [ 'show_if_recipe_product' ],
 			'priority' => 80,
