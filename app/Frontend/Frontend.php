@@ -23,6 +23,42 @@ class Frontend {
 
 	private function register_hooks(): void {
 		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets' );
+
+		// Override product page for recipe_product.
+		$this->loader->add_action( 'template_redirect', $this, 'maybe_override_product_page', 1 );
+	}
+
+	/**
+	 * If product is recipe_product, override the content.
+	 */
+	public function maybe_override_product_page(): void {
+		if ( ! is_singular( 'product' ) ) {
+			return;
+		}
+
+		global $post;
+		$product = wc_get_product( $post->ID );
+		if ( ! $product || 'recipe_product' !== $product->get_type() ) {
+			return;
+		}
+
+		// Remove all default WooCommerce single product actions.
+		remove_all_actions( 'woocommerce_before_single_product' );
+		remove_all_actions( 'woocommerce_before_single_product_summary' );
+		remove_all_actions( 'woocommerce_single_product_summary' );
+		remove_all_actions( 'woocommerce_after_single_product_summary' );
+		remove_all_actions( 'woocommerce_after_single_product' );
+
+		// Add our custom output.
+		add_action( 'woocommerce_before_single_product', [ $this, 'render_recipe_override' ], 1 );
+	}
+
+	/**
+	 * Render our custom template for recipe_product.
+	 */
+	public function render_recipe_override(): void {
+		$loader = new \DevChefPress\Frontend\TemplateLoader();
+		$loader->render( 'single-recipe' );
 	}
 
 	public function enqueue_assets(): void {
