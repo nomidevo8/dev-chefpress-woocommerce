@@ -97,5 +97,13 @@ class Frontend {
 			DEVCHEFPRESS_VERSION,
 			true
 		);
+
+		wp_enqueue_script(
+			'lucide',
+			'https://unpkg.com/lucide@latest',
+			[],
+			null,
+			true
+		);
 	}
 }
