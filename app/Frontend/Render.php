@@ -27,7 +27,7 @@ class Render {
 		if ( ! $product || 'recipe_product' !== $product->get_type() ) {
 			return;
 		}
-
+	
 		$recipe = new Recipe( $post->ID );
 		$loader = new TemplateLoader();
 		$loader->render( 'single-recipe', [ 'recipe' => $recipe, 'product' => $product ] );

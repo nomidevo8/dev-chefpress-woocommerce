@@ -22,7 +22,7 @@ class Frontend {
 	}
 
 	private function register_hooks(): void {
-		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets' , 999 );
 
 		// Override product page for recipe_product.
 		$this->loader->add_action( 'template_redirect', $this, 'maybe_override_product_page', 1 );
@@ -68,9 +68,20 @@ class Frontend {
 
 		global $post;
 		$product = wc_get_product( $post->ID );
+
 		if ( ! $product || 'recipe_product' !== $product->get_type() ) {
 			return;
 		}
+
+		// Dequeue WooCommerce styles
+		wp_dequeue_style( 'woocommerce-general' );
+		wp_dequeue_style( 'woocommerce-layout' );
+		wp_dequeue_style( 'woocommerce-smallscreen' );
+
+		// Optional: prevent them from loading at all
+		wp_deregister_style( 'woocommerce-general' );
+		wp_deregister_style( 'woocommerce-layout' );
+		wp_deregister_style( 'woocommerce-smallscreen' );
 
 		wp_enqueue_style(
 			'dev-chefpress-frontend',
