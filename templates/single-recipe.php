@@ -39,7 +39,7 @@ $product_id = get_the_ID();
 
     <script>
         // Initialize Lucide icons
-        lucide.createIcons();
+        
     </script>
 </body>
 

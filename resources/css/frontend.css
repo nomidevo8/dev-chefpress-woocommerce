@@ -697,25 +697,6 @@
 
 
 
-.cp_product_reset * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.cp_product_body {
-  font-family: var(--cp_product_font-sans);
-  color: var(--cp_product_color-text-main);
-  line-height: 1.5;
-  background-color: var(--cp_product_color-white);
-  padding: 2rem 1rem;
-}
-
-.cp_product_container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
 /* Header Section */
 .cp_product_header {
   display: grid;

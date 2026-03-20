@@ -118,42 +118,24 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 				<div class="cp-card__body" id="nutr-summary-body">
 					<p class="cp-hint"><?php esc_html_e( 'Quick-view values shown prominently at the top of the recipe page.', 'dev-chefpress' ); ?></p>
 					<div class="cp-field-grid cp-field-grid--2">
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Calories', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_calories"
-								   value="<?php echo esc_attr( $nutrition['calories'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Protein (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_protein"
-								   value="<?php echo esc_attr( $nutrition['protein'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Carbs (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_carbs"
-								   value="<?php echo esc_attr( $nutrition['carbs'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
-						<div class="cp-field">
-							<label class="cp-label"><?php esc_html_e( 'Fat (g)', 'dev-chefpress' ); ?></label>
-							<input type="number"
-								   name="_chefpress_fat"
-								   value="<?php echo esc_attr( $nutrition['fat'] ?? '' ); ?>"
-								   class="cp-input"
-								   min="0" step="0.1"
-								   placeholder="0" />
-						</div>
+						<?php
+						$macro_fields = [
+							'calories' => __( 'Calories', 'dev-chefpress' ),
+							'protein'  => __( 'Protein (g)', 'dev-chefpress' ),
+							'carbs'    => __( 'Carbs (g)', 'dev-chefpress' ),
+							'fat'      => __( 'Fat (g)', 'dev-chefpress' ),
+						];
+						foreach ( $macro_fields as $key => $label ) : ?>
+							<div class="cp-field">
+								<label class="cp-label"><?php echo esc_html( $label ); ?></label>
+								<input type="number"
+									   name="<?php echo esc_attr( '_chefpress_' . $key ); ?>"
+									   value="<?php echo esc_attr( $nutrition[ $key ] ?? '' ); ?>"
+									   class="cp-input"
+									   min="0" step="0.1"
+									   placeholder="0" />
+							</div>
+						<?php endforeach; ?>
 					</div>
 				</div>
 			</div><!-- /.cp-card Nutrition Summary -->

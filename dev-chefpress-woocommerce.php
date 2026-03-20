@@ -26,12 +26,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-// define( 'DEVCHEFPRESS_VERSION', '1.0.0' );
-define( 'DEVCHEFPRESS_VERSION', time() ); // For development, use timestamp to prevent caching.
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+	// For development, use timestamp to prevent caching.
+	define( 'DEVCHEFPRESS_VERSION', time() );
+} else {
+	// For production, use plugin version or filemtime for cache busting.
+	define( 'DEVCHEFPRESS_VERSION', '1.0.0' );
+}
 define( 'DEVCHEFPRESS_FILE', __FILE__ );
 define( 'DEVCHEFPRESS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DEVCHEFPRESS_URL', plugin_dir_url( __FILE__ ) );
 define( 'DEVCHEFPRESS_ASSETS_URL', DEVCHEFPRESS_URL . 'assets/' );
+define( 'DEVCHEFPRESS_RESOURCES_URL', DEVCHEFPRESS_URL . 'resources/' );
 define( 'DEVCHEFPRESS_TEMPLATES_PATH', DEVCHEFPRESS_PATH . 'templates/' );
 
 // Autoloader.

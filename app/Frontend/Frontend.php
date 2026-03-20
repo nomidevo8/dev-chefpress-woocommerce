@@ -85,14 +85,14 @@ class Frontend {
 
 		wp_enqueue_style(
 			'dev-chefpress-frontend',
-			DEVCHEFPRESS_ASSETS_URL . 'css/frontend.css',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/frontend.css',
 			[],
 			DEVCHEFPRESS_VERSION
 		);
 
 		wp_enqueue_script(
 			'dev-chefpress-frontend',
-			DEVCHEFPRESS_ASSETS_URL . 'js/frontend.js',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
 			[ 'jquery' ],
 			DEVCHEFPRESS_VERSION,
 			true
