@@ -6,30 +6,6 @@
    CSS Variables
    -------------------------------------------------------------------------- */
 :root {
-  --cp-primary: #E8562A;
-  --cp-primary-dark: #c73e15;
-  --cp-primary-light: #fff2ee;
-  --cp-accent: #f7a649;
-  --cp-success: #22c55e;
-  --cp-danger: #ef4444;
-
-  --cp-bg: #f8f9fc;
-  --cp-surface: #ffffff;
-  --cp-border: #e5e9f2;
-
-  --cp-text: #1a2236;
-  --cp-text-muted: #64748b;
-  --cp-text-light: #94a3b8;
-
-  --cp-shadow-sm: 0 2px 8px rgba(0, 0, 0, .06);
-  --cp-shadow: 0 4px 24px rgba(0, 0, 0, .08);
-  --cp-shadow-md: 0 8px 32px rgba(0, 0, 0, .10);
-
-  --cp-radius: 16px;
-  --cp-radius-sm: 10px;
-  --cp-radius-xs: 6px;
-
-  --cp-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   --cp_product_color-brand: #ff6b4a;
   --cp_product_color-brand-light: #fff0ed;
   --cp_product_color-text-main: #1a1a1a;
@@ -44,14 +20,10 @@
    Base Reset inside recipe scope
    -------------------------------------------------------------------------- */
 
-/* _____________________________________ STYLING OF NEW PRODUCT PAGE __________________________ */
-
-
-
 
 .cp_product_container {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 50px auto;
 }
 /* Header Section */
 .cp_product_header {
@@ -97,9 +69,9 @@
 }
 
 .cp_product_title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.1;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
   margin-bottom: 0.5rem;
 }
 
@@ -119,7 +91,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .cp_product_stars {
@@ -138,7 +109,7 @@
   gap: 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .cp_product_macro-divider {
@@ -205,8 +176,9 @@
 
 /* Instructions */
 .cp_product_section-title {
-  font-size: 1.5rem;
-  color: var(--cp_product_color-brand);
+  font-size: 1.5rem !important; 
+  color: var(--cp_product_color-brand) !important;
+  font-weight: bolder !important;
   margin-bottom: 1rem;
 }
 
@@ -248,11 +220,12 @@
 }
 
 .cp_product_step-title {
-  font-size: 1.25rem;
-  color: var(--cp_product_color-brand);
+  font-size: 1.25rem !important;
+  color: var(--cp_product_color-brand) !important;
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
+  font-weight: bolder !important;
 }
 
 .cp_product_step-number {
@@ -284,9 +257,9 @@
 }
 
 .cp_product_tip-box {
-  background-color: var(--cp_product_color-brand-light);
-  border: 1px solid rgba(255, 107, 74, 0.2);
-  padding: 1rem;
+  /* background-color: var(--cp_product_color-brand-light); */
+  border: 2px solid rgba(255, 107, 74, 0.2);
+  padding: 5px 10px;
   border-radius: 0.5rem;
   margin-top: 1rem;
   font-size: 0.875rem;
@@ -333,8 +306,8 @@
 }
 
 .cp_product_ingredients-title {
-  font-size: 1.5rem;
-  color: var(--cp_product_color-brand);
+  font-size: 1.5rem !important;
+  color: var(--cp_product_color-brand) !important;
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -344,18 +317,19 @@
 }
 
 .cp_product_ingredient-group-title {
-  font-size: 1rem;
-  font-weight: 700;
-  border-bottom: 1px solid var(--cp_product_color-border);
-  padding-bottom: 0.25rem;
-  margin-bottom: 0.5rem;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid var(--cp_product_color-border) !important;
+  padding-bottom: 0.25rem !important;
+  margin-bottom: 0.5rem !important;
+  
 }
 
 .cp_product_ingredient-row {
   display: flex;
   justify-content: space-between;
   font-size: 0.875rem;
-  padding: 0.5rem;
+  padding: 0.3rem;
   border-radius: 0.25rem;
 }
 
@@ -368,15 +342,17 @@
 }
 
 .cp_product_sidebar-section-title {
-  font-size: 1.25rem;
-  color: var(--cp_product_color-brand);
+  font-size: 1.25rem !important;
+  color: var(--cp_product_color-brand) !important;
   margin-bottom: 1rem;
+  font-weight: bolder !important;
 }
 
 .cp_product_allergens-text {
-  font-size: 0.75rem;
+  font-size: 0.90rem;
   color: var(--cp_product_color-text-muted);
   line-height: 1.6;
+  font-weight: bold !important;
 }
 
 .cp_product_nutrition-table {
@@ -405,8 +381,9 @@
 }
 
 .cp_product_nutrition-disclaimer {
-  font-size: 0.625rem;
-  color: var(--cp_product_color-text-muted);
+  font-size: 0.9rem;
+  color: var(--cp_product_color-text-muted) ;
   font-style: italic;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
+
 }

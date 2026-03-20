@@ -90,19 +90,20 @@ class Frontend {
 			DEVCHEFPRESS_VERSION
 		);
 
-		wp_enqueue_script(
-			'dev-chefpress-frontend',
-			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
-			[ 'jquery' ],
-			DEVCHEFPRESS_VERSION,
-			true
-		);
 
 		wp_enqueue_script(
 			'lucide',
-			'https://unpkg.com/lucide@latest',
+			'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
 			[],
 			null,
+			true
+		);
+		
+		wp_enqueue_script(
+			'dev-chefpress-frontend',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
+			[ 'jquery', 'lucide' ],
+			DEVCHEFPRESS_VERSION,
 			true
 		);
 	}
