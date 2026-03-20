@@ -305,12 +305,15 @@
             this.bindAdd();
             this.bindRemove();
             this.bindDuplicate();
+            this.bindIngredientSelection();
             this.updateBadges();
 
             // Init ingredient sortables for existing groups.
             this.$list.find('.cp-ingredients-list').each(function () {
                 GroupsRepeater.initIngredientSortable($(this));
             });
+
+            this.ensureSelectedGroup();
         },
 
         initSortable: function () {
@@ -451,6 +454,8 @@
                 $ingList.attr('data-group-index', newGroupIdx);
                 self.reindexIngredients($ingList, newGroupIdx);
             });
+
+            this.ensureSelectedGroup();
         },
 
         reindexIngredients: function ($ingList, forcedGroupIdx) {
@@ -481,8 +486,26 @@
             });
         },
 
+        bindIngredientSelection: function () {
+            $(document).on('click', '#cp-groups-list .cp-group-item .cp-repeater-item__header', function (e) {
+                if ($(e.target).closest('.cp-repeater-item__actions, .cp-drag-handle').length) {
+                    return;
+                }
+                var $group = $(this).closest('.cp-group-item');
+                $('#cp-groups-list .cp-group-item').removeClass('is-selected');
+                $group.addClass('is-selected');
+            });
+        },
+
+        ensureSelectedGroup: function () {
+            var $selected = this.$list.children('.cp-group-item.is-selected');
+            if (!$selected.length) {
+                this.$list.children('.cp-group-item').first().addClass('is-selected');
+            }
+        },
+
         /**
-         * Insert a preset ingredient into the first group’s list.
+         * Insert a preset ingredient into the selected group’s list.
          *
          * @param {string} name
          */
@@ -498,7 +521,11 @@
                 return;
             }
 
-            var $group = $groups.children('.cp-group-item').first();
+            var $group = $groups.children('.cp-group-item.is-selected').first();
+            if (!$group.length) {
+                $group = $groups.children('.cp-group-item').first();
+            }
+
             var gIdx = parseInt($group.attr('data-index'), 10);
             if (isNaN(gIdx)) gIdx = 0;
 

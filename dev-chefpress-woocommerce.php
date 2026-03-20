@@ -1,13 +1,11 @@
 <?php
 /**
  * Plugin Name:       Dev ChefPress for WooCommerce
- * Plugin URI:        https://devchefpress.com
  * Description:       A professional SaaS-style Recipe Builder system for WooCommerce products. Transform any product into a structured, beautiful recipe page.
  * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
- * Author:            DevChefPress
- * Author URI:        https://devchefpress.com
+ * Author:            DevTeam
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       dev-chefpress

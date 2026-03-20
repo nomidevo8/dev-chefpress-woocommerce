@@ -217,7 +217,7 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 					<?php if ( ! empty( $preset_ingredients ) ) : ?>
 						<div class="cp-preset-row cp-preset-row--ingredients">
 							<span class="cp-preset-row__label"><?php esc_html_e( 'From library', 'dev-chefpress' ); ?></span>
-							<p class="cp-preset-row__hint"><?php esc_html_e( 'Click to add to the first group (create a group first if needed).', 'dev-chefpress' ); ?></p>
+						<p class="cp-preset-row__hint"><?php esc_html_e( 'Click to add to the selected group (or first group if none selected).', 'dev-chefpress' ); ?></p>
 							<div class="cp-preset-chips" id="cp-preset-ingredients" role="group" aria-label="<?php esc_attr_e( 'Preset ingredients', 'dev-chefpress' ); ?>">
 								<?php foreach ( $preset_ingredients as $ping ) : ?>
 									<button type="button" class="cp-preset-chip-btn" data-preset-kind="ingredient" data-value="<?php echo esc_attr( $ping ); ?>">
