@@ -78,12 +78,9 @@ class RecipeService {
 	 * @param array<string, mixed> $post
 	 */
 	private function save_tags( array $post ): void {
-		$tags = $post['_chefpress_tags'] ?? [];
-		if ( ! is_array( $tags ) ) {
-			$tags = [];
-		}
-		$tags = array_filter( array_map( 'sanitize_text_field', $tags ) );
-		$this->update_meta( '_chefpress_tags', array_values( $tags ) );
+		$tags = $this->normalize_terms( $post['_chefpress_tags'] ?? [] );
+		$this->update_meta( '_chefpress_tags', $tags );
+		wp_set_object_terms( $this->post_id, $tags, 'chefpress_recipe_tag', false );
 	}
 
 	/**
@@ -190,12 +187,9 @@ class RecipeService {
 		$this->update_meta( '_chefpress_main_allergen', Sanitizer::text( $post['_chefpress_main_allergen'] ?? '' ) );
 		$this->update_meta( '_chefpress_allergen_description', Sanitizer::textarea( $post['_chefpress_allergen_description'] ?? '' ) );
 
-		$list = $post['_chefpress_allergen_list'] ?? [];
-		if ( ! is_array( $list ) ) {
-			$list = [];
-		}
-		$list = array_filter( array_map( 'sanitize_text_field', $list ) );
-		$this->update_meta( '_chefpress_allergen_list', array_values( $list ) );
+		$list = $this->normalize_terms( $post['_chefpress_allergen_list'] ?? [] );
+		$this->update_meta( '_chefpress_allergen_list', $list );
+		wp_set_object_terms( $this->post_id, $list, 'chefpress_allergen_tag', false );
 	}
 
 	/**
@@ -231,5 +225,45 @@ class RecipeService {
 		} else {
 			update_post_meta( $this->post_id, $key, $value );
 		}
+	}
+
+	/**
+	 * Normalize free-text tags/allergens for consistent storage and retrieval.
+	 *
+	 * @param mixed $raw
+	 * @return string[]
+	 */
+	private function normalize_terms( $raw ): array {
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+
+		$terms = array_map(
+			static function ( $item ): string {
+				return trim( sanitize_text_field( (string) $item ) );
+			},
+			$raw
+		);
+
+		$terms = array_filter(
+			$terms,
+			static function ( string $item ): bool {
+				return '' !== $item;
+			}
+		);
+
+		// Case-insensitive unique values while preserving first input casing.
+		$seen   = [];
+		$result = [];
+		foreach ( $terms as $term ) {
+			$key = strtolower( $term );
+			if ( isset( $seen[ $key ] ) ) {
+				continue;
+			}
+			$seen[ $key ] = true;
+			$result[]     = $term;
+		}
+
+		return array_values( $result );
 	}
 }

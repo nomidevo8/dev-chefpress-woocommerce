@@ -501,7 +501,8 @@
 
             // Avoid duplicates.
             var exists = false;
-            $list.find('input[name="' + fieldName + '"]').each(function () {
+            $list.find('input[type="hidden"]').each(function () {
+                if ($(this).attr('name') !== fieldName) return;
                 if ($(this).val().toLowerCase() === val.toLowerCase()) {
                     exists = true;
                 }
@@ -513,13 +514,10 @@
                 return;
             }
 
-            var $tag = $(
-                '<span class="cp-tag">' +
-                    val +
-                    '<button type="button" class="cp-tag__remove" aria-label="Remove">×</button>' +
-                    '<input type="hidden" name="' + fieldName + '" value="' + $('<div>').text(val).html() + '" />' +
-                '</span>'
-            );
+            var $tag = $('<span class="cp-tag"></span>');
+            $tag.append(document.createTextNode(val));
+            $tag.append('<button type="button" class="cp-tag__remove" aria-label="Remove">×</button>');
+            $tag.append($('<input type="hidden" />').attr('name', fieldName).val(val));
 
             $list.append($tag);
             $input.val('');

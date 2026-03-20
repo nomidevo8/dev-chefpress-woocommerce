@@ -97,8 +97,22 @@ class Recipe {
 	 * @return string[]
 	 */
 	public function get_tags(): array {
+		$terms = get_the_terms( $this->post_id, 'chefpress_recipe_tag' );
+		if ( is_array( $terms ) ) {
+			return array_values(
+				array_filter(
+					array_map(
+						static function ( \WP_Term $term ): string {
+							return trim( (string) $term->name );
+						},
+						$terms
+					)
+				)
+			);
+		}
+
 		$tags = $this->get( '_chefpress_tags', [] );
-		return is_array( $tags ) ? array_filter( array_map( 'strval', $tags ) ) : [];
+		return is_array( $tags ) ? array_values( array_filter( array_map( 'strval', $tags ) ) ) : [];
 	}
 
 	/**
@@ -134,7 +148,20 @@ class Recipe {
 	 * @return array<string, mixed>
 	 */
 	public function get_allergens(): array {
-		$list = $this->get( '_chefpress_allergen_list', [] );
+		$terms = get_the_terms( $this->post_id, 'chefpress_allergen_tag' );
+		$list  = is_array( $terms )
+			? array_values(
+				array_filter(
+					array_map(
+						static function ( \WP_Term $term ): string {
+							return trim( (string) $term->name );
+						},
+						$terms
+					)
+				)
+			)
+			: $this->get( '_chefpress_allergen_list', [] );
+
 		return [
 			'main_allergen'        => (string) $this->get( '_chefpress_main_allergen' ),
 			'allergen_description' => (string) $this->get( '_chefpress_allergen_description' ),

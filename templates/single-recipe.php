@@ -62,7 +62,7 @@ do_action( 'devchefpress_before_recipe', $recipe, $product );
 		<?php endif; ?>
 
 		<!-- Allergens -->
-		<?php if ( $allergens['main_allergen'] || ! empty( $allergens['allergen_list'] ) ) : ?>
+		<?php if ( $allergens['main_allergen'] || ! empty( $allergens['allergen_list'] ) || $allergens['allergen_description'] ) : ?>
 			<?php $loader->render_part( 'allergens', [ 'allergens' => $allergens ] ); ?>
 		<?php endif; ?>
 
