@@ -167,6 +167,9 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 3rem;
+  align-items: start;
+  grid-auto-rows: minmax(0, auto);
+  min-width: 0;
 }
 
 @media (min-width: 1024px) {
@@ -174,6 +177,57 @@
     grid-template-columns: 2fr 1fr;
   }
 }
+
+/* Instructions column wrapper if used */
+.cp_product_instructions-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cp_product_sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-self: start;
+  min-width: 0;
+  overflow: visible;
+  position: sticky;
+  top: 1rem;
+  /* no forced scroll bar */
+  max-height: none;
+}
+
+@media (max-width: 1023px) {
+  .cp_product_sidebar {
+    position: static;
+  }
+}
+
+/* Prevent wide elements from breaking layout */
+.cp_product_main-grid,
+.cp_product_step,
+.cp_product_step-content,
+.cp_product_ingredients-card,
+.cp_product_allergens-text,
+.cp_product_nutrition-table {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.cp_product_step-content {
+  width: 100%;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+
+.cp_product_ingredients-card, .cp_product_nutrition-card {
+  width: 100%;
+  max-width: 100%;
+}
+
 
 /* Instructions */
 .cp_product_section-title {
@@ -183,8 +237,8 @@
   margin-bottom: 1rem;
 }
 
-.cp_product_before-start {
-  margin-bottom: 2.5rem;
+.cp_product_before-start h2{
+  margin-bottom: 0px;
 }
 
 .cp_product_before-start-text {
@@ -243,6 +297,20 @@
   font-size: 0.875rem;
   color: var(--cp_product_color-text-muted);
   margin-bottom: 0.5rem;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.cp_product_step-list-item p,
+.cp_product_step-list-item span,
+.cp_product_step-list-item div {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
 }
 
 .cp_product_step-list-item::before {
@@ -354,6 +422,20 @@
   color: var(--cp_product_color-text-muted);
   line-height: 1.6;
   font-weight: bold !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.cp_product_allergens-text p,
+.cp_product_allergens-text span,
+.cp_product_allergens-text div {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  max-width: 100%;
 }
 
 .cp_product_nutrition-table {
