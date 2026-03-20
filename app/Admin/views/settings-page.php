@@ -58,7 +58,7 @@ $labels_p    = $settings['preset_recipe_labels'];
 		</div>
 	<?php endif; ?>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=dev-chefpress' ) ); ?>" class="chefpress-settings-form" id="chefpress-settings-form">
+	<form method="post" action="<?php echo esc_url( \DevChefPress\Admin\SettingsPage::settings_url() ); ?>" class="chefpress-settings-form" id="chefpress-settings-form">
 		<?php wp_nonce_field( 'chefpress_settings_save', 'chefpress_settings_nonce' ); ?>
 
 		<div class="chefpress-settings-grid">

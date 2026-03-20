@@ -287,41 +287,6 @@
                 $(this).find('> .cp-repeater-item__header .cp-repeater-item__badge')
                     .text(ChefPressAdmin.strings.stepLabel + ' ' + (idx + 1));
             });
-        },
-
-        /**
-         * Insert a preset ingredient into the first group’s list.
-         *
-         * @param {string} name
-         */
-        addIngredientFromPreset: function (name) {
-            name = String(name || '').trim();
-            if (!name) return;
-
-            var $groups = $('#cp-groups-list');
-            if (!$groups.length) return;
-
-            if (!$groups.children('.cp-group-item').length) {
-                window.alert(ChefPressAdmin.strings.addGroupFirst || 'Please add an ingredient group first.');
-                return;
-            }
-
-            var $group = $groups.children('.cp-group-item').first();
-            var gIdx = parseInt($group.attr('data-index'), 10);
-            if (isNaN(gIdx)) gIdx = 0;
-
-            var $ingList = $group.find('.cp-ingredients-list').first();
-            var newIngIdx = $ingList.children('.cp-ingredient-item').length;
-
-            var tpl = $('#cp-ingredient-template').html();
-            if (!tpl) return;
-
-            tpl = tpl.replace(/\{\{GROUP_INDEX\}\}/g, String(gIdx));
-            tpl = tpl.replace(/\{\{ING_INDEX\}\}/g, String(newIngIdx));
-            var $newIng = $(tpl);
-            $newIng.find('input[name*="[ingredient_name]"]').val(name);
-            $ingList.append($newIng);
-            GroupsRepeater.reindexIngredients($ingList, gIdx);
         }
     };
 
@@ -514,6 +479,41 @@
                 $(this).find('> .cp-repeater-item__header .cp-repeater-item__badge')
                     .text(ChefPressAdmin.strings.groupLabel + ' ' + (idx + 1));
             });
+        },
+
+        /**
+         * Insert a preset ingredient into the first group’s list.
+         *
+         * @param {string} name
+         */
+        addIngredientFromPreset: function (name) {
+            name = String(name || '').trim();
+            if (!name) return;
+
+            var $groups = $('#cp-groups-list');
+            if (!$groups.length) return;
+
+            if (!$groups.children('.cp-group-item').length) {
+                window.alert(ChefPressAdmin.strings.addGroupFirst || 'Please add an ingredient group first.');
+                return;
+            }
+
+            var $group = $groups.children('.cp-group-item').first();
+            var gIdx = parseInt($group.attr('data-index'), 10);
+            if (isNaN(gIdx)) gIdx = 0;
+
+            var $ingList = $group.find('.cp-ingredients-list').first();
+            var newIngIdx = $ingList.children('.cp-ingredient-item').length;
+
+            var tpl = $('#cp-ingredient-template').html();
+            if (!tpl) return;
+
+            tpl = tpl.replace(/\{\{GROUP_INDEX\}\}/g, String(gIdx));
+            tpl = tpl.replace(/\{\{ING_INDEX\}\}/g, String(newIngIdx));
+            var $newIng = $(tpl);
+            $newIng.find('input[name*="[ingredient_name]"]').val(name);
+            $ingList.append($newIng);
+            GroupsRepeater.reindexIngredients($ingList, gIdx);
         }
     };
 

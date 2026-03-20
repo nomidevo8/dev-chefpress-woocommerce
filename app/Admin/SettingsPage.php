@@ -7,30 +7,39 @@ use DevChefPress\Hooks\Loader;
 use DevChefPress\Services\PluginSettings;
 
 /**
- * Top-level ChefPress admin menu and Settings screen.
+ * Settings screen as a submenu under the ChefPress CPT.
  */
 final class SettingsPage {
 
-	private const MENU_SLUG = 'dev-chefpress';
+	/** Submenu slug (appears as ?page=… under the CPT menu). */
+	private const SUBMENU_SLUG = 'chefpress-settings';
 
 	public function __construct( Loader $loader ) {
-		$loader->add_action( 'admin_menu', $this, 'register_menu', 9 );
+		$loader->add_action( 'admin_menu', $this, 'register_menu', 20 );
 		$loader->add_action( 'admin_init', $this, 'maybe_save' );
 		$loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue' );
 	}
 
-	public function register_menu(): void {
-		add_menu_page(
-			__( 'ChefPress', 'dev-chefpress' ),
-			__( 'ChefPress', 'dev-chefpress' ),
-			'manage_woocommerce',
-			self::MENU_SLUG,
-			[ $this, 'render' ],
-			'dashicons-carrot',
-			56
-		);
+	/**
+	 * Parent menu is the CPT list: edit.php?post_type=chefpress
+	 */
+	private static function parent_slug(): string {
+		return 'edit.php?post_type=' . PluginSettings::CPT_SLUG;
+	}
 
-		// Future submenus: add_submenu_page( self::MENU_SLUG, ... );
+	public static function settings_url(): string {
+		return admin_url( self::parent_slug() . '&page=' . self::SUBMENU_SLUG );
+	}
+
+	public function register_menu(): void {
+		add_submenu_page(
+			self::parent_slug(),
+			__( 'ChefPress Settings', 'dev-chefpress' ),
+			__( 'Settings', 'dev-chefpress' ),
+			'manage_woocommerce',
+			self::SUBMENU_SLUG,
+			[ $this, 'render' ]
+		);
 	}
 
 	public function maybe_save(): void {
@@ -54,14 +63,16 @@ final class SettingsPage {
 			add_query_arg(
 				'chefpress_saved',
 				'1',
-				admin_url( 'admin.php?page=' . self::MENU_SLUG )
+				self::settings_url()
 			)
 		);
 		exit;
 	}
 
 	public function enqueue( string $hook ): void {
-		if ( 'toplevel_page_' . self::MENU_SLUG !== $hook ) {
+		// Screen id for CPT submenu: {post_type}_page_{submenu_slug}
+		$expected = PluginSettings::CPT_SLUG . '_page_' . self::SUBMENU_SLUG;
+		if ( $hook !== $expected && false === strpos( $hook, self::SUBMENU_SLUG ) ) {
 			return;
 		}
 
@@ -85,13 +96,13 @@ final class SettingsPage {
 			'ChefPressSettings',
 			[
 				'strings' => [
-					'addRow'       => __( 'Add nutrition row', 'dev-chefpress' ),
-					'remove'       => __( 'Remove', 'dev-chefpress' ),
-					'key'          => __( 'Key (ID)', 'dev-chefpress' ),
-					'label'        => __( 'Label', 'dev-chefpress' ),
-					'unit'         => __( 'Display unit', 'dev-chefpress' ),
-					'addPreset'    => __( 'Add to list', 'dev-chefpress' ),
-					'presetPh'     => __( 'Type and press Enter…', 'dev-chefpress' ),
+					'addRow'    => __( 'Add nutrition row', 'dev-chefpress' ),
+					'remove'    => __( 'Remove', 'dev-chefpress' ),
+					'key'       => __( 'Key (ID)', 'dev-chefpress' ),
+					'label'     => __( 'Label', 'dev-chefpress' ),
+					'unit'      => __( 'Display unit', 'dev-chefpress' ),
+					'addPreset' => __( 'Add to list', 'dev-chefpress' ),
+					'presetPh'  => __( 'Type and press Enter…', 'dev-chefpress' ),
 				],
 			]
 		);

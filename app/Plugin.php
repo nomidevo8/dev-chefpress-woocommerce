@@ -100,8 +100,7 @@ final class Plugin {
 	}
 
 	/**
-	 * Register internal CPT for future ChefPress features (REST, modules, etc.).
-	 * Hidden from menu — navigation uses custom admin pages under ChefPress.
+	 * Register internal CPT (visible in admin menu). Settings live under this menu.
 	 */
 	private function register_cpt(): void {
 		$this->loader->add_action( 'init', $this, 'register_chefpress_cpt' );
@@ -117,12 +116,18 @@ final class Plugin {
 				'labels'              => [
 					'name'          => __( 'ChefPress', 'dev-chefpress' ),
 					'singular_name' => __( 'ChefPress Item', 'dev-chefpress' ),
+					'menu_name'     => __( 'ChefPress', 'dev-chefpress' ),
+					'add_new'       => __( 'Add New', 'dev-chefpress' ),
+					'add_new_item'  => __( 'Add New Item', 'dev-chefpress' ),
+					'edit_item'     => __( 'Edit Item', 'dev-chefpress' ),
 				],
 				'description'         => __( 'Reserved for future ChefPress functionality.', 'dev-chefpress' ),
 				'public'              => false,
 				'publicly_queryable'  => false,
-				'show_ui'             => false,
-				'show_in_menu'        => false,
+				'show_ui'             => true,
+				'show_in_menu'        => true,
+				'menu_icon'           => 'dashicons-carrot',
+				'menu_position'       => 56,
 				'show_in_rest'        => false,
 				'exclude_from_search' => true,
 				'capability_type'     => 'post',
