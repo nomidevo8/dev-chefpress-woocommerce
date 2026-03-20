@@ -2,6 +2,8 @@
 <?php
 use DevChefPress\Frontend\ProductHero;
 use DevChefPress\Frontend\ProductHeader;
+use DevChefPress\Frontend\ProductInstructions;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 
@@ -24,8 +26,14 @@ $product_id = get_the_ID();
 
         <!-- Main Content -->
         <div class="cp_product_main-grid">
-            <!-- Product Instructions and Details  -->
-            <!-- Product Sidebar with Ingredients and Download Link -->
+            <?php
+            $instructions = new ProductInstructions( $product_id );
+            $instructions->render();
+
+            // Product Sidebar with Ingredients, Allergens, Nutrition
+            $sidebar = new \DevChefPress\Frontend\ProductSidebar( $product_id );
+            $sidebar->render();
+            ?>
         </div>
     </div>
 
