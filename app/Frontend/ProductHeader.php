@@ -108,11 +108,20 @@ class ProductHeader {
             <div class="cp_product_reviews">
                 <div class="cp_product_stars">
                     <?php
-                    $rating = $this->get_rating();
-                    for ( $i = 1; $i <= 5; $i++ ) {
-                        $icon_class = $i <= round( $rating ) ? 'cp_product_icon-fill' : 'cp_product_icon-muted';
-                        echo '<i data-lucide="star" class="cp_product_icon-medium ' . esc_attr( $icon_class ) . '"></i>';
-                    }
+                        $rating = (float) $this->get_rating();
+
+                        for ($i = 1; $i <= 5; $i++) {
+                            if ($i <= floor($rating)) {
+                                // Full star
+                                echo '<i class="fas fa-star cp_star"></i>';
+                            } elseif ($i == floor($rating) + 1 && ($rating - floor($rating)) >= 0.5) {
+                                // Half star
+                                echo '<i class="fas fa-star-half-alt cp_star"></i>';
+                            } else {
+                                // Empty star
+                                echo '<i class="far fa-star cp_star"></i>';
+                            }
+                        }
                     ?>
                 </div>
                 <span class="cp_product_review-count"><?php echo esc_html( $this->get_reviews_count() ); ?> Reviews</span>

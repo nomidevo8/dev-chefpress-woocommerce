@@ -40,6 +40,15 @@ final class PluginSettings {
 			'preset_ingredients'    => [],
 			'preset_allergens'      => [],
 			'preset_recipe_labels'  => [],
+			'theme_colors'          => [
+				'brand'          => '#ff6b4a',
+				'brand_light'    => '#fff0ed',
+				'text_main'      => '#1a1a1a',
+				'text_muted'     => '#666666',
+				'bg_light'       => '#f9f9f9',
+				'border'         => '#e5e5e5',
+				'white'          => '#ffffff',
+			],
 		];
 	}
 
@@ -63,6 +72,7 @@ final class PluginSettings {
 			'preset_ingredients'   => self::normalize_string_list( $saved['preset_ingredients'] ?? [] ),
 			'preset_allergens'     => self::normalize_string_list( $saved['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $saved['preset_recipe_labels'] ?? [] ),
+			'theme_colors'         => self::sanitize_theme_colors( $saved['theme_colors'] ?? [] ),
 		];
 	}
 
@@ -92,6 +102,13 @@ final class PluginSettings {
 	 */
 	public static function get_preset_recipe_labels(): array {
 		return self::all()['preset_recipe_labels'];
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	public static function get_theme_colors(): array {
+		return self::all()['theme_colors'];
 	}
 
 	/**
@@ -157,6 +174,26 @@ final class PluginSettings {
 	}
 
 	/**
+	 * Normalize theme color map.
+	 *
+	 * @param mixed $raw
+	 * @return array<string, string>
+	 */
+	public static function sanitize_theme_colors( $raw ): array {
+		$defaults = self::defaults()['theme_colors'];
+		if ( ! is_array( $raw ) ) {
+			return $defaults;
+		}
+		$out = [];
+		foreach ( $defaults as $key => $default_value ) {
+			$value = isset( $raw[ $key ] ) ? sanitize_hex_color( (string) $raw[ $key ] ) : '';
+			$out[ $key ] = $value ? $value : $default_value;
+		}
+		return $out;
+	}
+
+
+	/**
 	 * Persist settings from POSTed arrays (already unslashed by WP for options - caller passes $_POST slice).
 	 *
 	 * @param array<string, mixed> $post
@@ -172,6 +209,7 @@ final class PluginSettings {
 			'preset_ingredients'   => self::normalize_string_list( $post['preset_ingredients'] ?? [] ),
 			'preset_allergens'     => self::normalize_string_list( $post['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $post['preset_recipe_labels'] ?? [] ),
+			'theme_colors'         => self::sanitize_theme_colors( $post['theme_colors'] ?? [] ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );

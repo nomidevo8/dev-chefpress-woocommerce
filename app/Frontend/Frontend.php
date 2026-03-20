@@ -90,19 +90,33 @@ class Frontend {
 			DEVCHEFPRESS_VERSION
 		);
 
+		// Add user-configured theme colors as CSS variables for recipe pages.
+		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+		$inline_css = ':root {' .
+			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'}';
+		wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
 
-		wp_enqueue_script(
-			'lucide',
-			'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
+
+
+
+		wp_enqueue_style(
+			'font-awesome',
+			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
 			[],
-			null,
-			true
+			'6.5.0'
 		);
 		
 		wp_enqueue_script(
 			'dev-chefpress-frontend',
 			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
-			[ 'jquery', 'lucide' ],
+			[ 'jquery' ],
 			DEVCHEFPRESS_VERSION,
 			true
 		);

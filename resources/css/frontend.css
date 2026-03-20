@@ -94,6 +94,7 @@
 }
 
 .cp_product_stars {
+  font-size: 14px;
   display: flex;
   color: var(--cp_product_color-brand);
 }

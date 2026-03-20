@@ -162,6 +162,41 @@ $labels_p    = $settings['preset_recipe_labels'];
 			</div>
 		</div>
 
+		<section class="cp-card cp-card--settings">
+			<div class="cp-card__header-static">
+				<span class="cp-card__icon cp-card__icon--color"></span>
+				<div>
+					<h2 class="cp-card__title"><?php esc_html_e( 'Frontend theme colors', 'dev-chefpress' ); ?></h2>
+					<p class="cp-card__subtitle"><?php esc_html_e( 'Customize the color variables applied to recipe pages.', 'dev-chefpress' ); ?></p>
+				</div>
+			</div>
+			<div class="cp-card__body">
+				<div class="cp-field-grid cp-field-grid--2">
+					<?php
+					$colors = $settings['theme_colors'];
+					$colorFields = [
+						'brand' => __( 'Brand color', 'dev-chefpress' ),
+						'brand_light' => __( 'Brand light', 'dev-chefpress' ),
+						'text_main' => __( 'Text main', 'dev-chefpress' ),
+						'text_muted' => __( 'Text muted', 'dev-chefpress' ),
+						'bg_light' => __( 'Background light', 'dev-chefpress' ),
+						'border' => __( 'Border color', 'dev-chefpress' ),
+						'white' => __( 'White color', 'dev-chefpress' ),
+					];
+					foreach ( $colorFields as $key => $label ) : ?>
+						<div class="cp-field">
+							<label class="cp-label"><?php echo esc_html( $label ); ?></label>
+							<input type="text"
+								name="chefpress_settings[theme_colors][<?php echo esc_attr( $key ); ?>]"
+								value="<?php echo esc_attr( $colors[ $key ] ?? '' ); ?>"
+								class="cp-input cp-input--color"
+								placeholder="#000000" />
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</section>
+
 		<p class="submit chefpress-submit-wrap">
 			<button type="submit" class="cp-btn cp-btn--primary cp-btn--lg">
 				<?php esc_html_e( 'Save settings', 'dev-chefpress' ); ?>
