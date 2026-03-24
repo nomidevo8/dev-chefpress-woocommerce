@@ -135,9 +135,24 @@ class FilterService {
 
 		$query = new \WP_Query( $query_args );
 		// Determine if we should return frontend-compatible data
-		$is_frontend_mode = isset( $filters['filter_mode'] ) && $filters['filter_mode'] === 'frontend';
+		$mode = sanitize_text_field( $filters['filter_mode'] ?? 'auto' );
+
+		// Count total recipes (cheap query)
+		$render_recipes = self::render_recipes( $query );
+		$total_recipes = $render_recipes['total'] ?? 0;
+		$html = $render_recipes['html'] ?? '';
+
+		// Decide mode
+		if ( $mode === 'frontend' ) {
+			$is_frontend_mode = true;
+		} elseif ( $mode === 'backend' ) {
+			$is_frontend_mode = false;
+		} else { 
+			$is_frontend_mode = ( $total_recipes <= 50 );
+		}
+		
 		return [
-			'html'          => self::render_recipes( $query ),
+			'html'          => $html,
 			'total_pages'   => (int) $query->max_num_pages,
 			'current_page'  => $page,
 			'total_count'   => (int) $query->found_posts,
@@ -243,14 +258,17 @@ class FilterService {
 	 * Render recipes HTML from WP_Query.
 	 *
 	 * @param \WP_Query $query
-	 * @return string
+	 * @return array<string, mixed> Contains 'html' and 'total' keys.
 	 */
-	private static function render_recipes( \WP_Query $query ): string {
+	private static function render_recipes( \WP_Query $query ): array {
 		$html = '';
 
 		if ( ! $query->have_posts() ) {
 			$html = '<p class="cp-no-results">' . esc_html__( 'No recipes found. Try adjusting your filters.', 'dev-chefpress' ) . '</p>';
-			return $html;
+			return [
+				'html'  => $html,
+				'total' => 0,
+			];
 		}
 
 		$html .= '<div class="cp-recipes-grid">';
@@ -302,8 +320,10 @@ class FilterService {
 		$html .= '</div>';
 
 		wp_reset_postdata();
-
-		return $html;
+		return [
+			'html'  => $html,
+			'total' => (int) $query->found_posts,
+		];
 	}
 
 	/**
