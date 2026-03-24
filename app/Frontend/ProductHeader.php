@@ -140,8 +140,8 @@ class ProductHeader {
             </div>
 
             <div class="cp_product_badges">
-                <?php foreach ( $this->get_badges() as $badge ) : ?>
-                    <span class="cp_product_badge"><?php echo esc_html( $badge ); ?></span>
+                <?php foreach ( $this->get_tags() as $tag ) : ?>
+                    <span class="cp_product_badge"><?php echo esc_html( $tag ); ?></span>
                 <?php endforeach; ?>
             </div>
         </div>
