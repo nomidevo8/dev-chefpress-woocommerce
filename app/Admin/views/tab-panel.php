@@ -163,11 +163,10 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 						foreach ( $macro_fields as $key => $label ) : ?>
 							<div class="cp-field">
 								<label class="cp-label"><?php echo esc_html( $label ); ?></label>
-								<input type="number"
+								<input type="text"
 									   name="<?php echo esc_attr( '_chefpress_' . $key ); ?>"
 									   value="<?php echo esc_attr( $nutrition[ $key ] ?? '' ); ?>"
 									   class="cp-input"
-									   min="0" step="0.1"
 									   placeholder="0" />
 							</div>
 						<?php endforeach; ?>
@@ -354,11 +353,10 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 										<span class="cp-label-unit"> (<?php echo esc_html( $unit ); ?>)</span>
 									<?php endif; ?>
 								</label>
-								<input type="number"
+								<input type="text"
 									   name="_chefpress_nutr_<?php echo esc_attr( $key ); ?>"
 									   value="<?php echo esc_attr( $nutr_table[ $key ] ?? '' ); ?>"
 									   class="cp-input cp-input--sm"
-									   min="0" step="0.01"
 									   placeholder="<?php echo esc_attr( $ph ); ?>" />
 							</div>
 						<?php endforeach; ?>

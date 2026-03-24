@@ -96,6 +96,8 @@ class FilterService {
 		$meta_query = [];
 		$orderby    = 'date';
 		$order      = 'DESC';
+		$meta_key   = '';
+		$meta_type  = '';
 
 		if ( ! empty( $sort ) ) {
 			$sort_parts = explode( ':', $sort );
@@ -112,22 +114,30 @@ class FilterService {
 			];
 
 			if ( isset( $meta_key_map[ $sort_key ] ) ) {
-				$orderby = 'meta_value_num';
-				$order   = $sort_dir;
+				$orderby   = 'meta_value_num';
+				$order     = $sort_dir;
+				$meta_key  = $meta_key_map[ $sort_key ];
+				$meta_type = 'NUMERIC';
 				$meta_query[] = [
-					'key' => $meta_key_map[ $sort_key ],
+					'key'     => $meta_key,
+					'compare' => 'EXISTS',
 				];
 			}
 		}
 
 		$query_args = [
 			'post_type'      => 'product',
-			'posts_per_page' => 9,
+			'posts_per_page' => 49,
 			'paged'          => $page,
 			'tax_query'      => $tax_query,
 			'orderby'        => $orderby,
 			'order'          => $order,
 		];
+
+		if ( $meta_key !== '' ) {
+			$query_args['meta_key']  = $meta_key;
+			$query_args['meta_type'] = $meta_type;
+		}
 
 		if ( ! empty( $meta_query ) ) {
 			$query_args['meta_query'] = $meta_query;
@@ -188,10 +198,10 @@ class FilterService {
 				'image'         => get_the_post_thumbnail_url( $product_id, 'medium' ) ?: '',
 				'subtitle'      => $hero['subtitle'] ?: '',
 				'cookingTime'   => $hero['cooking_time'] ?: '',
-				'calories'      => $nutrition['calories'] ?: 0,
-				'protein'       => $nutrition['protein'] ?: 0,
-				'carbs'         => $nutrition['carbs'] ?: 0,
-				'fat'           => $nutrition['fat'] ?: 0,
+				'calories'      => $nutrition['calories'] ?: '',
+				'protein'       => $nutrition['protein'] ?: '',
+				'carbs'         => $nutrition['carbs'] ?: '',
+				'fat'           => $nutrition['fat'] ?: '',
 				'categories'    => self::get_recipe_categories( $product_id ),
 				'tags'          => self::get_recipe_tags( $product_id ),
 				'allergens'     => self::get_recipe_allergens( $product_id ),
@@ -299,14 +309,14 @@ class FilterService {
 			}
 
 			$html .= '    <div class="cp-recipe-card__nutrition">';
-			if ( $nutrition['calories'] > 0 ) {
-				$html .= '      <span class="cp-nutrition-badge">' . absint( $nutrition['calories'] ) . ' kcal</span>';
+			if ( ! empty( $nutrition['calories'] ) ) {
+				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['calories'] ) . ' kcal</span>';
 			}
-			if ( $nutrition['protein'] > 0 ) {
-				$html .= '      <span class="cp-nutrition-badge">' . esc_html( number_format( $nutrition['protein'], 1 ) ) . 'g protein</span>';
+			if ( ! empty( $nutrition['protein'] ) ) {
+				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['protein'] ) . 'g protein</span>';
 			}
-			if ( $nutrition['carbs'] > 0 ) {
-				$html .= '      <span class="cp-nutrition-badge">' . esc_html( number_format( $nutrition['carbs'], 1 ) ) . 'g carbs</span>';
+			if ( ! empty( $nutrition['carbs'] ) ) {
+				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['carbs'] ) . 'g carbs</span>';
 			}
 			$html .= '    </div>';
 

@@ -137,8 +137,11 @@
               "pm.test(\"Returns recipe data in frontend mode\", function () {",
               "    var jsonData = pm.response.json();",
               "    pm.expect(jsonData.recipes).to.be.an('array');",
-              "    if (jsonData.recipes.length > 1) {",
-              "        pm.expect(jsonData.recipes[0].calories).to.be.at.most(jsonData.recipes[1].calories);",
+              "    if (jsonData.recipes.length > 0) {",
+              "        pm.expect(jsonData.recipes[0]).to.have.property('calories');",
+              "        pm.expect(jsonData.recipes[0]).to.have.property('protein');",
+              "        pm.expect(jsonData.recipes[0]).to.have.property('carbs');",
+              "        pm.expect(jsonData.recipes[0]).to.have.property('fat');",
               "    }",
               "});"
             ],

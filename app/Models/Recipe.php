@@ -86,10 +86,10 @@ class Recipe {
 	 */
 	public function get_nutrition(): array {
 		return [
-			'calories' => (int) $this->get( '_chefpress_calories', 0 ),
-			'protein'  => (float) $this->get( '_chefpress_protein', 0 ),
-			'carbs'    => (float) $this->get( '_chefpress_carbs', 0 ),
-			'fat'      => (float) $this->get( '_chefpress_fat', 0 ),
+			'calories' => (string) $this->get( '_chefpress_calories', '' ),
+			'protein'  => (string) $this->get( '_chefpress_protein', '' ),
+			'carbs'    => (string) $this->get( '_chefpress_carbs', '' ),
+			'fat'      => (string) $this->get( '_chefpress_fat', '' ),
 		];
 	}
 
@@ -213,8 +213,8 @@ class Recipe {
 			return true;
 		}
 		foreach ( PluginSettings::get_nutrition_fields() as $def ) {
-			$v = (float) $this->get( '_chefpress_nutr_' . $def['key'], 0 );
-			if ( $v > 0.0 ) {
+			$v = trim( (string) $this->get( '_chefpress_nutr_' . $def['key'], '' ) );
+			if ( $v !== '' ) {
 				return true;
 			}
 		}

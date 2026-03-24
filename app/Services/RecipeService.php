@@ -89,16 +89,10 @@ class RecipeService {
 	 * @param array<string, mixed> $post
 	 */
 	private function save_nutrition_summary( array $post ): void {
-		$calories = (int) ( $post['_chefpress_calories'] ?? 0 );
-		if ( $calories < 0 ) {
-			$calories = 0;
-		}
-		$this->update_meta( '_chefpress_calories', $calories );
+		$this->update_meta( '_chefpress_calories', Sanitizer::text( $post['_chefpress_calories'] ?? '' ) );
 
 		foreach ( [ 'protein', 'carbs', 'fat' ] as $field ) {
-			$val = (float) ( $post[ '_chefpress_' . $field ] ?? 0 );
-			$val = max( 0.0, $val );
-			$this->update_meta( '_chefpress_' . $field, $val );
+			$this->update_meta( '_chefpress_' . $field, Sanitizer::text( $post[ '_chefpress_' . $field ] ?? '' ) );
 		}
 	}
 
@@ -234,8 +228,7 @@ class RecipeService {
 			$field          = $def['key'];
 			$allowed[]      = $field;
 			$key            = '_chefpress_nutr_' . $field;
-			$val            = (float) ( $post[ $key ] ?? 0 );
-			$val            = max( 0.0, $val );
+			$val            = Sanitizer::text( $post[ $key ] ?? '' );
 			$this->update_meta( $key, $val );
 		}
 

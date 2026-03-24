@@ -210,10 +210,10 @@ function generate_test_recipes() {
 			}
 			// Add ChefPress recipe meta data
 			$cooking_time = $template['cooking_times'][ array_rand( $template['cooking_times'] ) ];
-			$calories = rand( $template['calories_range'][0], $template['calories_range'][1] );
-			$protein = rand( (int) $template['protein_range'][0], (int) $template['protein_range'][1] ) + ( rand( 0, 10 ) / 10 );
-			$carbs = rand( (int) $template['carbs_range'][0], (int) $template['carbs_range'][1] ) + ( rand( 0, 10 ) / 10 );
-			$fat = rand( (int) $template['fat_range'][0], (int) $template['fat_range'][1] ) + ( rand( 0, 10 ) / 10 );
+			$calories = (string) rand( $template['calories_range'][0], $template['calories_range'][1] );
+			$protein = number_format( rand( (int) $template['protein_range'][0], (int) $template['protein_range'][1] ) + ( rand( 0, 10 ) / 10 ), 1 );
+			$carbs = number_format( rand( (int) $template['carbs_range'][0], (int) $template['carbs_range'][1] ) + ( rand( 0, 10 ) / 10 ), 1 );
+			$fat = number_format( rand( (int) $template['fat_range'][0], (int) $template['fat_range'][1] ) + ( rand( 0, 10 ) / 10 ), 1 );
 
 			update_post_meta( $product_id, '_chefpress_subtitle', sanitize_text_field( $subtitle ) );
 			update_post_meta( $product_id, '_chefpress_cooking_time', sanitize_text_field( $cooking_time ) );
@@ -268,6 +268,16 @@ function generate_test_recipes() {
 			// Add nutrition table meta
 			update_post_meta( $product_id, '_chefpress_per_serving_label', 'Per serving' );
 			update_post_meta( $product_id, '_chefpress_nutrition_note', 'Nutritional values are approximate and based on standard ingredient measurements.' );
+
+			// Add sample nutrition table values as strings
+			update_post_meta( $product_id, '_chefpress_nutr_energy', (string) rand( 200, 800 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_fat', number_format( rand( 5, 50 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_saturates', number_format( rand( 1, 20 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_carbohydrate', number_format( rand( 10, 100 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_sugars', number_format( rand( 5, 50 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_fibre', number_format( rand( 1, 10 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_protein', number_format( rand( 5, 50 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
+			update_post_meta( $product_id, '_chefpress_nutr_salt', number_format( rand( 0, 5 ) + ( rand( 0, 10 ) / 10 ), 1 ) );
 
 			// Optionally add allergen information (50% of products)
 			if ( rand( 0, 1 ) === 1 ) {
