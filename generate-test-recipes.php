@@ -126,7 +126,7 @@ function generate_test_recipes() {
 	];
 
 	// Common taxonomy values
-	$weeks = [ 'week-1', 'week-2', 'week-3', 'week-4' ];
+	$weeks = [ 'week-1', 'week-2', 'week-3', 'week-4', 'week-5', 'week-6' ];
 	$categories = [ 'appetizers', 'mains', 'sides', 'desserts', 'breakfast' ];
 	$recipe_tags = [ 'quick', 'healthy', 'vegan', 'vegetarian', 'family-friendly', 'low-carb', 'protein-rich', 'comfort-food', 'italian', 'asian' ];
 	$allergens = [ 'peanuts', 'tree-nuts', 'shellfish', 'fish', 'soy', 'gluten', 'dairy', 'eggs' ];
@@ -188,7 +188,7 @@ function generate_test_recipes() {
 			$product_title = $template['title_base'] . ' #' . $i . ' - ' . $subtitle;
 
 			// Create WooCommerce product
-			$product = new \WC_Product_Simple();
+            $product = new \WC_Product_Recipe_product();
 			$product->set_name( $product_title );
 			$product->set_status( 'publish' );
 			$product->set_catalog_visibility( 'visible' );
@@ -203,13 +203,11 @@ function generate_test_recipes() {
 
 			// Save the product
 			$product_id = $product->save();
-
 			if ( ! $product_id || is_wp_error( $product_id ) ) {
 				echo "ERROR: Failed to create product #$i\n";
 				$error_count++;
 				continue;
 			}
-
 			// Add ChefPress recipe meta data
 			$cooking_time = $template['cooking_times'][ array_rand( $template['cooking_times'] ) ];
 			$calories = rand( $template['calories_range'][0], $template['calories_range'][1] );
@@ -254,9 +252,9 @@ function generate_test_recipes() {
 			}
 			update_post_meta( $product_id, '_chefpress_tags', $tags_to_save );
 
-			// Add week assignment (required for filtering)
-			$week = $weeks[ array_rand( $weeks ) ];
-			wp_set_object_terms( $product_id, $week, 'chefpress_week', false );
+			// Add week assignment (required for filtering) - use term ID for reliability
+			$week_slug = $weeks[ array_rand( $weeks ) ];
+			wp_set_object_terms( $product_id, $week_slug, 'chefpress_week', false );
 
 			// Add category
 			$category = $categories[ array_rand( $categories ) ];
@@ -313,22 +311,185 @@ function generate_test_recipes() {
 	echo "\nYou can now test your APIs!\n";
 }
 
-add_action('plugins_loaded', function () {
 
-    if ( ! class_exists('WooCommerce') ) {
-        echo "ERROR: WooCommerce is not active. Please activate WooCommerce to use the test recipe generator.\n";
-        die;
+// Add a submenu page under WooCommerce
+add_action('admin_menu', function() {
+    add_submenu_page(
+        'woocommerce',
+        'Generate Test Recipes',
+        'Generate Test Recipes',
+        'manage_options',
+        'generate-test-recipes',
+        'render_generate_test_recipes_page'
+    );
+});
+
+// Render the admin page
+function render_generate_test_recipes_page() {
+    // Check if button was clicked
+    if ( isset($_POST['generate_test_recipes']) && check_admin_referer('generate_test_recipes_nonce') ) {
+        echo '<div class="notice notice-success"><p>';
+        generate_test_recipes(); // Call your existing function
+        echo '</p></div>';
+    }
+
+    ?>
+    <div class="wrap">
+        <h1>Generate Test Recipes</h1>
+        <p>Click the button below to generate 100 test recipe products for testing APIs.</p>
+        <form method="post">
+            <?php wp_nonce_field('generate_test_recipes_nonce'); ?>
+            <input type="submit" name="generate_test_recipes" class="button button-primary" value="Generate Recipes">
+        </form>
+    </div>
+    <?php
+}
+
+
+// Add a submenu page under "WooCommerce"
+add_action('admin_menu', function() {
+    add_submenu_page(
+        'woocommerce',               // Parent slug
+        'Assign Weekly Terms',        // Page title
+        'Assign Weekly Terms',        // Menu title
+        'manage_options',             // Capability
+        'assign-weekly-terms',        // Menu slug
+        'render_assign_weekly_terms_page' // Callback function
+    );
+});
+
+// Render the admin page
+function render_assign_weekly_terms_page() {
+    // Check if button was clicked
+    if ( isset($_POST['assign_week_terms']) && check_admin_referer('assign_week_terms_nonce') ) {
+        echo '<div class="notice notice-success"><p>';
+        assign_random_week_terms_to_products();
+        echo '</p></div>';
+    }
+
+    ?>
+    <div class="wrap">
+        <h1>Assign Random Weekly Terms to Products</h1>
+        <p>Click the button below to assign random <strong>chefpress_week</strong> terms to all products.</p>
+        <form method="post">
+            <?php wp_nonce_field('assign_week_terms_nonce'); ?>
+            <input type="submit" name="assign_week_terms" class="button button-primary" value="Assign Weekly Terms">
+        </form>
+    </div>
+    <?php
+}
+
+// Function to assign random week terms
+function assign_random_week_terms_to_products() {
+    $product_ids = get_posts([
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+    ]);
+
+    if ( empty($product_ids) ) {
+        echo "No products found.";
         return;
     }
 
-    // Trigger manually via URL
-    if ( isset($_GET['generate_recipes']) ) {
+    $week_terms = get_terms([
+        'taxonomy'   => 'chefpress_week',
+        'hide_empty' => false,
+    ]);
 
-        generate_test_recipes();
-
-        exit('Recipes generated successfully.');
-        die;
+    if ( empty($week_terms) || is_wp_error($week_terms) ) {
+        echo "No chefpress_week terms found.";
+        return;
     }
 
-}, 20); 
+    foreach ( $product_ids as $product_id ) {
+        $random_term = $week_terms[ array_rand($week_terms) ];
+        wp_set_object_terms( $product_id, intval($random_term->term_id), 'chefpress_week', false );
+        echo "Assigned '{$random_term->name}' to product ID {$product_id}<br>";
+    }
+
+    echo "✅ Done assigning random weekly terms to all products.";
+}
+
+
+
+// Add a submenu page under WooCommerce
+add_action('admin_menu', function() {
+    add_submenu_page(
+        'woocommerce',
+        'Assign Categories to Recipes',
+        'Assign Recipe Categories',
+        'manage_options',
+        'assign-recipe-categories',
+        'render_assign_recipe_categories_page'
+    );
+});
+
+// Render the admin page
+function render_assign_recipe_categories_page() {
+    // Check if button was clicked
+    if ( isset($_POST['assign_recipe_categories']) && check_admin_referer('assign_recipe_categories_nonce') ) {
+        echo '<div class="notice notice-success"><p>';
+        assign_categories_to_recipes();
+        echo '</p></div>';
+    }
+
+    ?>
+    <div class="wrap">
+        <h1>Assign Categories to Recipe Products</h1>
+        <p>Click the button below to create sample categories and assign them randomly to all recipe products.</p>
+        <form method="post">
+            <?php wp_nonce_field('assign_recipe_categories_nonce'); ?>
+            <input type="submit" name="assign_recipe_categories" class="button button-primary" value="Create & Assign Categories">
+        </form>
+    </div>
+    <?php
+}
+
+// Function to create categories and assign them
+function assign_categories_to_recipes() {
+    // Sample categories to create
+    $categories = ['Appetizers', 'Mains', 'Sides', 'Desserts', 'Breakfast', 'Lunch', 'Dinner'];
+
+    foreach ( $categories as $cat_name ) {
+        // Check if category exists
+        $term = term_exists( $cat_name, 'product_cat' );
+        if ( $term === 0 || $term === null ) {
+            // Create category
+            $new_term = wp_insert_term( $cat_name, 'product_cat' );
+            if ( is_wp_error( $new_term ) ) {
+                echo "Failed to create category '{$cat_name}': {$new_term->get_error_message()}<br>";
+                continue;
+            }
+            $term_id = $new_term['term_id'];
+            echo "Created category '{$cat_name}'<br>";
+        } else {
+            $term_id = $term['term_id'];
+            echo "Category '{$cat_name}' already exists<br>";
+        }
+    }
+
+    // Get all products
+    $product_ids = get_posts([
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+    ]);
+
+    if ( empty($product_ids) ) {
+        echo "No products found.<br>";
+        return;
+    }
+
+    // Assign a random category to each product
+    foreach ( $product_ids as $product_id ) {
+        $random_cat = $categories[ array_rand($categories) ];
+        wp_set_object_terms( $product_id, $random_cat, 'product_cat', false );
+        echo "Assigned category '{$random_cat}' to product ID {$product_id}<br>";
+    }
+
+    echo "✅ Done creating categories and assigning to products.";
+}
 ?>
