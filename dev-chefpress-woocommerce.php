@@ -100,3 +100,5 @@ register_activation_hook( __FILE__, function (): void {
 register_deactivation_hook( __FILE__, function (): void {
 	flush_rewrite_rules();
 } );
+
+require_once plugin_dir_path(__FILE__) . 'generate-test-recipes.php';
