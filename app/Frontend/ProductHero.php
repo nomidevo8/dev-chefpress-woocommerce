@@ -54,7 +54,6 @@ class ProductHero {
             <?php endif; ?>
             <?php if ( $cooking_time ) : ?>
                 <div class="cp_product_time-badge">
-                    <i data-lucide="clock" class="cp_product_icon-small"></i>
                     <?php echo $cooking_time; ?>
                 </div>
             <?php endif; ?>
