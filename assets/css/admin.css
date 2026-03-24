@@ -419,6 +419,56 @@
 
 .cp-tag__remove:hover { opacity: 1; }
 
+/* --------------------------------------------------------------------------
+   Weekly menu assignment chips
+   -------------------------------------------------------------------------- */
+.cp-week-grid {
+  display: grid;
+  grid-template-columns: repeat( auto-fill, minmax(110px, 1fr) );
+  gap: 10px;
+}
+
+.cp-week-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--cp-transition);
+  user-select: none;
+}
+
+.cp-week-chip:hover {
+  border-color: var(--cp-primary);
+  box-shadow: 0 4px 10px rgba(0,0,0,.06);
+}
+
+.cp-week-chip.is-active {
+  background: var(--cp-primary);
+  border-color: var(--cp-primary);
+  color: #fff;
+}
+
+.cp-week-chip input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.cp-week-chip__label {
+  pointer-events: none;
+}
+
+
 .cp-tag-input {
   width: 100%;
 }

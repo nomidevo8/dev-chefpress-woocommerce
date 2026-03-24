@@ -105,7 +105,42 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 					</div>
 				</div>
 			</div><!-- /.cp-card Hero -->
+	<?php
+	$week_terms = get_terms([
+		'taxonomy' => 'chefpress_week',
+		'hide_empty' => false,
+	]);
+	$current_weeks = array_map(
+		static fn( $term ) => absint( $term->term_id ),
+		array_filter( get_the_terms( $post->ID, 'chefpress_week' ) ?: [] )
+	);
+	?>
 
+	<div class="cp-card">
+		<div class="cp-card__header" data-toggle="week-assign-body">
+			<div class="cp-card__header-left">
+				<span class="cp-card__icon"></span>
+				<h3 class="cp-card__title"><?php esc_html_e( 'Weekly Menu Assignment', 'dev-chefpress' ); ?></h3>
+			</div>
+			<span class="cp-card__arrow">▼</span>
+		</div>
+		<div class="cp-card__body" id="week-assign-body">
+			<p class="cp-hint"><?php esc_html_e( 'Assign recipes to one or more weekly menu slots.', 'dev-chefpress' ); ?></p>
+			<div class="cp-week-grid">
+				<?php if ( ! empty( $week_terms ) && ! is_wp_error( $week_terms ) ) : ?>
+					<?php foreach ( $week_terms as $week_term ) : ?>
+						<?php $is_active = in_array( absint( $week_term->term_id ), $current_weeks, true ); ?>
+						<label class="cp-week-chip<?php echo $is_active ? ' is-active' : ''; ?>">
+							<input type="checkbox" name="chefpress_weeks[]" value="<?php echo esc_attr( absint( $week_term->term_id ) ); ?>"<?php checked( $is_active ); ?> />
+							<span class="cp-week-chip__label"><?php echo esc_html( $week_term->name ); ?></span>
+						</label>
+					<?php endforeach; ?>
+				<?php else : ?>
+					<p><?php esc_html_e( 'No weekly slots are available yet. Create them in the Weekly Menu taxonomy.', 'dev-chefpress' ); ?></p>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
 			<!-- Nutrition Summary Card -->
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="nutr-summary-body">

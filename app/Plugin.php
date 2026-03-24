@@ -83,7 +83,46 @@ final class Plugin {
 			'show_ui'      => false,
 			'rewrite'      => [ 'slug' => 'allergen-tag' ],
 		] );
+
+		self::register_week_taxonomy();
 	}
+
+	/**
+	 * Register weekly assignment taxonomy.
+	 */
+	public static function register_week_taxonomy(): void {
+		register_taxonomy( 'chefpress_week', 'product', [
+			'label'        => __( 'Weekly Menu', 'dev-chefpress' ),
+			'public'       => true,
+			'show_ui'      => true,
+			'show_in_rest' => true,
+			'hierarchical' => false,
+			'rewrite'      => [ 'slug' => 'chefpress-week', 'with_front' => false ],
+		] );
+	}
+
+	/**
+	 * Create default week terms as part of activation.
+	 */
+	public static function create_default_week_terms(): void {
+		self::register_week_taxonomy();
+
+		$weeks = [
+			__( 'Week 1', 'dev-chefpress' ),
+			__( 'Week 2', 'dev-chefpress' ),
+			__( 'Week 3', 'dev-chefpress' ),
+			__( 'Week 4', 'dev-chefpress' ),
+			__( 'Week 5', 'dev-chefpress' ),
+			__( 'Week 6', 'dev-chefpress' ),
+		];
+
+		foreach ( $weeks as $week ) {
+			if ( ! term_exists( $week, 'chefpress_week' ) ) {
+				wp_insert_term( $week, 'chefpress_week', [ 'slug' => sanitize_title( $week ) ] );
+			}
+		}
+	}
+
 
 	/**
 	 * Map custom product type to a real WC product class.

@@ -33,10 +33,39 @@ class RecipeService {
 		$this->save_steps( $post );
 		$this->save_groups( $post );
 		$this->save_allergens( $post );
+		$this->save_weeks( $post );
 		$this->save_nutrition_table( $post );
 
 		// Invalidate model cache.
 		( new Recipe( $this->post_id ) )->invalidate_cache();
+	}
+
+	/**
+	 * Save weekly menu assignments.
+	 *
+	 * @param array<string, mixed> $post
+	 */
+	private function save_weeks( array $post ): void {
+		$raw = $post['chefpress_weeks'] ?? [];
+		if ( ! is_array( $raw ) ) {
+			$raw = [];
+		}
+
+		$week_ids = array_filter(
+			array_map( static function ( $term_id ) {
+				return absint( $term_id );
+			}, $raw ),
+			static function ( $id ) {
+				return $id > 0;
+			}
+		);
+
+		if ( empty( $week_ids ) ) {
+			wp_set_object_terms( $this->post_id, [], 'chefpress_week', false );
+			return;
+		}
+
+		wp_set_object_terms( $this->post_id, $week_ids, 'chefpress_week', false );
 	}
 
 	/**

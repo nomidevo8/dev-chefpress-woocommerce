@@ -89,7 +89,8 @@ add_action( 'plugins_loaded', function (): void {
  * Plugin activation hook.
  */
 register_activation_hook( __FILE__, function (): void {
-	// Set default options or flush rewrite rules if needed.
+	// Ensure the weekly taxonomy is registered before creating terms.
+	\DevChefPress\Plugin::create_default_week_terms();
 	flush_rewrite_rules();
 } );
 

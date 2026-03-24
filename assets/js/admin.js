@@ -62,6 +62,18 @@
     };
 
     /* ==========================================================================
+       Weekly menu chips interaction
+       ========================================================================== */
+    var WeekChips = {
+        init: function () {
+            $(document).on('change', '.cp-week-chip input[type="checkbox"]', function () {
+                var $chip = $(this).closest('.cp-week-chip');
+                $chip.toggleClass('is-active', this.checked);
+            });
+        }
+    };
+
+    /* ==========================================================================
        Repeater Item Toggle (accordion inside repeater)
        ========================================================================== */
     var RepeaterToggle = {
@@ -823,6 +835,7 @@
     $(function () {
         TabManager.init();
         CardCollapse.init();
+        WeekChips.init();
         RepeaterToggle.init();
         RepeaterPreview.init();
         StepsRepeater.init();

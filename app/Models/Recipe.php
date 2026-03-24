@@ -94,6 +94,20 @@ class Recipe {
 	}
 
 	/**
+	 * Get weekly assignment terms.
+	 *
+	 * @return \WP_Term[]
+	 */
+	public function get_weeks(): array {
+		$terms = get_the_terms( $this->post_id, 'chefpress_week' );
+		if ( is_wp_error( $terms ) || ! is_array( $terms ) ) {
+			return [];
+		}
+
+		return array_values( $terms );
+	}
+
+	/**
 	 * Get recipe tags.
 	 *
 	 * @return string[]
