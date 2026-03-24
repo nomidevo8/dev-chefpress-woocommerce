@@ -134,6 +134,7 @@
   box-shadow: var(--cp-shadow-sm);
   overflow: hidden;
   transition: box-shadow var(--cp-transition);
+  box-sizing: border-box;
 }
 
 .cp-card:hover {
@@ -428,8 +429,10 @@
   gap: 10px;
 }
 
+.cp-week-grid label { margin: 0px !important; width: 100% !important;}
+
 .cp-week-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 40px;
