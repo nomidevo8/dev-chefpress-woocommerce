@@ -76,6 +76,8 @@ class Recipe {
 			'cooking_time'  => (string) $this->get( '_chefpress_cooking_time' ),
 			'reviews_count' => (int) $this->get( '_chefpress_reviews_count', 0 ),
 			'rating'        => (float) $this->get( '_chefpress_rating', 0.0 ),
+			'video_url'     => (string) $this->get( '_chefpress_video_url' ),
+			'video_title'   => (string) $this->get( '_chefpress_video_title' ),
 		];
 	}
 

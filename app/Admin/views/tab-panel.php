@@ -105,6 +105,37 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 					</div>
 				</div>
 			</div><!-- /.cp-card Hero -->
+
+			<!-- Video Section Card -->
+			<div class="cp-card">
+				<div class="cp-card__header" data-toggle="video-body">
+					<div class="cp-card__header-left">
+						<span class="cp-card__icon"></span>
+						<h3 class="cp-card__title"><?php esc_html_e( 'Recipe Video', 'dev-chefpress' ); ?></h3>
+					</div>
+					<span class="cp-card__arrow">▼</span>
+				</div>
+				<div class="cp-card__body" id="video-body">
+					<p class="cp-hint"><?php esc_html_e( 'Add a video URL or upload a video file to showcase the recipe preparation.', 'dev-chefpress' ); ?></p>
+					<div class="cp-field">
+						<label class="cp-label"><?php esc_html_e( 'Video URL', 'dev-chefpress' ); ?></label>
+						<input type="url"
+							   name="_chefpress_video_url"
+							   value="<?php echo esc_attr( $hero['video_url'] ?? '' ); ?>"
+							   class="cp-input"
+							   placeholder="<?php esc_attr_e( 'https://youtube.com/watch?v=...', 'dev-chefpress' ); ?>" />
+						<p class="cp-field-hint"><?php esc_html_e( 'Supported: YouTube, Vimeo, or direct video URLs', 'dev-chefpress' ); ?></p>
+					</div>
+					<div class="cp-field">
+						<label class="cp-label"><?php esc_html_e( 'Video Title', 'dev-chefpress' ); ?></label>
+						<input type="text"
+							   name="_chefpress_video_title"
+							   value="<?php echo esc_attr( $hero['video_title'] ?? '' ); ?>"
+							   class="cp-input"
+							   placeholder="<?php esc_attr_e( 'e.g. How to make perfect pasta', 'dev-chefpress' ); ?>" />
+					</div>
+				</div>
+			</div><!-- /.cp-card Video -->
 	<?php
 	$week_terms = get_terms([
 		'taxonomy' => 'chefpress_week',

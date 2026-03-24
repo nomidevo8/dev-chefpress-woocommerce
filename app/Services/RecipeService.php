@@ -81,6 +81,9 @@ class RecipeService {
 		$rating = (float) ( $post['_chefpress_rating'] ?? 0 );
 		$rating = max( 0.0, min( 5.0, $rating ) ); // Validate 0–5.
 		$this->update_meta( '_chefpress_rating', $rating );
+
+		$this->update_meta( '_chefpress_video_url', Sanitizer::text( $post['_chefpress_video_url'] ?? '' ) );
+		$this->update_meta( '_chefpress_video_title', Sanitizer::text( $post['_chefpress_video_title'] ?? '' ) );
 	}
 
 	/**
