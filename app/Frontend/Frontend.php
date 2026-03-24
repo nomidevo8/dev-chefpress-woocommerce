@@ -26,6 +26,10 @@ class Frontend {
 
 		// Override product page for recipe_product.
 		$this->loader->add_action( 'template_redirect', $this, 'maybe_override_product_page', 1 );
+
+		// AJAX handlers for recipe filtering.
+		$this->loader->add_action( 'wp_ajax_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
+		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
 	}
 
 	/**
@@ -90,6 +94,13 @@ class Frontend {
 			DEVCHEFPRESS_VERSION
 		);
 
+		wp_enqueue_style(
+			'dev-chefpress-filters',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/filters.css',
+			[ 'dev-chefpress-frontend' ],
+			DEVCHEFPRESS_VERSION
+		);
+
 		// Add user-configured theme colors as CSS variables for recipe pages.
 		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
 		$inline_css = ':root {' .
@@ -120,5 +131,20 @@ class Frontend {
 			DEVCHEFPRESS_VERSION,
 			true
 		);
+
+		// Localize config for frontend.
+		wp_localize_script( 'dev-chefpress-frontend', 'ChefPressConfig', [
+			'filter_mode' => \DevChefPress\Services\PluginSettings::get_filter_mode(),
+			'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
+			'ajax_url'    => admin_url( 'admin-ajax.php' ),
+		] );
+	}
+
+	/**
+	 * AJAX handler for recipe filtering.
+	 */
+	public function handle_ajax_filter(): void {
+	
+		\DevChefPress\Services\FilterService::handle_ajax_filter();
 	}
 }

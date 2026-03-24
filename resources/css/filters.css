@@ -1,0 +1,266 @@
+/* =============================================================================
+   Dev ChefPress — Filtering Styles
+   Recipe grid, pagination, and loading states
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   Recipe Grid Container
+   -------------------------------------------------------------------------- */
+.cp-recipes-container {
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.cp-recipes-container.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.cp-recipes-container.is-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: var(--cp_product_color-brand, #ff6b4a);
+  border-radius: 50%;
+  animation: cp-spin 0.8s linear infinite;
+  z-index: 10;
+}
+
+@keyframes cp-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Recipes Grid
+   -------------------------------------------------------------------------- */
+.cp-recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .cp-recipes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Recipe Card
+   -------------------------------------------------------------------------- */
+.cp-recipe-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cp-recipe-card:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.cp-recipe-card__image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: var(--cp_product_color-bg-light, #f9f9f9);
+  flex-shrink: 0;
+}
+
+.cp-recipe-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cp-recipe-card__body {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-recipe-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cp_product_color-text-main, #1a1a1a);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+.cp-recipe-card__subtitle {
+  font-size: 0.875rem;
+  color: var(--cp_product_color-text-muted, #666666);
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.cp-recipe-card__meta {
+  font-size: 0.875rem;
+  color: var(--cp_product_color-text-muted, #666666);
+  margin: 0 0 1rem;
+}
+
+.cp-recipe-card__nutrition {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cp-nutrition-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--cp_product_color-brand-light, #fff0ed);
+  color: var(--cp_product_color-brand, #ff6b4a);
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   No Results Message
+   -------------------------------------------------------------------------- */
+.cp-no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--cp_product_color-text-muted, #666666);
+  font-size: 1rem;
+  grid-column: 1 / -1;
+}
+
+/* --------------------------------------------------------------------------
+   Pagination
+   -------------------------------------------------------------------------- */
+.cp-pagination-container {
+  margin-top: 2rem;
+}
+
+.cp-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cp-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--cp_product_color-border, #e5e5e5);
+  border-radius: 0.5rem;
+  color: var(--cp_product_color-text-main, #1a1a1a);
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--cp_product_color-white, #ffffff);
+}
+
+.cp-pagination__link:hover {
+  border-color: var(--cp_product_color-brand, #ff6b4a);
+  color: var(--cp_product_color-brand, #ff6b4a);
+  background: var(--cp_product_color-brand-light, #fff0ed);
+}
+
+.cp-pagination__link.is-active {
+  background: var(--cp_product_color-brand, #ff6b4a);
+  color: var(--cp_product_color-white, #ffffff);
+  border-color: var(--cp_product_color-brand, #ff6b4a);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.cp-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-family: inherit;
+}
+
+.cp-btn--primary {
+  background: var(--cp_product_color-brand, #ff6b4a);
+  color: var(--cp_product_color-white, #ffffff);
+}
+
+.cp-btn--primary:hover {
+  background: #e85a3a;
+  transform: translateY(-1px);
+}
+
+.cp-btn--primary:active {
+  transform: translateY(0);
+}
+
+.cp-btn--sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Filter Controls
+   -------------------------------------------------------------------------- */
+.cp-filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--cp_product_color-bg-light, #f9f9f9);
+  border-radius: 0.5rem;
+}
+
+.cp-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cp-filter-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cp_product_color-text-main, #1a1a1a);
+}
+
+.cp-filter-group select,
+.cp-filter-group input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cp_product_color-border, #e5e5e5);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background: var(--cp_product_color-white, #ffffff);
+}
+
+.cp-filter-group select:focus,
+.cp-filter-group input:focus {
+  outline: none;
+  border-color: var(--cp_product_color-brand, #ff6b4a);
+  box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.1);
+}

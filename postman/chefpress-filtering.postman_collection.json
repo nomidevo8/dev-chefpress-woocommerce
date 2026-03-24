@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Dev ChefPress Recipe Filter API",
+    "_postman_id": "2ee9d1c9-306f-4adb-b7d0-5b5eadf6b8e8",
+    "description": "Postman collection to test chefpress_filter_recipes AJAX endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Week Filter (Auto, Frontend mode if <=50)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/wp-admin/admin-ajax.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["wp-admin","admin-ajax.php"]
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+            {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+            {"key":"week","value":"1","type":"text"},
+            {"key":"filter_mode","value":"auto","type":"text"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Multi-Tag Filter (Backend)",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],
+        "url": {"raw":"{{baseUrl}}/wp-admin/admin-ajax.php","host":["{{baseUrl}}"],"path":["wp-admin","admin-ajax.php"]},
+        "body": {"mode":"urlencoded","urlencoded":[
+          {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+          {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+          {"key":"week","value":"2","type":"text"},
+          {"key":"tags[]","value":"keto","type":"text"},
+          {"key":"tags[]","value":"quick","type":"text"},
+          {"key":"filter_mode","value":"backend","type":"text"}
+        ]}
+      }
+    },
+    {
+      "name": "Allergen Exclusion",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],
+        "url": {"raw":"{{baseUrl}}/wp-admin/admin-ajax.php","host":["{{baseUrl}}"],"path":["wp-admin","admin-ajax.php"]},
+        "body": {"mode":"urlencoded","urlencoded":[
+          {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+          {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+          {"key":"week","value":"1","type":"text"},
+          {"key":"allergens[]","value":"peanuts","type":"text"},
+          {"key":"allergens[]","value":"shellfish","type":"text"},
+          {"key":"filter_mode","value":"auto","type":"text"}
+        ]}
+      }
+    },
+    {
+      "name": "Sort by Calories ASC",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],
+        "url": {"raw":"{{baseUrl}}/wp-admin/admin-ajax.php","host":["{{baseUrl}}"],"path":["wp-admin","admin-ajax.php"]},
+        "body": {"mode":"urlencoded","urlencoded":[
+          {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+          {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+          {"key":"week","value":"1","type":"text"},
+          {"key":"sort","value":"calories:ASC","type":"text"},
+          {"key":"filter_mode","value":"frontend","type":"text"}
+        ]}
+      }
+    },
+    {
+      "name": "Pagination Page 2",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],
+        "url": {"raw":"{{baseUrl}}/wp-admin/admin-ajax.php","host":["{{baseUrl}}"],"path":["wp-admin","admin-ajax.php"]},
+        "body": {"mode":"urlencoded","urlencoded":[
+          {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+          {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+          {"key":"week","value":"1","type":"text"},
+          {"key":"page","value":"2","type":"text"},
+          {"key":"filter_mode","value":"backend","type":"text"}
+        ]}
+      }
+    },
+    {
+      "name": "Category Filter",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],
+        "url": {"raw":"{{baseUrl}}/wp-admin/admin-ajax.php","host":["{{baseUrl}}"],"path":["wp-admin","admin-ajax.php"]},
+        "body": {"mode":"urlencoded","urlencoded":[
+          {"key":"action","value":"chefpress_filter_recipes","type":"text"},
+          {"key":"nonce","value":"{{chefpress_nonce}}","type":"text"},
+          {"key":"week","value":"1","type":"text"},
+          {"key":"category","value":"breakfast","type":"text"},
+          {"key":"filter_mode","value":"auto","type":"text"}
+        ]}
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "if (!pm.environment.get('chefpress_nonce')) {",
+          "  console.log('Set chefpress_nonce in environment before request.');",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ]
+}
