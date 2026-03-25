@@ -196,6 +196,14 @@
         $(this).toggleClass('active');
     });
 
+    // Show More Allergens
+    $('#cp_weekly_show_more_allergens').on('click', function () {
+        $('.cp_weekly_menu_sidebar_btn_hidden').each(function() {
+            $(this).removeClass('cp_weekly_menu_sidebar_btn_hidden').hide().slideDown();
+        });
+        $(this).hide();
+    });
+
     // Date Carousel Logic
     const $cp_weekly_date_track = $('#cp_weekly_date_track');
 
