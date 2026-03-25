@@ -197,6 +197,28 @@ $labels_p    = $settings['preset_recipe_labels'];
 			</div>
 		</section>
 
+		<section class="cp-card cp-card--settings">
+			<div class="cp-card__header-static">
+				<span class="cp-card__icon cp-card__icon--color"></span>
+				<div>
+					<h2 class="cp-card__title"><?php esc_html_e( 'Weekly Menu Configuration', 'dev-chefpress' ); ?></h2>
+					<p class="cp-card__subtitle"><?php esc_html_e( 'Set the start date for the weekly menu system. Weeks will rotate continuously from this date.', 'dev-chefpress' ); ?></p>
+				</div>
+			</div>
+			<div class="cp-card__body">
+				<div class="cp-field">
+					<label class="cp-label"><?php esc_html_e( 'Weekly Start Date', 'dev-chefpress' ); ?></label>
+					<p class="cp-field__help"><?php esc_html_e( 'This date defines the beginning of Week 1. All subsequent weeks are calculated from this date.', 'dev-chefpress' ); ?></p>
+					<input type="date"
+						name="chefpress_settings[weekly_start_date]"
+						value="<?php echo esc_attr( $settings['weekly_start_date'] ?? '' ); ?>"
+						class="cp-input"
+						required />
+					<p class="cp-field__help-small"><?php esc_html_e( 'Current week will automatically be highlighted based on this date.', 'dev-chefpress' ); ?></p>
+				</div>
+			</div>
+		</section>
+
 		<p class="submit chefpress-submit-wrap">
 			<button type="submit" class="cp-btn cp-btn--primary cp-btn--lg">
 				<?php esc_html_e( 'Save settings', 'dev-chefpress' ); ?>

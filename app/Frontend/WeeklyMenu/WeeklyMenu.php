@@ -1,6 +1,8 @@
 <?php
 declare( strict_types=1 );
 
+use DevChefPress\Helpers\WeekCalculator;
+
 // Get all week terms
 $week_terms = get_terms( [
     'taxonomy' => 'chefpress_week',
@@ -25,37 +27,11 @@ if ( empty( $week_terms ) || is_wp_error( $week_terms ) ) {
 $display_terms = array_values( $week_terms );
 $term_count = count( $display_terms );
 
-// Calculate date ranges starting from current week (one per term)
-$current_date = new DateTime();
-$current_date->setISODate( (int) $current_date->format('o'), (int) $current_date->format('W') );
-$monday = clone $current_date;
-$monday->modify('monday this week');
+// Calculate date ranges using the WeekCalculator with configurable start date
+$date_ranges = WeekCalculator::calculate_week_ranges( $term_count );
 
-$date_ranges = [];
-for ( $i = 0; $i < $term_count; $i++ ) {
-    $start = clone $monday;
-    $start->modify('+' . ($i * 7) . ' days');
-    $end = clone $start;
-    $end->modify('+6 days');
-    
-    $start_day = $start->format('j');
-    $end_day = $end->format('j');
-    $month = $start->format('M');
-    $end_month = $end->format('M');
-    
-    if ( $month === $end_month ) {
-        $range = $start_day . ' – ' . $end_day;
-        $month_display = $month;
-    } else {
-        $range = $start_day . ' – ' . $end_day;
-        $month_display = $month . ' – ' . $end_month;
-    }
-    
-    $date_ranges[] = [
-        'range' => $range,
-        'month' => $month_display,
-    ];
-}
+// Determine the currently active week (1-based index)
+$active_week_index = WeekCalculator::get_active_week_index( $term_count );
 
 // Fetch dynamic terms for sidebar
 $product_cats = get_terms( [
@@ -94,9 +70,9 @@ $allergen_tags = get_terms( [
             <div class="cp_weekly_menu_date_viewport">
                 <div class="cp_weekly_menu_date_track" id="cp_weekly_date_track">
                     <?php foreach ( $display_terms as $index => $term ): ?>
-                        <div class="cp_weekly_menu_date_item <?php echo $index === 0 ? 'active' : 'future'; ?>" data-week="<?php echo esc_attr( $index + 1 ); ?>">
-                            <span class="cp_weekly_menu_date_range"><?php echo esc_html( $date_ranges[$index]['range'] ); ?></span>
-                            <span class="cp_weekly_menu_date_month"><?php echo esc_html( $date_ranges[$index]['month'] ); ?></span>
+                        <div class="cp_weekly_menu_date_item <?php echo ( $index + 1 ) === $active_week_index ? 'active' : 'future'; ?>" data-week="<?php echo esc_attr( (string) ( $index + 1 ) ); ?>">
+                            <span class="cp_weekly_menu_date_range"><?php echo esc_html( $date_ranges[ $index + 1 ]['range'] ); ?></span>
+                            <span class="cp_weekly_menu_date_month"><?php echo esc_html( $date_ranges[ $index + 1 ]['month'] ); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -112,13 +88,13 @@ $allergen_tags = get_terms( [
     </div>
 
     <!-- Banner -->
-    <div class="cp_weekly_menu_banner" style="display: none !important;">
+    <div class="cp_weekly_menu_banner" >
         <span class="cp_weekly_menu_banner_text">
-            Choose from 39 recipes for the week of <?php echo esc_html( $date_ranges[0]['range'] . ' ' . $date_ranges[0]['month'] ); ?>
+            <?php 
+                $current_range = $date_ranges[ $active_week_index ] ?? $date_ranges[1];
+                echo esc_html( 'Choose from ' . count( $display_terms ) . ' recipes for the week of ' . $current_range['range'] . ' ' . $current_range['month'] );
+            ?>
         </span>
-        <button class="cp_weekly_menu_banner_btn">
-            Add-ons available!
-        </button>
     </div>
 
     <div class="cp_weekly_menu_container">

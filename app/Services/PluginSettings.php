@@ -49,6 +49,7 @@ final class PluginSettings {
 				'border'         => '#e5e5e5',
 				'white'          => '#ffffff',
 			],
+			'weekly_start_date'     => \DateTime::createFromFormat( 'Y-m-d', date( 'Y-m-d' ) )->modify('monday this week')->format( 'Y-m-d' ),
 		];
 	}
 
@@ -73,6 +74,7 @@ final class PluginSettings {
 			'preset_allergens'     => self::normalize_string_list( $saved['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $saved['preset_recipe_labels'] ?? [] ),
 			'theme_colors'         => self::sanitize_theme_colors( $saved['theme_colors'] ?? [] ),
+			'weekly_start_date'    => self::sanitize_date( $saved['weekly_start_date'] ?? $defaults['weekly_start_date'] ),
 		];
 	}
 
@@ -173,7 +175,28 @@ final class PluginSettings {
 		return array_values( $result );
 	}
 
+	/**Sanitize and validate date to YYYY-MM-DD format.
+	 *
+	 * @param mixed $raw
+	 * @return string Date in YYYY-MM-DD format
+	 */
+	public static function sanitize_date( $raw ): string {
+		$date_str = sanitize_text_field( (string) $raw );
+		
+		// Try to parse the date
+		$date = \DateTime::createFromFormat( 'Y-m-d', $date_str );
+		
+		if ( false === $date ) {
+			// Fall back to today's Monday
+			$date = \DateTime::createFromFormat( 'Y-m-d', date( 'Y-m-d' ) );
+			$date->modify( 'monday this week' );
+		}
+		
+		return $date->format( 'Y-m-d' );
+	}
+
 	/**
+	 * 
 	 * Normalize theme color map.
 	 *
 	 * @param mixed $raw
@@ -210,6 +233,7 @@ final class PluginSettings {
 			'preset_allergens'     => self::normalize_string_list( $post['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $post['preset_recipe_labels'] ?? [] ),
 			'theme_colors'         => self::sanitize_theme_colors( $post['theme_colors'] ?? [] ),
+			'weekly_start_date'    => self::sanitize_date( $post['weekly_start_date'] ?? '' ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );
