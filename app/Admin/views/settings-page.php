@@ -41,7 +41,6 @@ $nutrition   = $settings['nutrition_fields'];
 $ingredients = $settings['preset_ingredients'];
 $allergens_p = $settings['preset_allergens'];
 $labels_p    = $settings['preset_recipe_labels'];
-$filter_mode = $settings['filter_mode'];
 ?>
 <div class="wrap chefpress-settings-wrap">
 	<h1 class="chefpress-settings-title">
@@ -194,35 +193,6 @@ $filter_mode = $settings['filter_mode'];
 								placeholder="#000000" />
 						</div>
 					<?php endforeach; ?>
-				</div>
-			</div>
-		</section>
-
-		<section class="cp-card cp-card--settings">
-			<div class="cp-card__header-static">
-				<span class="cp-card__icon cp-card__icon--filter"></span>
-				<div>
-					<h2 class="cp-card__title"><?php esc_html_e( 'Recipe filtering mode', 'dev-chefpress' ); ?></h2>
-					<p class="cp-card__subtitle"><?php esc_html_e( 'Choose how recipes are filtered on the frontend.', 'dev-chefpress' ); ?></p>
-				</div>
-			</div>
-			<div class="cp-card__body">
-				<div class="cp-field">
-					<label class="cp-label"><?php esc_html_e( 'Filter Mode', 'dev-chefpress' ); ?></label>
-					<select name="chefpress_settings[filter_mode]" class="cp-input" id="chefpress-filter-mode">
-						<option value="auto" <?php selected( $filter_mode, 'auto' ); ?>>
-							<?php esc_html_e( 'Auto (Recommended)', 'dev-chefpress' ); ?>
-						</option>
-						<option value="frontend" <?php selected( $filter_mode, 'frontend' ); ?>>
-							<?php esc_html_e( 'Frontend (Fast Mode)', 'dev-chefpress' ); ?>
-						</option>
-						<option value="backend" <?php selected( $filter_mode, 'backend' ); ?>>
-							<?php esc_html_e( 'Backend (Scalable Mode)', 'dev-chefpress' ); ?>
-						</option>
-					</select>
-					<p class="cp-hint" style="margin-top: 8px;">
-						<?php esc_html_e( 'Auto: Uses frontend filtering for ≤50 recipes, backend for >50. Frontend: Loads all recipes once, filters instantly in JS. Backend: Makes AJAX calls for each filter change.', 'dev-chefpress' ); ?>
-					</p>
 				</div>
 			</div>
 		</section>

@@ -1,6 +1,6 @@
 /**
  * Dev ChefPress for WooCommerce — Frontend JS
- * Dual-mode filtering: Frontend (fast) and Backend (scalable)
+ * Mode filtering: Backend (scalable)
  */
 (function ($) {
     'use strict';
@@ -212,7 +212,6 @@
             action: 'chefpress_filter_recipes',
             _chefpress_nonce: ChefPressConfig?.nonce || '',
             week: filters.week,
-            filter_mode: ChefPressConfig?.filter_mode || 'auto',
         };
 
         if (filters.category) {
@@ -245,12 +244,6 @@
                     return;
                 }
 
-                if (ChefPressConfig.filter_mode === 'backend' && response.html) {
-                    setLoading(false);
-                    $cp_weekly_grid.html(response.html);
-                    return;
-                }
-
                 if (Array.isArray(response.recipes) && response.recipes.length) {
                     renderRecipes(response.recipes);
                     return;
@@ -263,7 +256,12 @@
                 }
 
                 setLoading(false);
-                $cp_weekly_grid.html('<p class="cp-no-results">No recipes found in filter response.</p>');
+               $cp_weekly_grid.html(`
+                    <div class="cp-no-results">
+                        <p>No recipes found 🍽️</p>
+                        <small>Try changing filters or check back later.</small>
+                    </div>
+                `);
             },
             error() {
                 setLoading(false);

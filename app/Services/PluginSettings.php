@@ -49,7 +49,6 @@ final class PluginSettings {
 				'border'         => '#e5e5e5',
 				'white'          => '#ffffff',
 			],
-			'filter_mode'           => 'auto',
 		];
 	}
 
@@ -74,7 +73,6 @@ final class PluginSettings {
 			'preset_allergens'     => self::normalize_string_list( $saved['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $saved['preset_recipe_labels'] ?? [] ),
 			'theme_colors'         => self::sanitize_theme_colors( $saved['theme_colors'] ?? [] ),
-			'filter_mode'          => self::sanitize_filter_mode( $saved['filter_mode'] ?? 'auto' ),
 		];
 	}
 
@@ -111,15 +109,6 @@ final class PluginSettings {
 	 */
 	public static function get_theme_colors(): array {
 		return self::all()['theme_colors'];
-	}
-
-	/**
-	 * Get the filter mode setting.
-	 *
-	 * @return string One of: 'auto', 'frontend', 'backend'
-	 */
-	public static function get_filter_mode(): string {
-		return self::all()['filter_mode'];
 	}
 
 	/**
@@ -203,19 +192,6 @@ final class PluginSettings {
 		return $out;
 	}
 
-	/**
-	 * Sanitize filter mode.
-	 *
-	 * @param mixed $raw
-	 * @return string One of: 'auto', 'frontend', 'backend'
-	 */
-	public static function sanitize_filter_mode( $raw ): string {
-		$mode = sanitize_key( (string) $raw );
-		$allowed = [ 'auto', 'frontend', 'backend' ];
-		return in_array( $mode, $allowed, true ) ? $mode : 'auto';
-	}
-
-
 
 	/**
 	 * Persist settings from POSTed arrays (already unslashed by WP for options - caller passes $_POST slice).
@@ -234,7 +210,6 @@ final class PluginSettings {
 			'preset_allergens'     => self::normalize_string_list( $post['preset_allergens'] ?? [] ),
 			'preset_recipe_labels' => self::normalize_string_list( $post['preset_recipe_labels'] ?? [] ),
 			'theme_colors'         => self::sanitize_theme_colors( $post['theme_colors'] ?? [] ),
-			'filter_mode'          => self::sanitize_filter_mode( $post['filter_mode'] ?? 'auto' ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );

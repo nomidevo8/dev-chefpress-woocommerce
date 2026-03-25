@@ -26,8 +26,7 @@
           "urlencoded": [
             {"key":"action","value":"chefpress_filter_recipes","type":"text"},
             {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
-            {"key":"week","value":"1","type":"text"},
-            {"key":"filter_mode","value":"auto","type":"text"}
+            {"key":"week","value":"1","type":"text"}
           ]
         }
       },
@@ -65,8 +64,7 @@
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"2","type":"text"},
           {"key":"tags[]","value":"healthy","type":"text"},
-          {"key":"tags[]","value":"quick","type":"text"},
-          {"key":"filter_mode","value":"backend","type":"text"}
+          {"key":"tags[]","value":"quick","type":"text"}
         ]}
       },
       "event": [
@@ -96,8 +94,7 @@
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"1","type":"text"},
           {"key":"allergens[]","value":"peanuts","type":"text"},
-          {"key":"allergens[]","value":"gluten","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"allergens[]","value":"gluten","type":"text"}
         ]}
       },
       "event": [
@@ -125,8 +122,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"1","type":"text"},
-          {"key":"sort","value":"calories:ASC","type":"text"},
-          {"key":"filter_mode","value":"frontend","type":"text"}
+          {"key":"sort","value":"calories:ASC","type":"text"}
         ]}
       },
       "event": [
@@ -160,8 +156,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"2","type":"text"},
-          {"key":"sort","value":"protein:DESC","type":"text"},
-          {"key":"filter_mode","value":"frontend","type":"text"}
+          {"key":"sort","value":"protein:DESC","type":"text"}
         ]}
       }
     },
@@ -175,8 +170,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"1","type":"text"},
-          {"key":"page","value":"2","type":"text"},
-          {"key":"filter_mode","value":"backend","type":"text"}
+          {"key":"page","value":"2","type":"text"}
         ]}
       }
     },
@@ -190,8 +184,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"1","type":"text"},
-          {"key":"category","value":"breakfast","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"category","value":"breakfast","type":"text"}
         ]}
       }
     },
@@ -205,8 +198,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"2","type":"text"},
-          {"key":"category","value":"mains","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"category","value":"mains","type":"text"}
         ]}
       }
     },
@@ -220,8 +212,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"3","type":"text"},
-          {"key":"tags[]","value":"vegan","type":"text"},
-          {"key":"filter_mode","value":"frontend","type":"text"}
+          {"key":"tags[]","value":"vegan","type":"text"}
         ]}
       }
     },
@@ -236,8 +227,7 @@
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"4","type":"text"},
           {"key":"tags[]","value":"low-carb","type":"text"},
-          {"key":"tags[]","value":"protein-rich","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"tags[]","value":"protein-rich","type":"text"}
         ]}
       }
     },
@@ -251,8 +241,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"5","type":"text"},
-          {"key":"tags[]","value":"italian","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"tags[]","value":"italian","type":"text"}
         ]}
       }
     },
@@ -266,8 +255,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"6","type":"text"},
-          {"key":"allergens[]","value":"dairy","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"allergens[]","value":"dairy","type":"text"}
         ]}
       }
     },
@@ -281,8 +269,7 @@
           {"key":"action","value":"chefpress_filter_recipes","type":"text"},
           {"key":"_chefpress_nonce","value":"{{chefpress_nonce}}","type":"text"},
           {"key":"week","value":"1","type":"text"},
-          {"key":"sort","value":"time:ASC","type":"text"},
-          {"key":"filter_mode","value":"frontend","type":"text"}
+          {"key":"sort","value":"time:ASC","type":"text"}
         ]}
       }
     },
@@ -299,8 +286,7 @@
           {"key":"category","value":"breakfast","type":"text"},
           {"key":"tags[]","value":"healthy","type":"text"},
           {"key":"allergens[]","value":"tree-nuts","type":"text"},
-          {"key":"sort","value":"calories:ASC","type":"text"},
-          {"key":"filter_mode","value":"auto","type":"text"}
+          {"key":"sort","value":"calories:ASC","type":"text"}
         ]}
       }
     }

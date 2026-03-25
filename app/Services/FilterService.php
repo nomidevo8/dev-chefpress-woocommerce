@@ -144,30 +144,17 @@ class FilterService {
 		}
 
 		$query = new \WP_Query( $query_args );
-		// Determine if we should return frontend-compatible data
-		$mode = sanitize_text_field( $filters['filter_mode'] ?? 'auto' );
-
-		// Count total recipes (cheap query)
-		$render_recipes = self::render_recipes( $query );
-		$total_recipes = $render_recipes['total'] ?? 0;
-		$html = $render_recipes['html'] ?? '';
-
-		// Decide mode
-		if ( $mode === 'frontend' ) {
-			$is_frontend_mode = true;
-		} elseif ( $mode === 'backend' ) {
-			$is_frontend_mode = false;
-		} else { 
-			$is_frontend_mode = ( $total_recipes <= 50 );
-		}
 		
+		// Always return frontend-compatible JSON data (no HTML from backend)
+		$recipes = self::get_recipes_data( $query );
+
 		return [
-			'html'          => $html,
+			'html'          => '',
 			'total_pages'   => (int) $query->max_num_pages,
 			'current_page'  => $page,
 			'total_count'   => (int) $query->found_posts,
 			'recipes_count' => (int) $query->found_posts,
-			'recipes'       => $is_frontend_mode ? self::get_recipes_data( $query ) : [],
+			'recipes'       => $recipes,
 		];
 	}
 
@@ -272,77 +259,6 @@ class FilterService {
 		);
 	}
 
-	/**
-	 * Render recipes HTML from WP_Query.
-	 *
-	 * @param \WP_Query $query
-	 * @return array<string, mixed> Contains 'html' and 'total' keys.
-	 */
-	private static function render_recipes( \WP_Query $query ): array {
-		$html = '';
-
-		if ( ! $query->have_posts() ) {
-			$html = '<p class="cp-no-results">' . esc_html__( 'No recipes found. Try adjusting your filters.', 'dev-chefpress' ) . '</p>';
-			return [
-				'html'  => $html,
-				'total' => 0,
-			];
-		}
-
-		$html .= '<div class="cp-recipes-grid">';
-
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$product_id = get_the_ID();
-			$recipe = new Recipe( $product_id );
-			$title = get_the_title();
-			$hero = $recipe->get_hero();
-			$nutrition = $recipe->get_nutrition();
-
-			$html .= '<article class="cp-recipe-card">';
-			$html .= '  <div class="cp-recipe-card__image">';
-			if ( has_post_thumbnail() ) {
-				$html .= get_the_post_thumbnail( $product_id, 'medium', [ 'alt' => esc_attr( $title ) ] );
-			}
-			$html .= '  </div>';
-			$html .= '  <div class="cp-recipe-card__body">';
-			$html .= '    <h3 class="cp-recipe-card__title">' . esc_html( $title ) . '</h3>';
-
-			if ( ! empty( $hero['subtitle'] ) ) {
-				$html .= '    <p class="cp-recipe-card__subtitle">' . esc_html( $hero['subtitle'] ) . '</p>';
-			}
-
-			if ( ! empty( $hero['cooking_time'] ) ) {
-				$html .= '    <p class="cp-recipe-card__meta">⏱ ' . esc_html( $hero['cooking_time'] ) . '</p>';
-			}
-
-			$html .= '    <div class="cp-recipe-card__nutrition">';
-			if ( ! empty( $nutrition['calories'] ) ) {
-				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['calories'] ) . ' kcal</span>';
-			}
-			if ( ! empty( $nutrition['protein'] ) ) {
-				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['protein'] ) . 'g protein</span>';
-			}
-			if ( ! empty( $nutrition['carbs'] ) ) {
-				$html .= '      <span class="cp-nutrition-badge">' . esc_html( $nutrition['carbs'] ) . 'g carbs</span>';
-			}
-			$html .= '    </div>';
-
-			$html .= '    <a href="' . esc_url( get_the_permalink() ) . '" class="cp-btn cp-btn--primary cp-btn--sm">';
-			$html .= esc_html__( 'View Recipe', 'dev-chefpress' );
-			$html .= '    </a>';
-			$html .= '  </div>';
-			$html .= '</article>';
-		}
-
-		$html .= '</div>';
-
-		wp_reset_postdata();
-		return [
-			'html'  => $html,
-			'total' => (int) $query->found_posts,
-		];
-	}
 
 	/**
 	 * AJAX handler for recipe filtering.
@@ -356,7 +272,6 @@ class FilterService {
 			'allergens'   => isset( $_POST['allergens'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['allergens'] ) ) : [],
 			'sort'        => sanitize_text_field( $_POST['sort'] ?? '' ),
 			'page'        => absint( $_POST['page'] ?? 1 ),
-			'filter_mode' => sanitize_text_field( $_POST['filter_mode'] ?? 'auto' ),
 		];
 
 		$response = self::filter_recipes( $filters );
