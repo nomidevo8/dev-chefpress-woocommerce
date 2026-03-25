@@ -558,13 +558,21 @@
 
 .cp_weekly_menu_card_img_wrapper {
   position: relative !important;
-  aspect-ratio: 4/3 !important;
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  overflow: hidden !important;
+  background-color: #f0f0f0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .cp_weekly_menu_card_img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
 }
 
 .cp_weekly_menu_badge_new {
