@@ -44,7 +44,7 @@
             const imageUrl = cp_weekly_recipe.image || cp_weekly_recipe.image_url || '';
 
             const cp_weekly_card_html = `
-                        <div class="cp_weekly_menu_card" data-recipe-id="${cp_weekly_recipe.id}">
+                        <div class="cp_weekly_menu_card" data-recipe-id="${cp_weekly_recipe.id}" data-product-url="${cp_weekly_recipe.url || ''}">
                             <div class="cp_weekly_menu_card_img_wrapper">
                                 <img src="${imageUrl}" alt="${cp_weekly_recipe.title || ''}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
                                 ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
@@ -374,9 +374,15 @@
         <div id="cp_weekly_recipe_modal" class="cp_weekly_recipe_modal">
             <div class="cp_weekly_recipe_modal_overlay"></div>
             <div class="cp_weekly_recipe_modal_dialog">
-                <button class="cp_weekly_recipe_modal_close" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <div class="cp_weekly_recipe_modal_header">
+                    <a class="cp_weekly_recipe_modal_view_product" href="#" target="_blank" rel="noopener noreferrer" aria-label="View Full Product Page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        View Product
+                    </a>
+                    <button class="cp_weekly_recipe_modal_close" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
                 <div class="cp_weekly_recipe_modal_content">
                     <div class="cp_weekly_recipe_modal_loader">
                         <div class="cp_weekly_spinner"></div>
@@ -394,15 +400,23 @@
         e.stopPropagation();
 
         const recipeId = $(this).data('recipe-id');
+        const $card = $(this).closest('.cp_weekly_menu_card');
+        const productUrl = $card.data('product-url') || '';
+        
         if (recipeId) {
-            cp_weekly_open_modal(recipeId);
+            cp_weekly_open_modal(recipeId, productUrl);
         }
     });
 
     // Open modal function
-    function cp_weekly_open_modal(recipeId) {
+    function cp_weekly_open_modal(recipeId, productUrl = '') {
         $cp_weekly_modal.addClass('active');
         $('body').css('overflow', 'hidden');
+
+        // Set the product URL on the view product button
+        if (productUrl) {
+            $('.cp_weekly_recipe_modal_view_product').attr('href', productUrl);
+        }
 
         // Fetch recipe details
         $.ajax({

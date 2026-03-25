@@ -963,35 +963,72 @@
 }
 
 .cp_weekly_recipe_modal_close {
-  position: sticky;
-  top: 0;
-  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
-  background-color: var(--cp_product_color-white) !important;
+  background-color: transparent !important;
   border: none !important;
-  border-radius: 50% !important;
   cursor: pointer;
   z-index: 3002;
   transition: all 0.2s;
-  color: var(--cp_product_color-text-main) !important;
-  float: right;
-  margin: 1rem 1rem 0 0;
-  padding: 0px !important
+  color: var(--cp_product_color-text-muted) !important;
+  padding: 0px !important;
+  flex-shrink: 0;
 }
 
 .cp_weekly_recipe_modal_close:hover {
-  background-color: var(--cp_product_color-brand-light);
-  border-color: var(--cp_product_color-brand);
   color: var(--cp_product_color-brand);
 }
 
 .cp_weekly_recipe_modal_close svg {
   width: 24px;
   height: 24px;
+}
+
+/* Modal Header with buttons */
+.cp_weekly_recipe_modal_header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: var(--cp_product_color-white);
+  border-bottom: 1px solid var(--cp_product_color-border);
+  z-index: 3002;
+  gap: 1rem;
+}
+
+.cp_weekly_recipe_modal_view_product {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background-color: var(--cp_product_color-brand);
+  color: var(--cp_product_color-white) !important;
+  border: 1px solid var(--cp_product_color-brand);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.cp_weekly_recipe_modal_view_product:hover {
+  background-color: #f03000;
+  border-color: #f03000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3);
+  color: var(--cp_product_color-white) !important;
+}
+
+.cp_weekly_recipe_modal_view_product svg {
+  width: 18px;
+  height: 18px;
 }
 
 .cp_weekly_recipe_modal_content {
@@ -1021,15 +1058,28 @@
     max-height: 95vh;
   }
 
+  .cp_weekly_recipe_modal_header {
+    padding: 0.75rem;
+  }
+
   .cp_weekly_recipe_modal_close {
     width: 40px;
     height: 40px;
-    margin: 0.75rem 0.75rem 0 0;
   }
 
   .cp_weekly_recipe_modal_close svg {
     width: 20px;
     height: 20px;
+  }
+
+  .cp_weekly_recipe_modal_view_product {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .cp_weekly_recipe_modal_view_product svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -1038,6 +1088,32 @@
     width: 100%;
     max-height: 100vh;
     border-radius: 12px 12px 0 0;
+  }
+
+  .cp_weekly_recipe_modal_header {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .cp_weekly_recipe_modal_close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cp_weekly_recipe_modal_close svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .cp_weekly_recipe_modal_view_product {
+    padding: 0.5rem;
+    font-size: 0;
+  }
+
+  .cp_weekly_recipe_modal_view_product svg {
+    width: 16px;
+    height: 16px;
+    margin: 0;
   }
 
   .cp_weekly_recipe_modal_content {
