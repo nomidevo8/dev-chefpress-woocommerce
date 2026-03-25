@@ -171,6 +171,13 @@ class Frontend {
 				DEVCHEFPRESS_VERSION,
 				true
 			);
+
+			// Localize config for frontend.
+			wp_localize_script( 'dev-chefpress-weekly-menu', 'ChefPressConfig', [
+				'filter_mode' => \DevChefPress\Services\PluginSettings::get_filter_mode(),
+				'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
+				'ajax_url'    => admin_url( 'admin-ajax.php' ),
+			] );
 		}
 	}
 

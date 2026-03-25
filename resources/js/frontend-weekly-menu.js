@@ -77,24 +77,41 @@
     const renderRecipes = (recipes) => {
         $cp_weekly_grid.empty();
         recipes.forEach(cp_weekly_recipe => {
+            const categoryText = Array.isArray(cp_weekly_recipe.categories) && cp_weekly_recipe.categories.length
+                ? cp_weekly_recipe.categories.join(', ')
+                : (cp_weekly_recipe.category_name || cp_weekly_recipe.category || '');
+
+            const tagsArray = Array.isArray(cp_weekly_recipe.tags) ? cp_weekly_recipe.tags : [];
             let cp_weekly_tags_html = '';
-            cp_weekly_recipe.tags.forEach(cp_weekly_tag => {
-                cp_weekly_tags_html += `
+            tagsArray.forEach(cp_weekly_tag => {
+                if (typeof cp_weekly_tag === 'string') {
+                    cp_weekly_tags_html += `
                             <span class="cp_weekly_menu_tag">
-                                ${cp_weekly_tag.icon} ${cp_weekly_tag.label}
+                                ${cp_weekly_tag}
                             </span>
                         `;
+                } else if (cp_weekly_tag && typeof cp_weekly_tag === 'object') {
+                    cp_weekly_tags_html += `
+                            <span class="cp_weekly_menu_tag">
+                                ${cp_weekly_tag.icon || ''}${cp_weekly_tag.label || ''}
+                            </span>
+                        `;
+                }
             });
+
+            const timeText = cp_weekly_recipe.cookingTime || cp_weekly_recipe.time || '';
+            const caloriesText = cp_weekly_recipe.calories || '';
+            const imageUrl = cp_weekly_recipe.image || cp_weekly_recipe.image_url || '';
 
             const cp_weekly_card_html = `
                         <div class="cp_weekly_menu_card">
                             <div class="cp_weekly_menu_card_img_wrapper">
-                                <img src="${cp_weekly_recipe.image}" alt="${cp_weekly_recipe.title}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
+                                <img src="${imageUrl}" alt="${cp_weekly_recipe.title || ''}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
                                 ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
                             </div>
                             <div class="cp_weekly_menu_card_content">
                                 <div class="cp_weekly_menu_card_category">
-                                    ${cp_weekly_recipe.categoryIcon} ${cp_weekly_recipe.category}
+                                    ${cp_weekly_recipe.categoryIcon || ''} ${categoryText}
                                 </div>
                                 <h3 class="cp_weekly_menu_card_title">${cp_weekly_recipe.title}</h3>
                                 <p class="cp_weekly_menu_card_subtitle">${cp_weekly_recipe.subtitle}</p>
@@ -103,10 +120,10 @@
                                 </div>
                                 <div class="cp_weekly_menu_card_footer">
                                     <div class="cp_weekly_menu_footer_item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/></svg> ${cp_weekly_recipe.time}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> ${timeText}
                                     </div>
                                     <div class="cp_weekly_menu_footer_item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9ca3af;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/></svg> ${cp_weekly_recipe.calories} cals
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9ca3af;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${caloriesText} cals
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +186,104 @@
         // Update button text
         const selectedText = $(this).text();
         $sortBtn.html(`${selectedText} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`);
+
+        // Send updated sort to filter service using Postman-style payload
+        callFilterService();
     });
+
+    function normalizeSortForApi(sort) {
+        if (!sort || sort === 'default') {
+            return '';
+        }
+        const mapping = {
+            'calories-asc': 'calories:ASC',
+            'calories-desc': 'calories:DESC',
+            'carbs-asc': 'carbs:ASC',
+            'carbs-desc': 'carbs:DESC',
+            'time-asc': 'time:ASC',
+            'time-desc': 'time:DESC',
+            'protein-asc': 'protein:ASC',
+            'protein-desc': 'protein:DESC',
+        };
+        return mapping[sort] || sort;
+    }
+
+    function collectSidebarFilters() {
+        const activeWeekElement = $('.cp_weekly_menu_date_item.active');
+        const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || 1, 10) : 1;
+
+        return {
+            week: isNaN(week) ? 1 : week,
+            category: $('.cp_weekly_menu_sidebar_btn[data-category].active').data('category') || '',
+            tags: $('.cp_weekly_menu_sidebar_btn[data-recipe-tag].active').map(function () {
+                return $(this).data('recipe-tag');
+            }).get(),
+            allergens: $('.cp_weekly_menu_sidebar_btn[data-allergen].active').map(function () {
+                return $(this).data('allergen');
+            }).get(),
+            sort: normalizeSortForApi($('#cp_weekly_sort_dropdown a.active').data('sort') || 'default'),
+        };
+    }
+
+    function callFilterService() {
+        const filters = collectSidebarFilters();
+
+        const payload = {
+            action: 'chefpress_filter_recipes',
+            _chefpress_nonce: ChefPressConfig?.nonce || '',
+            week: filters.week,
+            filter_mode: ChefPressConfig?.filter_mode || 'auto',
+        };
+
+        if (filters.category) {
+            payload.category = filters.category;
+        }
+
+        if (filters.tags.length > 0) {
+            payload['tags[]'] = filters.tags;
+        }
+
+        if (filters.allergens.length > 0) {
+            payload['allergens[]'] = filters.allergens;
+        }
+
+        if (filters.sort && filters.sort !== 'default') {
+            payload.sort = filters.sort;
+        }
+
+        $.ajax({
+            url: ChefPressConfig.ajax_url,
+            type: 'POST',
+            data: payload,
+            dataType: 'json',
+            success(response) {
+                if (!response) {
+                    $cp_weekly_grid.html('<p class="cp-no-results">No response from filter service.</p>');
+                    return;
+                }
+
+                if (ChefPressConfig.filter_mode === 'backend' && response.html) {
+                    $cp_weekly_grid.html(response.html);
+                    return;
+                }
+
+                if (Array.isArray(response.recipes) && response.recipes.length) {
+                    renderRecipes(response.recipes);
+                    return;
+                }
+
+                if (response.html) {
+                    $cp_weekly_grid.html(response.html);
+                    return;
+                }
+
+                $cp_weekly_grid.html('<p class="cp-no-results">No recipes found in filter response.</p>');
+            },
+            error() {
+                $cp_weekly_grid.html('<p class="cp-no-results">Filter request failed, please retry.</p>');
+            },
+        });
+    }
 
     // Sidebar Logic
     const $cp_weekly_sidebar = $('#cp_weekly_filter_sidebar');
@@ -202,6 +316,25 @@
             $(this).removeClass('cp_weekly_menu_sidebar_btn_hidden').hide().slideDown();
         });
         $(this).hide();
+    });
+
+    // Apply filters from sidebar (Postman payload format)
+    $('.cp_weekly_menu_sidebar_apply').on('click', function (e) {
+        e.preventDefault();
+        $cp_weekly_sidebar.removeClass('active');
+        $cp_weekly_overlay.removeClass('active');
+        $('body').css('overflow', '');
+        callFilterService();
+    });
+
+    // Clear sidebar filters
+    $('#cp_weekly_sidebar_clear').on('click', function (e) {
+        e.preventDefault();
+        $('.cp_weekly_menu_sidebar_btn').removeClass('active');
+        $('#cp_weekly_sort_dropdown a').removeClass('active');
+        $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
+        $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        callFilterService();
     });
 
     // Date Carousel Logic
