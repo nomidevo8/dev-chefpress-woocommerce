@@ -30,6 +30,9 @@ class Frontend {
 		// AJAX handlers for recipe filtering.
 		$this->loader->add_action( 'wp_ajax_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
 		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
+
+		// Register shortcode directly.
+		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
 	}
 
 	/**
@@ -66,78 +69,96 @@ class Frontend {
 	}
 
 	public function enqueue_assets(): void {
-		if ( ! is_singular( 'product' ) ) {
+		$is_recipe_page = false;
+		if ( is_singular( 'product' ) ) {
+			global $post;
+			$product = wc_get_product( $post->ID );
+			$is_recipe_page = $product && 'recipe_product' === $product->get_type();
+		}
+
+		$is_weekly_menu_page = ( is_page() && has_shortcode( get_post()->post_content ?? '', 'weekly_menu' ) ) || get_query_var( 'weekly_menu' );
+
+		if ( ! $is_recipe_page && ! $is_weekly_menu_page ) {
 			return;
 		}
 
-		global $post;
-		$product = wc_get_product( $post->ID );
+		if ( $is_recipe_page ) {
+			// Dequeue WooCommerce styles
+			wp_dequeue_style( 'woocommerce-general' );
+			wp_dequeue_style( 'woocommerce-layout' );
+			wp_dequeue_style( 'woocommerce-smallscreen' );
 
-		if ( ! $product || 'recipe_product' !== $product->get_type() ) {
-			return;
+			// Optional: prevent them from loading at all
+			wp_deregister_style( 'woocommerce-general' );
+			wp_deregister_style( 'woocommerce-layout' );
+			wp_deregister_style( 'woocommerce-smallscreen' );
+
+			wp_enqueue_style(
+				'dev-chefpress-frontend',
+				DEVCHEFPRESS_RESOURCES_URL . 'css/frontend.css',
+				[],
+				DEVCHEFPRESS_VERSION
+			);
+
+			wp_enqueue_style(
+				'dev-chefpress-filters',
+				DEVCHEFPRESS_RESOURCES_URL . 'css/filters.css',
+				[ 'dev-chefpress-frontend' ],
+				DEVCHEFPRESS_VERSION
+			);
+
+			// Add user-configured theme colors as CSS variables for recipe pages.
+			$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+			$inline_css = ':root {' .
+				'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+				'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+				'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+				'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+				'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+				'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+				'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+				'}';
+			wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
+
+			wp_enqueue_style(
+				'font-awesome',
+				'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+				[],
+				'6.5.0'
+			);
+			
+			wp_enqueue_script(
+				'dev-chefpress-frontend',
+				DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
+				[ 'jquery' ],
+				DEVCHEFPRESS_VERSION,
+				true
+			);
+
+			// Localize config for frontend.
+			wp_localize_script( 'dev-chefpress-frontend', 'ChefPressConfig', [
+				'filter_mode' => \DevChefPress\Services\PluginSettings::get_filter_mode(),
+				'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
+				'ajax_url'    => admin_url( 'admin-ajax.php' ),
+			] );
 		}
 
-		// Dequeue WooCommerce styles
-		wp_dequeue_style( 'woocommerce-general' );
-		wp_dequeue_style( 'woocommerce-layout' );
-		wp_dequeue_style( 'woocommerce-smallscreen' );
+		if ( $is_weekly_menu_page ) {
+			wp_enqueue_style(
+				'dev-chefpress-weekly-menu',
+				DEVCHEFPRESS_RESOURCES_URL . 'css/frontend-weekly-menu.css',
+				[],
+				DEVCHEFPRESS_VERSION
+			);
 
-		// Optional: prevent them from loading at all
-		wp_deregister_style( 'woocommerce-general' );
-		wp_deregister_style( 'woocommerce-layout' );
-		wp_deregister_style( 'woocommerce-smallscreen' );
-
-		wp_enqueue_style(
-			'dev-chefpress-frontend',
-			DEVCHEFPRESS_RESOURCES_URL . 'css/frontend.css',
-			[],
-			DEVCHEFPRESS_VERSION
-		);
-
-		wp_enqueue_style(
-			'dev-chefpress-filters',
-			DEVCHEFPRESS_RESOURCES_URL . 'css/filters.css',
-			[ 'dev-chefpress-frontend' ],
-			DEVCHEFPRESS_VERSION
-		);
-
-		// Add user-configured theme colors as CSS variables for recipe pages.
-		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
-		$inline_css = ':root {' .
-			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
-			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
-			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
-			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
-			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
-			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
-			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
-			'}';
-		wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
-
-
-
-
-		wp_enqueue_style(
-			'font-awesome',
-			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
-			[],
-			'6.5.0'
-		);
-		
-		wp_enqueue_script(
-			'dev-chefpress-frontend',
-			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
-			[ 'jquery' ],
-			DEVCHEFPRESS_VERSION,
-			true
-		);
-
-		// Localize config for frontend.
-		wp_localize_script( 'dev-chefpress-frontend', 'ChefPressConfig', [
-			'filter_mode' => \DevChefPress\Services\PluginSettings::get_filter_mode(),
-			'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
-			'ajax_url'    => admin_url( 'admin-ajax.php' ),
-		] );
+			wp_enqueue_script(
+				'dev-chefpress-weekly-menu',
+				DEVCHEFPRESS_RESOURCES_URL . 'js/frontend-weekly-menu.js',
+				[ 'jquery' ],
+				DEVCHEFPRESS_VERSION,
+				true
+			);
+		}
 	}
 
 	/**
@@ -146,5 +167,14 @@ class Frontend {
 	public function handle_ajax_filter(): void {
 	
 		\DevChefPress\Services\FilterService::handle_ajax_filter();
+	}
+
+	/**
+	 * Render the weekly menu shortcode.
+	 */
+	public function render_weekly_menu(): string {
+		ob_start();
+		include DEVCHEFPRESS_PATH . 'app/Frontend/WeeklyMenu/WeeklyMenu.php';
+		return ob_get_clean();
 	}
 }
