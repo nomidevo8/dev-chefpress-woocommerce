@@ -225,7 +225,9 @@ class FilterService {
 			return [];
 		}
 		return array_map(
-			static fn( $term ) => $term->slug,
+			static function( $term ) {
+				return ucwords( str_replace( '-', ' ', $term->name ) );
+			},
 			$terms
 		);
 	}
@@ -238,11 +240,15 @@ class FilterService {
 	 */
 	private static function get_recipe_tags( int $product_id ): array {
 		$terms = get_the_terms( $product_id, 'chefpress_recipe_tag' );
+
 		if ( ! is_array( $terms ) || is_wp_error( $terms ) ) {
 			return [];
 		}
+
 		return array_map(
-			static fn( $term ) => $term->slug,
+			static function( $term ) {
+				return ucwords( str_replace( '-', ' ', $term->name ) );
+			},
 			$terms
 		);
 	}
@@ -259,7 +265,9 @@ class FilterService {
 			return [];
 		}
 		return array_map(
-			static fn( $term ) => $term->slug,
+			static function( $term ) {
+				return ucwords( str_replace( '-', ' ', $term->name ) );
+			},
 			$terms
 		);
 	}
