@@ -39,6 +39,7 @@ class MenuComponents {
 	public static function render_recipe_grid(): void {
 		?>
 		<div id="cp_weekly_recipe_grid" class="cp_weekly_menu_grid"></div>
+		<div id="cp_weekly_pagination" class="cp_weekly_menu_pagination"></div>
 		<?php
 	}
 

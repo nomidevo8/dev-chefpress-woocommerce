@@ -10,8 +10,11 @@
       */
 
     const cp_weekly_recipes = [];
+    let cp_weekly_current_page = 1;
+    let cp_weekly_total_pages = 1;
 
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
+    const $cp_weekly_pagination = $('#cp_weekly_pagination');
 
     const renderRecipes = (recipes) => {
         $cp_weekly_grid.removeClass('loading');
@@ -157,6 +160,9 @@
         // Close dropdown
         $sortDropdown.removeClass('show');
 
+        // Reset to first page when sorting changes
+        cp_weekly_current_page = 1;
+
         // Send updated sort to filter service using Postman-style payload
         callFilterService();
     });
@@ -192,6 +198,7 @@
                 return $(this).data('allergen');
             }).get(),
             sort: normalizeSortForApi($('#cp_weekly_sort_dropdown a.active').data('sort') || 'default'),
+            page: cp_weekly_current_page,
         };
     }
 
@@ -203,6 +210,48 @@
         $('.cp_weekly_menu_date_item').removeClass('active');
         $('.cp_weekly_menu_date_item').first().addClass('active');
         $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        cp_weekly_current_page = 1;
+    }
+
+    function renderPagination(currentPage, totalPages) {
+        if (totalPages <= 1) {
+            $cp_weekly_pagination.empty();
+            return;
+        }
+
+        let paginationHTML = '';
+
+        // Previous button
+        if (currentPage > 1) {
+            paginationHTML += `<a href="#" class="cp_weekly_pagination_btn cp_weekly_pagination_prev" data-page="${currentPage - 1}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous
+            </a>`;
+        }
+
+        // Page numbers
+        paginationHTML += '<div class="cp_weekly_pagination_numbers">';
+        
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                const activeClass = i === currentPage ? 'active' : '';
+                paginationHTML += `<a href="#" class="cp_weekly_pagination_num ${activeClass}" data-page="${i}">${i}</a>`;
+            } else if (i === 2 && currentPage > 3) {
+                paginationHTML += '<span class="cp_weekly_pagination_dots">...</span>';
+            } else if (i === totalPages - 1 && currentPage < totalPages - 2) {
+                paginationHTML += '<span class="cp_weekly_pagination_dots">...</span>';
+            }
+        }
+
+        paginationHTML += '</div>';
+
+        // Next button
+        if (currentPage < totalPages) {
+            paginationHTML += `<a href="#" class="cp_weekly_pagination_btn cp_weekly_pagination_next" data-page="${currentPage + 1}">
+                Next <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>`;
+        }
+
+        $cp_weekly_pagination.html(paginationHTML);
     }
 
     function callFilterService() {
@@ -229,6 +278,7 @@
         if (filters.sort && filters.sort !== 'default') {
             payload.sort = filters.sort;
         }
+        payload.page = filters.page;
 
         setLoading(true);
 
@@ -245,13 +295,19 @@
                 }
 
                 if (Array.isArray(response.recipes) && response.recipes.length) {
+                    cp_weekly_current_page = response.current_page || 1;
+                    cp_weekly_total_pages = response.total_pages || 1;
                     renderRecipes(response.recipes);
+                    renderPagination(cp_weekly_current_page, cp_weekly_total_pages);
+                    // Scroll to top of grid
+                    $('html, body').animate({ scrollTop: $cp_weekly_grid.offset().top - 100 }, 300);
                     return;
                 }
 
                 if (response.html) {
                     setLoading(false);
                     $cp_weekly_grid.html(response.html);
+                    $cp_weekly_pagination.empty();
                     return;
                 }
 
@@ -262,13 +318,28 @@
                         <small>Try changing filters or check back later.</small>
                     </div>
                 `);
+                $cp_weekly_pagination.empty();
             },
             error() {
                 setLoading(false);
                 $cp_weekly_grid.html('<p class="cp-no-results">Filter request failed, please retry.</p>');
+                $cp_weekly_pagination.empty();
             },
         });
     }
+
+    // Pagination Click Handler
+    $(document).on('click', '.cp_weekly_pagination_num, .cp_weekly_pagination_prev, .cp_weekly_pagination_next', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const page = parseInt($(this).data('page'), 10);
+        if (page && page > 0) {
+            cp_weekly_current_page = page;
+            callFilterService();
+        }
+    });   
+
 
     // Sidebar Logic
     const $cp_weekly_sidebar = $('#cp_weekly_filter_sidebar');
@@ -309,6 +380,7 @@
         $cp_weekly_sidebar.removeClass('active');
         $cp_weekly_overlay.removeClass('active');
         $('body').css('overflow', '');
+        cp_weekly_current_page = 1;
         callFilterService();
     });
 
@@ -319,6 +391,7 @@
         $cp_weekly_sidebar.removeClass('active');
         $cp_weekly_overlay.removeClass('active');
         $('body').css('overflow', '');
+        cp_weekly_current_page = 1;
         callFilterService();
     });
 
@@ -351,6 +424,7 @@
 
         // When switching week, remove all other filters and sort to keep week-only view
         resetAllFilters();
+        cp_weekly_current_page = 1;
 
         callFilterService();
     });
@@ -365,6 +439,7 @@
         if (tag) {
             $('.cp_weekly_menu_sidebar_btn[data-recipe-tag="' + tag + '"]').toggleClass('active', $(this).hasClass('active'));
         }
+        cp_weekly_current_page = 1;
 
         callFilterService();
     });

@@ -325,7 +325,7 @@ function generate_test_recipes() {
 // Add a submenu page under WooCommerce
 add_action('admin_menu', function() {
     add_submenu_page(
-        'woocommerce',
+        'edit.php?post_type=chefpress',
         'Generate Test Recipes',
         'Generate Test Recipes',
         'manage_options',
@@ -359,7 +359,7 @@ function render_generate_test_recipes_page() {
 // Add a submenu page under "WooCommerce"
 add_action('admin_menu', function() {
     add_submenu_page(
-        'woocommerce',               // Parent slug
+        'edit.php?post_type=chefpress',
         'Assign Weekly Terms',        // Page title
         'Assign Weekly Terms',        // Menu title
         'manage_options',             // Capability
@@ -427,7 +427,7 @@ function assign_random_week_terms_to_products() {
 // Add a submenu page under WooCommerce
 add_action('admin_menu', function() {
     add_submenu_page(
-        'woocommerce',
+        'edit.php?post_type=chefpress',
         'Assign Categories to Recipes',
         'Assign Recipe Categories',
         'manage_options',
@@ -506,7 +506,7 @@ function assign_categories_to_recipes() {
 // Add a submenu page under WooCommerce for assigning images
 add_action('admin_menu', function() {
     add_submenu_page(
-        'woocommerce',
+        'edit.php?post_type=chefpress',
         'Assign Images to Recipes',
         'Assign Recipe Images',
         'manage_options',

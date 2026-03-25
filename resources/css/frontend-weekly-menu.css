@@ -917,6 +917,113 @@
   }
 }
 
+/* Pagination Styles */
+.cp_weekly_menu_pagination {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin: 3rem 0 !important;
+  padding: 2rem 0 !important;
+  flex-wrap: wrap !important;
+}
+
+.cp_weekly_pagination_btn,
+.cp_weekly_pagination_num {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 0 0.5rem !important;
+  border: 1px solid var(--cp_product_color-border) !important;
+  border-radius: 6px !important;
+  background-color: var(--cp_product_color-white) !important;
+  color: var(--cp_product_color-text-main) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  gap: 0.25rem !important;
+}
+
+.cp_weekly_pagination_btn:hover:not(:disabled),
+.cp_weekly_pagination_num:hover {
+  background-color: var(--cp_product_color-brand-light) !important;
+  border-color: var(--cp_product_color-brand) !important;
+  color: var(--cp_product_color-brand) !important;
+}
+
+.cp_weekly_pagination_num.active {
+  background-color: var(--cp_product_color-brand) !important;
+  border-color: var(--cp_product_color-brand) !important;
+  color: var(--cp_product_color-white) !important;
+  font-weight: 700 !important;
+}
+
+.cp_weekly_pagination_numbers {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+.cp_weekly_pagination_dots {
+  padding: 0 0.25rem !important;
+  color: var(--cp_product_color-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+.cp_weekly_pagination_prev,
+.cp_weekly_pagination_next {
+  font-weight: 600 !important;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+  .cp_weekly_menu_pagination {
+    gap: 0.25rem !important;
+    margin: 2rem 0 !important;
+  }
+
+  .cp_weekly_pagination_btn,
+  .cp_weekly_pagination_num {
+    min-width: 36px !important;
+    height: 36px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cp_weekly_menu_pagination {
+    gap: 0.25rem !important;
+    margin: 1.5rem 0 !important;
+  }
+
+  .cp_weekly_pagination_btn {
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 0.75rem !important;
+    padding: 0 0.25rem !important;
+  }
+
+  .cp_weekly_pagination_num {
+    min-width: 28px !important;
+    height: 28px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .cp_weekly_pagination_prev::after {
+    content: attr(data-page);
+    display: none;
+  }
+
+  .cp_weekly_pagination_next::before {
+    content: attr(data-page);
+    display: none;
+  }
+}
+
 /* Recipe Modal Styles */
 .cp_weekly_recipe_modal {
   display: none;
