@@ -94,7 +94,7 @@ $allergen_tags = get_terms( [
             <div class="cp_weekly_menu_date_viewport">
                 <div class="cp_weekly_menu_date_track" id="cp_weekly_date_track">
                     <?php foreach ( $display_terms as $index => $term ): ?>
-                        <div class="cp_weekly_menu_date_item <?php echo $index === 0 ? 'active' : 'future'; ?>">
+                        <div class="cp_weekly_menu_date_item <?php echo $index === 0 ? 'active' : 'future'; ?>" data-week="<?php echo esc_attr( $index + 1 ); ?>">
                             <span class="cp_weekly_menu_date_range"><?php echo esc_html( $date_ranges[$index]['range'] ); ?></span>
                             <span class="cp_weekly_menu_date_month"><?php echo esc_html( $date_ranges[$index]['month'] ); ?></span>
                         </div>

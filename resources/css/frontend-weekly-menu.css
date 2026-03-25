@@ -417,6 +417,15 @@
   border-color: var(--cp_product_color-brand) !important;
 }
 
+.cp_weekly_menu_filter_btn.active {
+  background-color: var(--cp_product_color-brand) !important;
+  color: var(--cp_product_color-white) !important;
+  border-color: var(--cp_product_color-brand) !important;
+}
+.cp_weekly_menu_filter_btn.active svg{
+  color: var(--cp_product_color-white) !important;
+}
+
 .cp_weekly_menu_view_all {
   color: var(--cp_product_color-brand) !important;
   font-weight: 600 !important;

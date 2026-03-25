@@ -215,7 +215,7 @@
         return {
             week: isNaN(week) ? 1 : week,
             category: $('.cp_weekly_menu_sidebar_btn[data-category].active').data('category') || '',
-            tags: $('.cp_weekly_menu_sidebar_btn[data-recipe-tag].active').map(function () {
+            tags: $('.cp_weekly_menu_sidebar_btn[data-recipe-tag].active, .cp_weekly_menu_filter_btn[data-recipe-tag].active').map(function () {
                 return $(this).data('recipe-tag');
             }).get(),
             allergens: $('.cp_weekly_menu_sidebar_btn[data-allergen].active').map(function () {
@@ -223,6 +223,14 @@
             }).get(),
             sort: normalizeSortForApi($('#cp_weekly_sort_dropdown a.active').data('sort') || 'default'),
         };
+    }
+
+    function resetAllFilters() {
+        $('.cp_weekly_menu_sidebar_btn').removeClass('active');
+        $('.cp_weekly_menu_filter_btn[data-recipe-tag]').removeClass('active');
+        $('#cp_weekly_sort_dropdown a').removeClass('active');
+        $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
+        $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
     }
 
     function callFilterService() {
@@ -328,12 +336,9 @@
     });
 
     // Clear sidebar filters
-    $('#cp_weekly_sidebar_clear').on('click', function (e) {
+    $('#cp_weekly_menu_sidebar_clear').on('click', function (e) {
         e.preventDefault();
-        $('.cp_weekly_menu_sidebar_btn').removeClass('active');
-        $('#cp_weekly_sort_dropdown a').removeClass('active');
-        $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
-        $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        resetAllFilters();
         callFilterService();
     });
 
@@ -359,10 +364,29 @@
         }, 300);
     });
 
-    // Date Selection
+    // Date Selection (week filters take priority and reset other filters)
     $('.cp_weekly_menu_date_item').on('click', function () {
         $('.cp_weekly_menu_date_item').removeClass('active');
         $(this).addClass('active');
+
+        // When switching week, remove all other filters and sort to keep week-only view
+        resetAllFilters();
+
+        callFilterService();
+    });
+
+    // Top recipe-tag toggles (multi-select, in addition to sidebar tags)
+    $(document).on('click', '.cp_weekly_menu_filter_btn[data-recipe-tag]', function (e) {
+        e.preventDefault();
+
+        $(this).toggleClass('active');
+
+        const tag = $(this).data('recipe-tag');
+        if (tag) {
+            $('.cp_weekly_menu_sidebar_btn[data-recipe-tag="' + tag + '"]').toggleClass('active', $(this).hasClass('active'));
+        }
+
+        callFilterService();
     });
 
 })(jQuery);
