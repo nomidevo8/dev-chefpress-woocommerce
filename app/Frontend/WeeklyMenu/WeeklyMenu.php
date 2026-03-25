@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Menu Design</title>
+</head>
+<body>
+    <div class="cp_weekly_menu_app">
+        <!-- Date Navigation -->
+        <div class="cp_weekly_menu_container">
+            <nav class="cp_weekly_menu_date_nav">
+                <button class="cp_weekly_menu_nav_btn" id="cp_weekly_date_prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                
+                <div class="cp_weekly_menu_date_viewport">
+                    <div class="cp_weekly_menu_date_track" id="cp_weekly_date_track">
+                        <div class="cp_weekly_menu_date_item active">
+                            <span class="cp_weekly_menu_date_range">21 – 27</span>
+                            <span class="cp_weekly_menu_date_month">Mar</span>
+                        </div>
+                        
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">28 – 03</span>
+                            <span class="cp_weekly_menu_date_month">Mar – Apr</span>
+                        </div>
+                        
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">04 – 10</span>
+                            <span class="cp_weekly_menu_date_month">Apr</span>
+                        </div>
+                        
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">11 – 17</span>
+                            <span class="cp_weekly_menu_date_month">Apr</span>
+                        </div>
+
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">18 – 24</span>
+                            <span class="cp_weekly_menu_date_month">Apr</span>
+                        </div>
+
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">25 – 01</span>
+                            <span class="cp_weekly_menu_date_month">Apr – May</span>
+                        </div>
+
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">02 – 08</span>
+                            <span class="cp_weekly_menu_date_month">May</span>
+                        </div>
+
+                        <div class="cp_weekly_menu_date_item future">
+                            <span class="cp_weekly_menu_date_range">09 – 15</span>
+                            <span class="cp_weekly_menu_date_month">May</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="cp_weekly_menu_nav_btn" id="cp_weekly_date_next">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Banner -->
+        <div class="cp_weekly_menu_banner">
+            <span class="cp_weekly_menu_banner_text">
+                Choose from 39 recipes for the week of 21 Mar
+            </span>
+            <button class="cp_weekly_menu_banner_btn">
+                Add-ons available!
+            </button>
+        </div>
+
+        <div class="cp_weekly_menu_container">
+            <!-- Filters -->
+            <div class="cp_weekly_menu_filters_row">
+                <button class="cp_weekly_menu_filter_btn" id="cp_weekly_open_sidebar_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> Express
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Calorie Smart
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ca8a04;"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg> Low Carb
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #3b82f6;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Family Friendly
+                </button>
+                <button class="cp_weekly_menu_filter_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #22c55e;"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C10.9 14.23 12 14 15 12c-2 2.31-2.89 3.59-3 5.42-.01 1.44.88 2.4 3 3.58"/></svg> Veg/Vegan
+                </button>
+                <a href="#" class="cp_weekly_menu_view_all" id="cp_weekly_view_all_link">View all &gt;</a>
+            </div>
+
+            <!-- Recipe Grid -->
+            <div id="cp_weekly_recipe_grid" class="cp_weekly_menu_grid">
+                <!-- Recipes will be injected here by JS -->
+            </div>
+        </div>
+
+        <!-- Sticky Footer -->
+        <div class="cp_weekly_menu_sticky_footer">
+            <a href="#" class="cp_weekly_menu_sticky_btn">
+                <span class="cp_weekly_menu_sticky_btn_title">Try Hello Chef Now</span>
+                <span class="cp_weekly_menu_sticky_btn_subtitle">Order these recipes to your door</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="cp_weekly_menu_sidebar_overlay" id="cp_weekly_sidebar_overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="cp_weekly_menu_sidebar" id="cp_weekly_filter_sidebar">
+        <div class="cp_weekly_menu_sidebar_header">
+            <h2>Filter by</h2>
+            <button class="cp_weekly_menu_sidebar_close" id="cp_weekly_close_sidebar_btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        
+        <div class="cp_weekly_menu_sidebar_content">
+            <!-- Main Protein -->
+            <div class="cp_weekly_menu_sidebar_section">
+                <h3 class="cp_weekly_menu_sidebar_section_title">Main Protein</h3>
+                <div class="cp_weekly_menu_sidebar_grid">
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a0d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0-3.3-2-6-6-6s-6 2.7-6 6c0 1.1.3 2.1.8 3L4 14l3 3 3-3c.9.5 1.9.8 3 .8 3.3 0 6-2 6-6Z"/></svg> Fish
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Poultry
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18 17c0 1-2 2-6 2s-6-1-6-2"/><path d="M12 12c-3.3 0-6 2-6 4.5s2.7 4.5 6 4.5 6-2 6-4.5-2.7-4.5-6-4.5Z"/></svg> Meat
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="#22c55e"/></svg> Veg/Vegan
+                    </button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 2rem;">
+
+            <!-- Recipe Features -->
+            <div class="cp_weekly_menu_sidebar_section">
+                <h3 class="cp_weekly_menu_sidebar_section_title">
+                    Recipe Features <span class="cp_weekly_menu_sidebar_badge_new">NEW</span>
+                </h3>
+                <div class="cp_weekly_menu_sidebar_grid">
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M12 18v4"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg> Air Fryer
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/></svg> Chef's Choice
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Weekly Classic
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Family Friendly
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Tips For Kids
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/><path d="M12 2a14.5 14.5 0 0 1 0 20 14.5 14.5 0 0 1 0-20"/></svg> Global Eats
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg> Low Carb
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Calorie Smart
+                    </button>
+                    <button class="cp_weekly_menu_sidebar_btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> Express
+                    </button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 2rem;">
+
+            <!-- Allergens -->
+            <div class="cp_weekly_menu_sidebar_section">
+                <h3 class="cp_weekly_menu_sidebar_section_title">Allergens</h3>
+                <div class="cp_weekly_menu_sidebar_grid">
+                    <button class="cp_weekly_menu_sidebar_btn">No Peanuts</button>
+                    <button class="cp_weekly_menu_sidebar_btn">No Gluten</button>
+                    <button class="cp_weekly_menu_sidebar_btn">No Tree Nuts</button>
+                    <button class="cp_weekly_menu_sidebar_btn">No Wheat</button>
+                    <button class="cp_weekly_menu_sidebar_btn">No Milk</button>
+                    <button class="cp_weekly_menu_sidebar_btn">No Crustaceans</button>
+                </div>
+                <button class="cp_weekly_menu_sidebar_show_more">
+                    Show more allergens <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <p class="cp_weekly_menu_sidebar_disclaimer">
+                    Due to production methods, we cannot guarantee our products are completely free from any allergen such as <strong>Peanuts, Tree Nuts, Sesame Seeds, Milk, Egg, Fish, Crustaceans, Molluscs, Soya, Wheat, Gluten, Lupin, Mustard, Sulphur dioxide and Celery.</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="cp_weekly_menu_sidebar_footer">
+            <button class="cp_weekly_menu_sidebar_clear">Clear all</button>
+            <button class="cp_weekly_menu_sidebar_apply">Apply filters</button>
+        </div>
+    </div>
+
+    <script>
+        const cp_weekly_recipes = [
+            {
+                id: 1,
+                image: "https://picsum.photos/seed/fish1/600/450",
+                category: "FISH",
+                categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0-3.3-2-6-6-6s-6 2.7-6 6c0 1.1.3 2.1.8 3L4 14l3 3 3-3c.9.5 1.9.8 3 .8 3.3 0 6-2 6-6Z"/><path d="M12 2v2"/><path d="M12 14v2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>',
+                title: "Express: Seabream and Mediterranean Veg",
+                subtitle: "with Dill Couscous and Herb Dressing",
+                isNew: true,
+                tags: [
+                    { label: "Express", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>' },
+                    { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' }
+                ],
+                time: "20",
+                calories: "495"
+            },
+            {
+                id: 2,
+                image: "https://picsum.photos/seed/soup1/600/450",
+                category: "FISH",
+                categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0-3.3-2-6-6-6s-6 2.7-6 6c0 1.1.3 2.1.8 3L4 14l3 3 3-3c.9.5 1.9.8 3 .8 3.3 0 6-2 6-6Z"/><path d="M12 2v2"/><path d="M12 14v2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>',
+                title: "Spicy Prawn Tom Kha",
+                subtitle: "Thai Coconut Soup",
+                isNew: false,
+                tags: [
+                    { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
+                    { label: "Low carb", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg>' }
+                ],
+                time: "30",
+                calories: "434"
+            },
+            {
+                id: 3,
+                image: "https://picsum.photos/seed/chicken1/600/450",
+                category: "POULTRY",
+                categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+                title: "Lemon Garlic Chicken",
+                subtitle: "with Greek Potato Salad",
+                isNew: false,
+                tags: [
+                    { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
+                    { label: "Tips for kids", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
+                ],
+                time: "45",
+                calories: "602"
+            },
+            {
+                id: 4,
+                image: "https://picsum.photos/seed/chicken2/600/450",
+                category: "POULTRY",
+                categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+                title: "Crispy Parmesan Chicken",
+                subtitle: "with Vegetables and Caper Mayo",
+                isNew: false,
+                tags: [
+                    { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
+                    { label: "Low carb", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg>' }
+                ],
+                time: "35",
+                calories: "618"
+            }
+        ];
+
+        const cp_weekly_grid = document.getElementById('cp_weekly_recipe_grid');
+
+        cp_weekly_recipes.forEach(cp_weekly_recipe => {
+            const cp_weekly_card = document.createElement('div');
+            cp_weekly_card.className = 'cp_weekly_menu_card';
+            
+            let cp_weekly_tags_html = '';
+            cp_weekly_recipe.tags.forEach(cp_weekly_tag => {
+                cp_weekly_tags_html += `
+                    <span class="cp_weekly_menu_tag">
+                        ${cp_weekly_tag.icon} ${cp_weekly_tag.label}
+                    </span>
+                `;
+            });
+
+            cp_weekly_card.innerHTML = `
+                <div class="cp_weekly_menu_card_img_wrapper">
+                    <img src="${cp_weekly_recipe.image}" alt="${cp_weekly_recipe.title}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
+                    ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
+                </div>
+                <div class="cp_weekly_menu_card_content">
+                    <div class="cp_weekly_menu_card_category">
+                        ${cp_weekly_recipe.categoryIcon} ${cp_weekly_recipe.category}
+                    </div>
+                    <h3 class="cp_weekly_menu_card_title">${cp_weekly_recipe.title}</h3>
+                    <p class="cp_weekly_menu_card_subtitle">${cp_weekly_recipe.subtitle}</p>
+                    <div class="cp_weekly_menu_card_tags">
+                        ${cp_weekly_tags_html}
+                    </div>
+                    <div class="cp_weekly_menu_card_footer">
+                        <div class="cp_weekly_menu_footer_item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> ${cp_weekly_recipe.time}
+                        </div>
+                        <div class="cp_weekly_menu_footer_item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9ca3af;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${cp_weekly_recipe.calories} cals
+                        </div>
+                    </div>
+                </div>
+            `;
+            cp_weekly_grid.appendChild(cp_weekly_card);
+        });
+
+        // Sidebar Logic
+        const cp_weekly_open_sidebar_btn = document.getElementById('cp_weekly_open_sidebar_btn');
+        const cp_weekly_view_all_link = document.getElementById('cp_weekly_view_all_link');
+        const cp_weekly_close_sidebar_btn = document.getElementById('cp_weekly_close_sidebar_btn');
+        const cp_weekly_sidebar = document.getElementById('cp_weekly_filter_sidebar');
+        const cp_weekly_overlay = document.getElementById('cp_weekly_sidebar_overlay');
+
+        const cp_weekly_open_sidebar = (cp_weekly_e) => {
+            if (cp_weekly_e) cp_weekly_e.preventDefault();
+            cp_weekly_sidebar.classList.add('active');
+            cp_weekly_overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        };
+
+        const cp_weekly_close_sidebar = () => {
+            cp_weekly_sidebar.classList.remove('active');
+            cp_weekly_overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scrolling
+        };
+
+        cp_weekly_open_sidebar_btn.addEventListener('click', cp_weekly_open_sidebar);
+        cp_weekly_view_all_link.addEventListener('click', cp_weekly_open_sidebar);
+        cp_weekly_close_sidebar_btn.addEventListener('click', cp_weekly_close_sidebar);
+        cp_weekly_overlay.addEventListener('click', cp_weekly_close_sidebar);
+
+        // Toggle Sidebar Buttons
+        const cp_weekly_sidebar_btns = document.querySelectorAll('.cp_weekly_menu_sidebar_btn');
+        cp_weekly_sidebar_btns.forEach(cp_weekly_btn => {
+            cp_weekly_btn.addEventListener('click', () => {
+                cp_weekly_btn.classList.toggle('active');
+            });
+        });
+        // Date Carousel Logic
+        const cp_weekly_date_track = document.getElementById('cp_weekly_date_track');
+        const cp_weekly_date_prev = document.getElementById('cp_weekly_date_prev');
+        const cp_weekly_date_next = document.getElementById('cp_weekly_date_next');
+
+        const cp_weekly_get_scroll_amount = () => {
+            const cp_weekly_item = document.querySelector('.cp_weekly_menu_date_item');
+            const cp_weekly_width = cp_weekly_item.offsetWidth;
+            const cp_weekly_gap = parseFloat(window.getComputedStyle(cp_weekly_date_track).gap) || 0;
+            return cp_weekly_width + cp_weekly_gap;
+        };
+
+        cp_weekly_date_prev.addEventListener('click', () => {
+            cp_weekly_date_track.scrollLeft -= cp_weekly_get_scroll_amount() * 2;
+        });
+
+        cp_weekly_date_next.addEventListener('click', () => {
+            cp_weekly_date_track.scrollLeft += cp_weekly_get_scroll_amount() * 2;
+        });
+
+        // Date Selection
+        const cp_weekly_date_items = document.querySelectorAll('.cp_weekly_menu_date_item');
+        cp_weekly_date_items.forEach(cp_weekly_item => {
+            cp_weekly_item.addEventListener('click', () => {
+                cp_weekly_date_items.forEach(cp_weekly_i => cp_weekly_i.classList.remove('active'));
+                cp_weekly_item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
