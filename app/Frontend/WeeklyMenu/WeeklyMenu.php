@@ -27,7 +27,10 @@ if ( empty( $week_terms ) || is_wp_error( $week_terms ) ) {
 $display_terms = array_values( $week_terms );
 $term_count = count( $display_terms );
 
-// Calculate date ranges using the WeekCalculator with configurable start date
+// Get carousel weeks to display: up to 3 past + current + future (looping)
+$carousel_weeks = WeekCalculator::get_carousel_weeks( $term_count );
+
+// Calculate date ranges for all base weeks (for API calls)
 $date_ranges = WeekCalculator::calculate_week_ranges( $term_count );
 
 // Determine the currently active week (1-based index)
@@ -69,10 +72,10 @@ $allergen_tags = get_terms( [
 
             <div class="cp_weekly_menu_date_viewport">
                 <div class="cp_weekly_menu_date_track" id="cp_weekly_date_track">
-                    <?php foreach ( $display_terms as $index => $term ): ?>
-                        <div class="cp_weekly_menu_date_item <?php echo ( $index + 1 ) === $active_week_index ? 'active' : 'future'; ?>" data-week="<?php echo esc_attr( (string) ( $index + 1 ) ); ?>">
-                            <span class="cp_weekly_menu_date_range"><?php echo esc_html( $date_ranges[ $index + 1 ]['range'] ); ?></span>
-                            <span class="cp_weekly_menu_date_month"><?php echo esc_html( $date_ranges[ $index + 1 ]['month'] ); ?></span>
+                    <?php foreach ( $carousel_weeks as $week ): ?>
+                        <div class="cp_weekly_menu_date_item <?php echo $week['is_active'] ? 'active' : ( $week['is_past'] ? 'past' : 'future' ); ?>" data-week="<?php echo esc_attr( (string) $week['index'] ); ?>">
+                            <span class="cp_weekly_menu_date_range"><?php echo esc_html( $week['range'] ); ?></span>
+                            <span class="cp_weekly_menu_date_month"><?php echo esc_html( $week['month'] ); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>

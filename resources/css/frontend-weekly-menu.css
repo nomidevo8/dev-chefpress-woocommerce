@@ -110,6 +110,20 @@
   opacity: 0.8 !important;
 }
 
+.cp_weekly_menu_date_item.past {
+  opacity: 0.5 !important;
+  pointer-events: auto !important;
+}
+
+.cp_weekly_menu_date_item.past .cp_weekly_menu_date_range {
+  color: var(--cp_product_color-text-muted) !important;
+}
+
+.cp_weekly_menu_date_item.past .cp_weekly_menu_date_month {
+  color: var(--cp_product_color-text-muted) !important;
+  opacity: 0.6 !important;
+}
+
 .cp_weekly_menu_nav_btn {
   padding: 0.5rem !important;
   border-radius: 9999px !important;

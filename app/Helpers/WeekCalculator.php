@@ -96,6 +96,72 @@ final class WeekCalculator {
 	}
 
 	/**
+	 * Calculate weeks to display in the carousel.
+	 * Shows: up to 3 past weeks + current week + future weeks (minimum = total_weeks) + looping
+	 *
+	 * @param int $total_weeks Total weeks available
+	 * @return array<int, array{label: string, range: string, month: string, index: int, is_active: bool, is_past: bool, is_future: bool}>
+	 */
+	public static function get_carousel_weeks( int $total_weeks ): array {
+		$active_week_index = self::get_active_week_index( $total_weeks );
+		$carousel_weeks = [];
+		$max_past_weeks = 3;
+
+		// Calculate starting point: show up to 3 past weeks
+		$start_offset = min( $max_past_weeks, $active_week_index - 1 );
+		$start_index = $active_week_index - $start_offset;
+
+		// Calculate end point: show future weeks (at least total_weeks worth)
+		$end_offset = $total_weeks;
+		$end_index = $active_week_index + $end_offset;
+
+		// Generate weeks from start to end, with looping
+		for ( $i = $start_index; $i <= $end_index; $i++ ) {
+			// Map to actual week index with looping
+			$actual_week_index = ( ( $i - 1 ) % $total_weeks ) + 1;
+			
+			// Calculate start date for this actual week
+			$start_date = self::get_start_date();
+			$weeks_offset = $i - 1;
+			$week_start = clone $start_date;
+			$week_start->modify( '+' . ( $weeks_offset * 7 ) . ' days' );
+			
+			$week_end = clone $week_start;
+			$week_end->modify( '+6 days' );
+
+			$start_day = (int) $week_start->format( 'j' );
+			$end_day = (int) $week_end->format( 'j' );
+			$start_month = $week_start->format( 'M' );
+			$end_month = $week_end->format( 'M' );
+
+			if ( $start_month === $end_month ) {
+				$range = $start_day . ' – ' . $end_day;
+				$month_display = $start_month;
+			} else {
+				$range = $start_day . ' – ' . $end_day;
+				$month_display = $start_month . ' – ' . $end_month;
+			}
+
+			$is_active = ( $i === $active_week_index );
+			$is_past = ( $i < $active_week_index );
+			$is_future = ( $i > $active_week_index );
+
+			$carousel_weeks[] = [
+				'label' => 'Week ' . $actual_week_index,
+				'range' => $range,
+				'month' => $month_display,
+				'index' => $actual_week_index,
+				'week_number_display' => $i,
+				'is_active' => $is_active,
+				'is_past' => $is_past,
+				'is_future' => $is_future,
+			];
+		}
+
+		return $carousel_weeks;
+	}
+
+	/**
 	 * Get description of current week status.
 	 *
 	 * @param int $total_weeks Total weeks available
