@@ -502,4 +502,106 @@ function assign_categories_to_recipes() {
 
     echo "✅ Done creating categories and assigning to products.";
 }
+
+// Add a submenu page under WooCommerce for assigning images
+add_action('admin_menu', function() {
+    add_submenu_page(
+        'woocommerce',
+        'Assign Images to Recipes',
+        'Assign Recipe Images',
+        'manage_options',
+        'assign-recipe-images',
+        'render_assign_recipe_images_page'
+    );
+});
+
+// Render the admin page for assigning images
+function render_assign_recipe_images_page() {
+    // Check if button was clicked
+    if ( isset($_POST['assign_recipe_images']) && check_admin_referer('assign_recipe_images_nonce') ) {
+        echo '<div class="notice notice-success"><p>';
+        assign_random_images_to_recipes();
+        echo '</p></div>';
+    }
+
+    ?>
+    <div class="wrap">
+        <h1>Assign Random Images to Recipe Products</h1>
+        <p>Click the button below to assign random images from your WordPress media library to all recipe products as featured images.</p>
+        <form method="post">
+            <?php wp_nonce_field('assign_recipe_images_nonce'); ?>
+            <input type="submit" name="assign_recipe_images" class="button button-primary" value="Assign Images to Products">
+        </form>
+    </div>
+    <?php
+}
+
+// Function to get all images from WordPress media library
+function get_all_media_images() {
+    $images = get_posts([
+        'post_type'      => 'attachment',
+        'post_mime_type' => 'image',
+        'posts_per_page' => -1,
+        'post_status'    => 'inherit',
+        'fields'         => 'ids',
+    ]);
+
+    return $images;
+}
+
+// Function to assign random images to products
+function assign_random_images_to_recipes() {
+    // Get all published products
+    $product_ids = get_posts([
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+    ]);
+
+    if ( empty($product_ids) ) {
+        echo "No products found.<br>";
+        return;
+    }
+
+    // Get all media images
+    $media_images = get_all_media_images();
+
+    if ( empty($media_images) ) {
+        echo "No images found in media library. Please upload some images first.<br>";
+        return;
+    }
+
+    echo "Found " . count($media_images) . " images in media library.<br>";
+    echo "Assigning images to " . count($product_ids) . " products...<br><br>";
+
+    $assigned_count = 0;
+    $failed_count = 0;
+
+    foreach ( $product_ids as $product_id ) {
+        try {
+            // Get a random image from media library
+            $random_image_id = $media_images[ array_rand($media_images) ];
+
+            // Set the image as featured image (thumbnail) for the product
+            set_post_thumbnail( $product_id, $random_image_id );
+
+            $image_url = wp_get_attachment_url( $random_image_id );
+            $image_name = basename( $image_url );
+
+            echo "✅ Product ID {$product_id}: Assigned image '{$image_name}'<br>";
+            $assigned_count++;
+
+        } catch ( Exception $e ) {
+            echo "❌ Product ID {$product_id}: Failed to assign image<br>";
+            $failed_count++;
+        }
+    }
+
+    echo "<br>";
+    echo "✅ Successfully assigned images to {$assigned_count} products<br>";
+    if ( $failed_count > 0 ) {
+        echo "❌ Failed to assign images to {$failed_count} products<br>";
+    }
+}
 ?>
