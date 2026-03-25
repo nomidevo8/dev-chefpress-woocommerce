@@ -75,6 +75,7 @@
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
 
     const renderRecipes = (recipes) => {
+        $cp_weekly_grid.removeClass('loading');
         $cp_weekly_grid.empty();
         recipes.forEach(cp_weekly_recipe => {
             const categoryText = Array.isArray(cp_weekly_recipe.categories) && cp_weekly_recipe.categories.length
@@ -132,6 +133,33 @@
             $cp_weekly_grid.append(cp_weekly_card_html);
         });
     };
+
+    function renderSkeleton(count = 6) {
+        $cp_weekly_grid.addClass('loading');
+        const skeletonHTML = Array.from({ length: count }).map(() => `
+            <div class="cp_weekly_menu_skeleton_card">
+                <div class="cp_weekly_menu_skeleton_image"></div>
+                <div class="cp_weekly_menu_skeleton_body">
+                    <div class="cp_weekly_menu_skeleton_text cp_weekly_menu_skeleton_text_short"></div>
+                    <div class="cp_weekly_menu_skeleton_text cp_weekly_menu_skeleton_text_long"></div>
+                    <div class="cp_weekly_menu_skeleton_text cp_weekly_menu_skeleton_text_long"></div>
+                    <div class="cp_weekly_menu_skeleton_footer">
+                        <span class="cp_weekly_menu_skeleton_chip"></span>
+                        <span class="cp_weekly_menu_skeleton_chip"></span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        $cp_weekly_grid.html(skeletonHTML);
+    }
+
+    function setLoading(loading) {
+        if (loading) {
+            renderSkeleton();
+        } else {
+            $cp_weekly_grid.removeClass('loading');
+        }
+    }
 
     // Initial render
     renderRecipes(cp_weekly_recipes);
@@ -259,6 +287,8 @@
             payload.sort = filters.sort;
         }
 
+        setLoading(true);
+
         $.ajax({
             url: ChefPressConfig.ajax_url,
             type: 'POST',
@@ -266,11 +296,13 @@
             dataType: 'json',
             success(response) {
                 if (!response) {
+                    setLoading(false);
                     $cp_weekly_grid.html('<p class="cp-no-results">No response from filter service.</p>');
                     return;
                 }
 
                 if (ChefPressConfig.filter_mode === 'backend' && response.html) {
+                    setLoading(false);
                     $cp_weekly_grid.html(response.html);
                     return;
                 }
@@ -281,13 +313,16 @@
                 }
 
                 if (response.html) {
+                    setLoading(false);
                     $cp_weekly_grid.html(response.html);
                     return;
                 }
 
+                setLoading(false);
                 $cp_weekly_grid.html('<p class="cp-no-results">No recipes found in filter response.</p>');
             },
             error() {
+                setLoading(false);
                 $cp_weekly_grid.html('<p class="cp-no-results">Filter request failed, please retry.</p>');
             },
         });

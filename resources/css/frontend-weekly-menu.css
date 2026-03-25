@@ -422,8 +422,29 @@
   color: var(--cp_product_color-white) !important;
   border-color: var(--cp_product_color-brand) !important;
 }
-.cp_weekly_menu_filter_btn.active svg{
+.cp_weekly_menu_filter_btn.active svg {
   color: var(--cp_product_color-white) !important;
+}
+
+.cp_weekly_menu_grid_loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  width: 100%;
+}
+
+.cp_weekly_menu_spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--cp_product_color-brand);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: cp_spin 0.7s linear infinite;
+}
+
+@keyframes cp_spin {
+  to { transform: rotate(360deg); }
 }
 
 .cp_weekly_menu_view_all {
@@ -489,6 +510,72 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
   gap: 1.5rem !important;
   margin-bottom: 3rem !important;
+}
+
+.cp_weekly_menu_skeleton_card {
+  border: 1px solid var(--cp_product_color-border) !important;
+  border-radius: 12px !important;
+  background-color: #fff !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  animation: cp_skeleton_pulse 1.3s ease-in-out infinite !important;
+}
+
+.cp_weekly_menu_skeleton_image {
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  background-image: linear-gradient(90deg, #f0f0f0 25%, #ededed 50%, #f0f0f0 75%) !important;
+  background-size: 200% 100% !important;
+  background-position: 100% 0 !important;
+}
+
+.cp_weekly_menu_skeleton_body {
+  padding: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+}
+
+.cp_weekly_menu_skeleton_text {
+  width: 100% !important;
+  height: 14px !important;
+  background-color: #f0f0f0 !important;
+  border-radius: 999px !important;
+}
+
+.cp_weekly_menu_skeleton_text_short {
+  width: 45% !important;
+}
+
+.cp_weekly_menu_skeleton_text_long {
+  width: 80% !important;
+}
+
+.cp_weekly_menu_skeleton_footer {
+  display: flex !important;
+  gap: 0.55rem !important;
+  margin-top: 0.3rem !important;
+}
+
+.cp_weekly_menu_skeleton_chip {
+  height: 12px !important;
+  flex: 1 !important;
+  max-width: 45% !important;
+  background-color: #f0f0f0 !important;
+  border-radius: 999px !important;
+}
+
+@keyframes cp_skeleton_pulse {
+  0% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0.9;
+  }
 }
 
 /* Card */
