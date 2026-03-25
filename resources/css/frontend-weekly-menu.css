@@ -395,7 +395,7 @@
 }
 
 .cp_weekly_menu_sticky_btn {
-  background-color: #e32c00 !important;
+  background-color: var(--cp_product_color-brand) !important;
   color: var(--cp_product_color-white) !important;
   border: none !important;
   padding: 0.75rem 5rem !important;
@@ -560,9 +560,9 @@
 
 .cp_weekly_menu_sidebar_clear {
   padding: 0.75rem !important;
-  border: 1px solid #e32c00 !important;
+  border: 1px solid var(--cp_product_color-brand) !important;
   background: none !important;
-  color: #e32c00 !important;
+  color: var(--cp_product_color-brand) !important;
   border-radius: 9999px !important;
   font-weight: 700 !important;
   cursor: pointer !important;
@@ -572,7 +572,7 @@
 .cp_weekly_menu_sidebar_apply {
   padding: 0.75rem !important;
   border: none !important;
-  background-color: #e32c00 !important;
+  background-color: var(--cp_product_color-brand) !important;
   color: white !important;
   border-radius: 9999px !important;
   font-weight: 700 !important;
@@ -581,7 +581,7 @@
 }
 
 .cp_weekly_menu_sidebar_badge_new {
-  background-color: #e32c00 !important;
+  background-color: var(--cp_product_color-brand) !important;
   color: white !important;
   font-size: 0.7rem !important;
   padding: 2px 6px !important;
