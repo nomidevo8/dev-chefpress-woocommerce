@@ -1,3 +1,63 @@
+<?php
+declare( strict_types=1 );
+
+// Get all week terms
+$week_terms = get_terms( [
+    'taxonomy' => 'chefpress_week',
+    'hide_empty' => false,
+    'orderby' => 'name',
+    'order' => 'ASC',
+] );
+
+// If no terms, use defaults
+if ( empty( $week_terms ) || is_wp_error( $week_terms ) ) {
+    $week_terms = [
+        (object) ['name' => 'Week 1'],
+        (object) ['name' => 'Week 2'],
+        (object) ['name' => 'Week 3'],
+        (object) ['name' => 'Week 4'],
+        (object) ['name' => 'Week 5'],
+        (object) ['name' => 'Week 6'],
+    ];
+}
+
+// Use all terms dynamically
+$display_terms = array_values( $week_terms );
+$term_count = count( $display_terms );
+
+// Calculate date ranges starting from current week (one per term)
+$current_date = new DateTime();
+$current_date->setISODate( (int) $current_date->format('o'), (int) $current_date->format('W') );
+$monday = clone $current_date;
+$monday->modify('monday this week');
+
+$date_ranges = [];
+for ( $i = 0; $i < $term_count; $i++ ) {
+    $start = clone $monday;
+    $start->modify('+' . ($i * 7) . ' days');
+    $end = clone $start;
+    $end->modify('+6 days');
+    
+    $start_day = $start->format('j');
+    $end_day = $end->format('j');
+    $month = $start->format('M');
+    $end_month = $end->format('M');
+    
+    if ( $month === $end_month ) {
+        $range = $start_day . ' – ' . $end_day;
+        $month_display = $month;
+    } else {
+        $range = $start_day . ' – ' . $end_day;
+        $month_display = $month . ' – ' . $end_month;
+    }
+    
+    $date_ranges[] = [
+        'range' => $range,
+        'month' => $month_display,
+    ];
+}
+?>
+
 <div class="cp_weekly_menu_app">
     <!-- Date Navigation -->
     <div class="cp_weekly_menu_container">
@@ -11,45 +71,12 @@
 
             <div class="cp_weekly_menu_date_viewport">
                 <div class="cp_weekly_menu_date_track" id="cp_weekly_date_track">
-                    <div class="cp_weekly_menu_date_item active">
-                        <span class="cp_weekly_menu_date_range">21 – 27</span>
-                        <span class="cp_weekly_menu_date_month">Mar</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">28 – 03</span>
-                        <span class="cp_weekly_menu_date_month">Mar – Apr</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">04 – 10</span>
-                        <span class="cp_weekly_menu_date_month">Apr</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">11 – 17</span>
-                        <span class="cp_weekly_menu_date_month">Apr</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">18 – 24</span>
-                        <span class="cp_weekly_menu_date_month">Apr</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">25 – 01</span>
-                        <span class="cp_weekly_menu_date_month">Apr – May</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">02 – 08</span>
-                        <span class="cp_weekly_menu_date_month">May</span>
-                    </div>
-
-                    <div class="cp_weekly_menu_date_item future">
-                        <span class="cp_weekly_menu_date_range">09 – 15</span>
-                        <span class="cp_weekly_menu_date_month">May</span>
-                    </div>
+                    <?php foreach ( $display_terms as $index => $term ): ?>
+                        <div class="cp_weekly_menu_date_item <?php echo $index === 0 ? 'active' : 'future'; ?>">
+                            <span class="cp_weekly_menu_date_range"><?php echo esc_html( $date_ranges[$index]['range'] ); ?></span>
+                            <span class="cp_weekly_menu_date_month"><?php echo esc_html( $date_ranges[$index]['month'] ); ?></span>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
@@ -63,9 +90,9 @@
     </div>
 
     <!-- Banner -->
-    <div class="cp_weekly_menu_banner " style="display: none !important;">
+    <div class="cp_weekly_menu_banner" style="display: none !important;">
         <span class="cp_weekly_menu_banner_text">
-            Choose from 39 recipes for the week of 21 Mar
+            Choose from 39 recipes for the week of <?php echo esc_html( $date_ranges[0]['range'] . ' ' . $date_ranges[0]['month'] ); ?>
         </span>
         <button class="cp_weekly_menu_banner_btn">
             Add-ons available!
@@ -156,7 +183,7 @@
     <div class="cp_weekly_menu_sidebar_header">
         <h2>Filter by</h2>
         <button class="cp_weekly_menu_sidebar_close" id="cp_weekly_close_sidebar_btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
