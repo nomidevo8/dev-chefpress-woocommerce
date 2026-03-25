@@ -63,7 +63,7 @@
     </div>
 
     <!-- Banner -->
-    <div class="cp_weekly_menu_banner">
+    <div class="cp_weekly_menu_banner " style="display: none !important;">
         <span class="cp_weekly_menu_banner_text">
             Choose from 39 recipes for the week of 21 Mar
         </span>
