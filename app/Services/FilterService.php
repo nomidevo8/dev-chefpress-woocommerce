@@ -277,4 +277,49 @@ class FilterService {
 		$response = self::filter_recipes( $filters );
 		wp_send_json( $response );
 	}
+
+	/**
+	 * Get recipe HTML for modal display.
+	 *
+	 * @param int $product_id
+	 * @return string
+	 */
+	public static function get_recipe_modal_html( int $product_id ): string {
+		if ( ! $product_id || get_post_type( $product_id ) !== 'product' ) {
+			return '';
+		}
+
+		// Start output buffering to capture the template
+		ob_start();
+
+		// Include the single-recipe template
+		$template_path = plugin_dir_path( __FILE__ ) . '../../templates/single-recipe.php';
+		if ( file_exists( $template_path ) ) {
+			// Set the global post to the recipe
+			$GLOBALS['post'] = get_post( $product_id );
+			setup_postdata( $GLOBALS['post'] );
+
+			include $template_path;
+
+			wp_reset_postdata();
+		}
+
+		$html = ob_get_clean();
+		return $html;
+	}
+
+	/**
+	 * AJAX handler for getting recipe modal details.
+	 */
+	public static function handle_ajax_get_recipe_details(): void {
+		$recipe_id = absint( $_POST['recipe_id'] ?? 0 );
+
+		if ( ! $recipe_id ) {
+			wp_die( 'Recipe not found.' );
+		}
+
+		$html = self::get_recipe_modal_html( $recipe_id );
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		wp_die();
+	}
 }

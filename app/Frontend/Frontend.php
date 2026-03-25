@@ -31,6 +31,10 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
 		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_filter_recipes', $this, 'handle_ajax_filter' );
 
+		// AJAX handlers for getting recipe details (modal).
+		$this->loader->add_action( 'wp_ajax_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
+		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
+
 		// Register shortcode directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
 	}
@@ -82,6 +86,18 @@ class Frontend {
 			return;
 		}
 
+		// Get theme colors once
+		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+		$inline_css = ':root {' .
+			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'}';
+
 		if ( $is_recipe_page ) {
 			// Dequeue WooCommerce styles
 			wp_dequeue_style( 'woocommerce-general' );
@@ -93,56 +109,14 @@ class Frontend {
 			wp_deregister_style( 'woocommerce-layout' );
 			wp_deregister_style( 'woocommerce-smallscreen' );
 
-			wp_enqueue_style(
-				'dev-chefpress-frontend',
-				DEVCHEFPRESS_RESOURCES_URL . 'css/frontend.css',
-				[],
-				DEVCHEFPRESS_VERSION
-			);
-
-			wp_enqueue_style(
-				'dev-chefpress-filters',
-				DEVCHEFPRESS_RESOURCES_URL . 'css/filters.css',
-				[ 'dev-chefpress-frontend' ],
-				DEVCHEFPRESS_VERSION
-			);
-
-			// Add user-configured theme colors as CSS variables for recipe pages.
-			$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
-			$inline_css = ':root {' .
-				'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
-				'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
-				'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
-				'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
-				'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
-				'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
-				'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
-				'}';
-			wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
-
-			wp_enqueue_style(
-				'font-awesome',
-				'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
-				[],
-				'6.5.0'
-			);
-			
-			wp_enqueue_script(
-				'dev-chefpress-frontend',
-				DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
-				[ 'jquery' ],
-				DEVCHEFPRESS_VERSION,
-				true
-			);
-
-			// Localize config for frontend.
-			wp_localize_script( 'dev-chefpress-frontend', 'ChefPressConfig', [
-				'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
-				'ajax_url'    => admin_url( 'admin-ajax.php' ),
-			] );
+			$this->enqueue_recipe_assets( $inline_css );
 		}
 
 		if ( $is_weekly_menu_page ) {
+			// Enqueue recipe assets for modal display
+			$this->enqueue_recipe_assets( $inline_css );
+
+			// Also enqueue weekly menu specific styles
 			wp_enqueue_style(
 				'dev-chefpress-weekly-menu',
 				DEVCHEFPRESS_RESOURCES_URL . 'css/frontend-weekly-menu.css',
@@ -150,17 +124,6 @@ class Frontend {
 				DEVCHEFPRESS_VERSION
 			);
 
-			// Add user-configured theme colors as CSS variables for weekly menu.
-			$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
-			$inline_css = ':root {' .
-				'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
-				'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
-				'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
-				'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
-				'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
-				'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
-				'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
-				'}';
 			wp_add_inline_style( 'dev-chefpress-weekly-menu', $inline_css );
 
 			wp_enqueue_script(
@@ -180,11 +143,62 @@ class Frontend {
 	}
 
 	/**
+	 * Enqueue recipe product page assets.
+	 *
+	 * @param string $inline_css Theme color CSS variables
+	 */
+	private function enqueue_recipe_assets( string $inline_css ): void {
+		wp_enqueue_style(
+			'dev-chefpress-frontend',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/frontend.css',
+			[],
+			DEVCHEFPRESS_VERSION
+		);
+
+		wp_enqueue_style(
+			'dev-chefpress-filters',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/filters.css',
+			[ 'dev-chefpress-frontend' ],
+			DEVCHEFPRESS_VERSION
+		);
+
+		wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
+
+		wp_enqueue_style(
+			'font-awesome',
+			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+			[],
+			'6.5.0'
+		);
+		
+		wp_enqueue_script(
+			'dev-chefpress-frontend',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend.js',
+			[ 'jquery' ],
+			DEVCHEFPRESS_VERSION,
+			true
+		);
+
+		// Localize config for frontend.
+		wp_localize_script( 'dev-chefpress-frontend', 'ChefPressConfig', [
+			'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
+			'ajax_url'    => admin_url( 'admin-ajax.php' ),
+		] );
+	}
+
+	/**
 	 * AJAX handler for recipe filtering.
 	 */
 	public function handle_ajax_filter(): void {
 	
 		\DevChefPress\Services\FilterService::handle_ajax_filter();
+	}
+
+	/**
+	 * AJAX handler for getting recipe modal details.
+	 */
+	public function handle_ajax_get_recipe_details(): void {
+		\DevChefPress\Services\FilterService::handle_ajax_get_recipe_details();
 	}
 
 	/**

@@ -44,7 +44,7 @@
             const imageUrl = cp_weekly_recipe.image || cp_weekly_recipe.image_url || '';
 
             const cp_weekly_card_html = `
-                        <div class="cp_weekly_menu_card">
+                        <div class="cp_weekly_menu_card" data-recipe-id="${cp_weekly_recipe.id}">
                             <div class="cp_weekly_menu_card_img_wrapper">
                                 <img src="${imageUrl}" alt="${cp_weekly_recipe.title || ''}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
                                 ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
@@ -53,7 +53,7 @@
                                 <div class="cp_weekly_menu_card_category">
                                     ${cp_weekly_recipe.categoryIcon || ''} ${categoryText}
                                 </div>
-                                <h3 class="cp_weekly_menu_card_title">${cp_weekly_recipe.title}</h3>
+                                <h3 class="cp_weekly_menu_card_title cp_weekly_menu_card_title_clickable" data-recipe-id="${cp_weekly_recipe.id}" style="cursor: pointer;">${cp_weekly_recipe.title}</h3>
                                 <p class="cp_weekly_menu_card_subtitle">${cp_weekly_recipe.subtitle}</p>
                                 <div class="cp_weekly_menu_card_tags">
                                     ${cp_weekly_tags_html}
@@ -367,6 +367,85 @@
         }
 
         callFilterService();
+    });
+
+    // Recipe Modal Logic
+    const $cp_weekly_modal = $(`
+        <div id="cp_weekly_recipe_modal" class="cp_weekly_recipe_modal">
+            <div class="cp_weekly_recipe_modal_overlay"></div>
+            <div class="cp_weekly_recipe_modal_dialog">
+                <button class="cp_weekly_recipe_modal_close" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <div class="cp_weekly_recipe_modal_content">
+                    <div class="cp_weekly_recipe_modal_loader">
+                        <div class="cp_weekly_spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    $('body').append($cp_weekly_modal);
+
+    // Open modal on title click
+    $(document).on('click', '.cp_weekly_menu_card_title_clickable', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const recipeId = $(this).data('recipe-id');
+        if (recipeId) {
+            cp_weekly_open_modal(recipeId);
+        }
+    });
+
+    // Open modal function
+    function cp_weekly_open_modal(recipeId) {
+        $cp_weekly_modal.addClass('active');
+        $('body').css('overflow', 'hidden');
+
+        // Fetch recipe details
+        $.ajax({
+            url: ChefPressConfig.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'chefpress_get_recipe_details',
+                _chefpress_nonce: ChefPressConfig?.nonce || '',
+                recipe_id: recipeId,
+            },
+            dataType: 'html',
+            success(html) {
+                $('.cp_weekly_recipe_modal_content').html(html);
+            },
+            error(data) {
+                $('.cp_weekly_recipe_modal_content').html('<p class="cp-modal-error">Failed to load recipe details. Please try again.</p>');
+            },
+        });
+    }
+
+    // Close modal
+    function cp_weekly_close_modal() {
+        $cp_weekly_modal.removeClass('active');
+        $('body').css('overflow', '');
+        $('.cp_weekly_recipe_modal_content').html(`
+            <div class="cp_weekly_recipe_modal_loader">
+                <div class="cp_weekly_spinner"></div>
+            </div>
+        `);
+    }
+
+    // Handle close button and overlay click
+    $(document).on('click', '.cp_weekly_recipe_modal_close, .cp_weekly_recipe_modal_overlay', function (e) {
+        if (e.target === this || $(this).hasClass('cp_weekly_recipe_modal_close')) {
+            cp_weekly_close_modal();
+        }
+    });
+
+    // Close modal on Escape key
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $cp_weekly_modal.hasClass('active')) {
+            cp_weekly_close_modal();
+        }
     });
 
 })(jQuery);
