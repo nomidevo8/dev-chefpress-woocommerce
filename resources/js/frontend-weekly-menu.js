@@ -15,6 +15,19 @@
 
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
     const $cp_weekly_pagination = $('#cp_weekly_pagination');
+    const $cp_weekly_banner = $('.cp_weekly_menu_banner_text');
+
+    function updateBanner(recipeCount) {
+        const activeWeekElement = $('.cp_weekly_menu_date_item.active');
+        const weekIndex = parseInt(activeWeekElement.data('week') || 1, 10);
+        const weekLabel = activeWeekElement.find('.cp_weekly_menu_date_range').text() || '';
+        const weekMonth = activeWeekElement.find('.cp_weekly_menu_date_month').text() || '';
+        const fullRange = `${weekLabel} ${weekMonth}`.trim();
+        
+        if ($cp_weekly_banner.length) {
+            $cp_weekly_banner.text(`Choose from ${recipeCount} recipes for the week of ${fullRange}`);
+        }
+    }
 
     const renderRecipes = (recipes) => {
         $cp_weekly_grid.removeClass('loading');
@@ -305,8 +318,10 @@
                 if (Array.isArray(response.recipes) && response.recipes.length) {
                     cp_weekly_current_page = response.current_page || 1;
                     cp_weekly_total_pages = response.total_pages || 1;
+                    const recipeCount = response.recipes_count || response.recipes.length;
                     renderRecipes(response.recipes);
                     renderPagination(cp_weekly_current_page, cp_weekly_total_pages);
+                    updateBanner(recipeCount);
                     // Scroll to top of grid
                     $('html, body').animate({ scrollTop: $cp_weekly_grid.offset().top - 100 }, 300);
                     return;
@@ -327,6 +342,7 @@
                     </div>
                 `);
                 $cp_weekly_pagination.empty();
+                updateBanner(0);
             },
             error() {
                 setLoading(false);
@@ -413,16 +429,22 @@
         return cp_weekly_width + cp_weekly_gap;
     };
 
-    $('#cp_weekly_date_prev').on('click', function () {
-        $cp_weekly_date_track.animate({
-            scrollLeft: $cp_weekly_date_track.scrollLeft() - (cp_weekly_get_scroll_amount() * 2)
-        }, 300);
+    $('#cp_weekly_date_prev').on('click', function (e) {
+        e.preventDefault();
+        const scrollAmount = cp_weekly_get_scroll_amount() * 2;
+        $cp_weekly_date_track[0].scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
     });
 
-    $('#cp_weekly_date_next').on('click', function () {
-        $cp_weekly_date_track.animate({
-            scrollLeft: $cp_weekly_date_track.scrollLeft() + (cp_weekly_get_scroll_amount() * 2)
-        }, 300);
+    $('#cp_weekly_date_next').on('click', function (e) {
+        e.preventDefault();
+        const scrollAmount = cp_weekly_get_scroll_amount() * 2;
+        $cp_weekly_date_track[0].scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
     });
 
     // Date Selection (week filters take priority and reset other filters)
