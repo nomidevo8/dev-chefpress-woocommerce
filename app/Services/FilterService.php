@@ -265,6 +265,7 @@ class FilterService {
 	 */
 	public static function handle_ajax_filter(): void {
 		// Extract flat POST data
+		check_ajax_referer( 'chefpress_filter_nonce', '_chefpress_nonce' );
 		$filters = [
 			'week'        => sanitize_text_field( $_POST['week'] ?? '' ),
 			'category'    => sanitize_text_field( $_POST['category'] ?? '' ),
