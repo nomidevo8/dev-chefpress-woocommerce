@@ -197,6 +197,8 @@
         $('.cp_weekly_menu_filter_btn[data-recipe-tag]').removeClass('active');
         $('#cp_weekly_sort_dropdown a').removeClass('active');
         $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
+        $('.cp_weekly_menu_date_item').removeClass('active');
+        $('.cp_weekly_menu_date_item').first().addClass('active');
         $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
     }
 
@@ -310,9 +312,12 @@
     });
 
     // Clear sidebar filters
-    $('#cp_weekly_menu_sidebar_clear').on('click', function (e) {
+    $('.cp_weekly_menu_sidebar_clear').on('click', function (e) {
         e.preventDefault();
         resetAllFilters();
+        $cp_weekly_sidebar.removeClass('active');
+        $cp_weekly_overlay.removeClass('active');
+        $('body').css('overflow', '');
         callFilterService();
     });
 
