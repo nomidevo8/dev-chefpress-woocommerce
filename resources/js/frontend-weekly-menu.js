@@ -9,68 +9,7 @@
       * Dev ChefPress for WooCommerce — Frontend JS For Weekly Menu Page
       */
 
-    const cp_weekly_recipes = [
-        {
-            id: 1,
-            image: "https://picsum.photos/seed/fish1/600/450",
-            category: "FISH",
-            categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0-3.3-2-6-6-6s-6 2.7-6 6c0 1.1.3 2.1.8 3L4 14l3 3 3-3c.9.5 1.9.8 3 .8 3.3 0 6-2 6-6Z"/><path d="M12 2v2"/><path d="M12 14v2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>',
-            title: "Express: Seabream and Mediterranean Veg",
-            subtitle: "with Dill Couscous and Herb Dressing",
-            isNew: true,
-            tags: [
-                { label: "Express", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>' },
-                { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' }
-            ],
-            time: "20",
-            calories: "495"
-        },
-        {
-            id: 2,
-            image: "https://picsum.photos/seed/soup1/600/450",
-            category: "FISH",
-            categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8c0-3.3-2-6-6-6s-6 2.7-6 6c0 1.1.3 2.1.8 3L4 14l3 3 3-3c.9.5 1.9.8 3 .8 3.3 0 6-2 6-6Z"/><path d="M12 2v2"/><path d="M12 14v2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>',
-            title: "Spicy Prawn Tom Kha",
-            subtitle: "Thai Coconut Soup",
-            isNew: false,
-            tags: [
-                { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
-                { label: "Low carb", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg>' }
-            ],
-            time: "30",
-            calories: "434"
-        },
-        {
-            id: 3,
-            image: "https://picsum.photos/seed/chicken1/600/450",
-            category: "POULTRY",
-            categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-            title: "Lemon Garlic Chicken",
-            subtitle: "with Greek Potato Salad",
-            isNew: false,
-            tags: [
-                { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
-                { label: "Tips for kids", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
-            ],
-            time: "45",
-            calories: "602"
-        },
-        {
-            id: 4,
-            image: "https://picsum.photos/seed/chicken2/600/450",
-            category: "POULTRY",
-            categoryIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-            title: "Crispy Parmesan Chicken",
-            subtitle: "with Vegetables and Caper Mayo",
-            isNew: false,
-            tags: [
-                { label: "Calorie smart", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
-                { label: "Low carb", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2 2 4 4-4 4 2 2 6-6-6-6Z"/><path d="m8 20 2-2-4-4 4-4-2-2-6 6 6 6Z"/><path d="m15 5-9 14"/></svg>' }
-            ],
-            time: "35",
-            calories: "618"
-        }
-    ];
+    const cp_weekly_recipes = [];
 
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
 
@@ -161,8 +100,8 @@
         }
     }
 
-    // Initial render
-    renderRecipes(cp_weekly_recipes);
+    // Initial render by fetching server data for selected week
+    callFilterService();
 
     // Sort Dropdown Logic
     const $sortBtn = $('#cp_weekly_sort_btn');
