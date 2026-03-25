@@ -447,6 +447,23 @@
         });
     });
 
+    // Auto-scroll to active week on page load
+    function scrollToActiveWeek() {
+        const $activeWeek = $('.cp_weekly_menu_date_item.active');
+        if ($activeWeek.length) {
+            $activeWeek[0].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        }
+    }
+
+    // Call on document ready
+    $(document).ready(function() {
+        setTimeout(scrollToActiveWeek, 100);
+    });
+
     // Date Selection (week filters take priority and reset other filters)
     $('.cp_weekly_menu_date_item').on('click', function () {
         $('.cp_weekly_menu_date_item').removeClass('active');
