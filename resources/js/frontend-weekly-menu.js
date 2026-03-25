@@ -124,7 +124,6 @@
 
     $('#cp_weekly_sort_dropdown a').on('click', function (e) {
         e.preventDefault();
-        console.log('Sort option selected:', $(this).data('sort'));
         const sortType = $(this).data('sort');
         let sortedData = [...cp_weekly_recipes];
 
