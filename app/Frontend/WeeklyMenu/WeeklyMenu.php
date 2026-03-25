@@ -108,12 +108,18 @@ for ( $i = 0; $i < $term_count; $i++ ) {
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                 </svg> Filter
             </button>
-            <button class="cp_weekly_menu_filter_btn">
-                Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m6 9 6 6 6-6" />
-                </svg>
-            </button>
+            <div class="cp_weekly_menu_dropdown">
+                <button type="button" class="cp_weekly_menu_filter_btn" id="cp_weekly_sort_btn">
+                    Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="cp_weekly_menu_dropdown_content" id="cp_weekly_sort_dropdown">
+                    <a href="#" data-sort="default">Default</a>
+                    <a href="#" data-sort="calories-asc">Calories: Low to High</a>
+                    <a href="#" data-sort="carbs-asc">Carbs: Low to High</a>
+                    <a href="#" data-sort="time-asc">Cooking Time: Low to High</a>
+                    <a href="#" data-sort="protein-desc">Protein: High to Low</a>
+                </div>
+            </div>
             <button class="cp_weekly_menu_filter_btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

@@ -5,9 +5,9 @@
 (function ($) {
     'use strict';
 
-   /**
-     * Dev ChefPress for WooCommerce — Frontend JS For Weekly Menu Page
-     */
+    /**
+      * Dev ChefPress for WooCommerce — Frontend JS For Weekly Menu Page
+      */
 
     const cp_weekly_recipes = [
         {
@@ -74,43 +74,101 @@
 
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
 
-    cp_weekly_recipes.forEach(cp_weekly_recipe => {
-        let cp_weekly_tags_html = '';
-        cp_weekly_recipe.tags.forEach(cp_weekly_tag => {
-            cp_weekly_tags_html += `
-                        <span class="cp_weekly_menu_tag">
-                            ${cp_weekly_tag.icon} ${cp_weekly_tag.label}
-                        </span>
-                    `;
-        });
+    const renderRecipes = (recipes) => {
+        $cp_weekly_grid.empty();
+        recipes.forEach(cp_weekly_recipe => {
+            let cp_weekly_tags_html = '';
+            cp_weekly_recipe.tags.forEach(cp_weekly_tag => {
+                cp_weekly_tags_html += `
+                            <span class="cp_weekly_menu_tag">
+                                ${cp_weekly_tag.icon} ${cp_weekly_tag.label}
+                            </span>
+                        `;
+            });
 
-        const cp_weekly_card_html = `
-                    <div class="cp_weekly_menu_card">
-                        <div class="cp_weekly_menu_card_img_wrapper">
-                            <img src="${cp_weekly_recipe.image}" alt="${cp_weekly_recipe.title}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
-                            ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
-                        </div>
-                        <div class="cp_weekly_menu_card_content">
-                            <div class="cp_weekly_menu_card_category">
-                                ${cp_weekly_recipe.categoryIcon} ${cp_weekly_recipe.category}
+            const cp_weekly_card_html = `
+                        <div class="cp_weekly_menu_card">
+                            <div class="cp_weekly_menu_card_img_wrapper">
+                                <img src="${cp_weekly_recipe.image}" alt="${cp_weekly_recipe.title}" class="cp_weekly_menu_card_img" referrerpolicy="no-referrer">
+                                ${cp_weekly_recipe.isNew ? '<span class="cp_weekly_menu_badge_new">NEW</span>' : ''}
                             </div>
-                            <h3 class="cp_weekly_menu_card_title">${cp_weekly_recipe.title}</h3>
-                            <p class="cp_weekly_menu_card_subtitle">${cp_weekly_recipe.subtitle}</p>
-                            <div class="cp_weekly_menu_card_tags">
-                                ${cp_weekly_tags_html}
-                            </div>
-                            <div class="cp_weekly_menu_card_footer">
-                                <div class="cp_weekly_menu_footer_item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> ${cp_weekly_recipe.time}
+                            <div class="cp_weekly_menu_card_content">
+                                <div class="cp_weekly_menu_card_category">
+                                    ${cp_weekly_recipe.categoryIcon} ${cp_weekly_recipe.category}
                                 </div>
-                                <div class="cp_weekly_menu_footer_item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9ca3af;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${cp_weekly_recipe.calories} cals
+                                <h3 class="cp_weekly_menu_card_title">${cp_weekly_recipe.title}</h3>
+                                <p class="cp_weekly_menu_card_subtitle">${cp_weekly_recipe.subtitle}</p>
+                                <div class="cp_weekly_menu_card_tags">
+                                    ${cp_weekly_tags_html}
+                                </div>
+                                <div class="cp_weekly_menu_card_footer">
+                                    <div class="cp_weekly_menu_footer_item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/></svg> ${cp_weekly_recipe.time}
+                                    </div>
+                                    <div class="cp_weekly_menu_footer_item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9ca3af;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/></svg> ${cp_weekly_recipe.calories} cals
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-        $cp_weekly_grid.append(cp_weekly_card_html);
+                    `;
+            $cp_weekly_grid.append(cp_weekly_card_html);
+        });
+    };
+
+    // Initial render
+    renderRecipes(cp_weekly_recipes);
+
+    // Sort Dropdown Logic
+    const $sortBtn = $('#cp_weekly_sort_btn');
+    const $sortDropdown = $('#cp_weekly_sort_dropdown');
+
+    $(document).on('click', '#cp_weekly_sort_btn', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $sortDropdown.toggleClass('show');
+    });
+
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.cp_weekly_menu_dropdown').length) {
+            $sortDropdown.removeClass('show');
+        }
+    });
+
+    $('#cp_weekly_sort_dropdown a').on('click', function (e) {
+        e.preventDefault();
+        console.log('Sort option selected:', $(this).data('sort'));
+        const sortType = $(this).data('sort');
+        let sortedData = [...cp_weekly_recipes];
+
+        $('#cp_weekly_sort_dropdown a').removeClass('active');
+        $(this).addClass('active');
+
+        switch (sortType) {
+            case 'calories-asc':
+                sortedData.sort((a, b) => parseInt(a.calories) - parseInt(b.calories));
+                break;
+            case 'carbs-asc':
+                sortedData.sort((a, b) => a.carbs - b.carbs);
+                break;
+            case 'time-asc':
+                sortedData.sort((a, b) => parseInt(a.time) - parseInt(b.time));
+                break;
+            case 'protein-desc':
+                sortedData.sort((a, b) => b.protein - a.protein);
+                break;
+            case 'default':
+            default:
+                // Keep original order (id based)
+                sortedData.sort((a, b) => a.id - b.id);
+                break;
+        }
+
+        renderRecipes(sortedData);
+
+        // Update button text
+        const selectedText = $(this).text();
+        $sortBtn.html(`${selectedText} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`);
     });
 
     // Sidebar Logic
