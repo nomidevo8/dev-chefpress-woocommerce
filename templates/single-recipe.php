@@ -5,7 +5,7 @@ use DevChefPress\Frontend\ProductHeader;
 use DevChefPress\Frontend\ProductInstructions;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-get_header();
+// get_header();
 
 $product_id = get_the_ID();
 ?>
