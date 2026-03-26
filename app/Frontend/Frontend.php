@@ -85,6 +85,7 @@ class Frontend {
 		if ( ! $is_recipe_page && ! $is_weekly_menu_page ) {
 			return;
 		}
+		
 
 		// Get theme colors once
 		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
@@ -165,9 +166,9 @@ class Frontend {
 		wp_add_inline_style( 'dev-chefpress-frontend', $inline_css );
 
 		wp_enqueue_style(
-			'font-awesome',
+			'font-awesome-6',
 			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
-			[],
+			[], 
 			'6.5.0'
 		);
 		

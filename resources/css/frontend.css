@@ -75,6 +75,7 @@
   font-weight: 700 !important;
   line-height: 1.1 !important;
   margin-bottom: 0.5rem;
+  color: var(--cp_product_color-text-main) !important;
 }
 
 .cp_product_sub-title {
