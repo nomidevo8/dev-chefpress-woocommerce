@@ -162,6 +162,9 @@ class Frontend {
 			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
 			'}';
 
+		// Enqueue recipe product page assets for styling consistency
+		$this->enqueue_recipe_assets( $inline_css );
+
 		// Ensure jQuery is enqueued first
 		wp_enqueue_script( 'jquery' );
 
