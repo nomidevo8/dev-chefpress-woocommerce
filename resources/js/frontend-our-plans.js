@@ -2,7 +2,7 @@
   // ─────────────────────────────────────────────────────────
   //  CONSTANTS
   // ─────────────────────────────────────────────────────────
-  var ALLERGENS = [
+  var ALLERGENS = window.ChefPressOurPlans && window.ChefPressOurPlans.allergens ? window.ChefPressOurPlans.allergens : [
     { name: 'Eggs', icon: '🥚' }, { name: 'Dairy', icon: '🥛' },
     { name: 'Soy', icon: '🌱' }, { name: 'Peanut', icon: '🥜' },
     { name: 'Tree Nuts', icon: '🌰' }, { name: 'Fish', icon: '🐟' },
@@ -408,8 +408,8 @@
     } else {
       var chips = ALLERGENS.map(function(a) {
         var sel = state.selectedAllergens.indexOf(a.name) !== -1;
-        return '<div onclick="toggleAllergen(\'' + a.name + '\')" class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2 dev_chefpress_plan_cursor-pointer dev_chefpress_plan_font-bold" style="padding:0.75rem 1.5rem!important;border-radius:9999px!important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + '!important;background:' + (sel ? 'var(--emerald-50)' : '#fff') + '!important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + '!important;font-size:0.875rem!important;transition:all 0.2s!important;box-shadow:' + (sel ? '0 0 0 4px rgba(16,185,129,0.1)' : 'none') + '!important;">' +
-          '<span style="font-size:1.125rem!important;">' + a.icon + '</span><span>' + a.name + '</span>' +
+        return '<div onclick="toggleAllergen(\'' + a.name + '\')" class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2 dev_chefpress_plan_cursor-pointer dev_chefpress_plan_font-bold" style="padding:0.5rem 1.5rem!important;border-radius:9999px!important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + '!important;background:' + (sel ? 'var(--emerald-50)' : '#fff') + '!important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + '!important;font-size:0.875rem!important;transition:all 0.2s!important;box-shadow:' + (sel ? '0 0 0 4px rgba(16,185,129,0.1)' : 'none') + '!important;">' +
+          '<span>' + a.name + '</span>' +
         '</div>';
       }).join('');
       inner = '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_justify-center dev_chefpress_plan_gap-3 dev_chefpress_plan_mb-8" style="max-width:42rem!important;margin:0 auto!important;">' + chips + '</div>';

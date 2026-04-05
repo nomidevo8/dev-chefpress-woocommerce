@@ -215,6 +215,25 @@ class Frontend {
 			DEVCHEFPRESS_VERSION,
 			true
 		);
+
+		// Fetch allergen tags dynamically
+		$allergen_tags = get_terms( [
+			'taxonomy' => 'chefpress_allergen_tag',
+			'hide_empty' => false,
+			'orderby' => 'name',
+			'order' => 'ASC',
+		] );
+
+		$allergens = array_map( function( $tag ) {
+			return [
+				'name' => $tag->name,
+			];
+		}, $allergen_tags );
+
+		// Localize the script with dynamic allergens
+		wp_localize_script( 'dev-chefpress-our-plans', 'ChefPressOurPlans', [
+			'allergens' => $allergens,
+		] );
 	}
 
 	/**
