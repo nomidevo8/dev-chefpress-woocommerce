@@ -23,6 +23,7 @@ class Frontend {
 
 	private function register_hooks(): void {
 		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets' , 999 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets_our_plans' , 999 );
 
 		// Override product page for recipe_product.
 		$this->loader->add_action( 'template_redirect', $this, 'maybe_override_product_page', 1 );
@@ -35,8 +36,9 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
 		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
 
-		// Register shortcode directly.
+		// Register shortcodes directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
+		add_shortcode( 'dev_chefpress_our_plans', [ $this, 'render_our_plans' ] );
 	}
 
 	/**
@@ -143,6 +145,80 @@ class Frontend {
 		}
 	}
 
+	public function enqueue_assets_our_plans(): void {
+
+		// Google Fonts (Inter + Outfit)
+		wp_enqueue_style(
+			'dev-fonts',
+			'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap',
+			[],
+			null
+		);
+
+		// Flatpickr CSS
+		wp_enqueue_style(
+			'flatpickr-css',
+			'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+			[],
+			null
+		);
+
+		// Leaflet CSS
+		wp_enqueue_style(
+			'leaflet-css',
+			'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+			[],
+			null
+		);
+
+		// Your Custom CSS
+		wp_enqueue_style(
+			'dev-chefpress-our-plans',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/frontend-our-plans.css',
+			[],
+			DEVCHEFPRESS_VERSION
+		);
+
+		// jQuery (WordPress already includes it, just enqueue)
+		wp_enqueue_script('jquery');
+
+		// Lucide Icons
+		wp_enqueue_script(
+			'lucide-icons',
+			'https://unpkg.com/lucide@latest',
+			[],
+			null,
+			true
+		);
+
+		// Flatpickr JS
+		wp_enqueue_script(
+			'flatpickr-js',
+			'https://cdn.jsdelivr.net/npm/flatpickr',
+			[],
+			null,
+			true
+		);
+
+		// Leaflet JS
+		wp_enqueue_script(
+			'leaflet-js',
+			'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+			[],
+			null,
+			true
+		);
+
+		// Your Custom JS
+		wp_enqueue_script(
+			'dev-chefpress-our-plans',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend-our-plans.js',
+			['jquery', 'flatpickr-js', 'leaflet-js'],
+			DEVCHEFPRESS_VERSION,
+			true
+		);
+	}
+
 	/**
 	 * Enqueue recipe product page assets.
 	 *
@@ -208,6 +284,15 @@ class Frontend {
 	public function render_weekly_menu(): string {
 		ob_start();
 		include DEVCHEFPRESS_PATH . 'app/Frontend/WeeklyMenu/WeeklyMenu.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the OurPlans shortcode.
+	 */
+	public function render_our_plans(): string {
+		ob_start();
+		include DEVCHEFPRESS_PATH . 'templates/our-plans.php';
 		return ob_get_clean();
 	}
 }

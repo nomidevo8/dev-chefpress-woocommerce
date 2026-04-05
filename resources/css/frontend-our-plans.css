@@ -1,0 +1,549 @@
+/* ─── CSS Variables ─── */
+:root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #d1fae5;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --emerald-50: #ecfdf5;
+    --emerald-100: #d1fae5;
+    --emerald-200: #a7f3d0;
+    --emerald-300: #6ee7b7;
+    --emerald-400: #34d399;
+    --emerald-500: #10b981;
+    --emerald-600: #059669;
+    --emerald-700: #047857;
+    --emerald-800: #065f46;
+    --emerald-900: #064e3b;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --red-50: #fef2f2;
+    --red-600: #dc2626;
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    color: var(--text-main);
+    background: linear-gradient(135deg, rgba(236,253,245,0.3) 0%, #ffffff 50%, rgba(236,253,245,0.2) 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, .dev_chefpress_plan_font-display {
+    font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+}
+
+img { max-width: 100%; height: auto; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+/* ─── Layout ─── */
+main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+@media (min-width: 640px) { main { padding: 2rem; } }
+
+/* ─── Glass Card ─── */
+.dev_chefpress_plan_glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#dev_chefpress_plan_wizard-container {
+    width: 100%;
+    max-width: 1440px;
+    border-radius: 2.5rem;
+    box-shadow: 0 25px 50px -12px rgba(6, 78, 59, 0.05);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+@media (min-width: 640px) { #dev_chefpress_plan_wizard-container { padding: 3rem; } }
+
+/* ─── Progress Header ─── */
+#dev_chefpress_plan_progress-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--emerald-50);
+}
+
+.dev_chefpress_plan_logo-area { display: flex; align-items: center; gap: 0.75rem; }
+.dev_chefpress_plan_logo-icon {
+    width: 2.5rem; height: 2.5rem;
+    background: var(--emerald-500);
+    border-radius: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 15px -3px rgba(16,185,129,0.3);
+}
+.dev_chefpress_plan_logo-icon svg { color: #fff; width: 1.5rem; height: 1.5rem; }
+.dev_chefpress_plan_logo-text {
+    font-size: 1.5rem; font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.025em;
+    color: var(--emerald-900);
+}
+
+.dev_chefpress_plan_progress-right { display: flex; align-items: center; gap: 1rem; }
+.dev_chefpress_plan_progress-label { text-align: right; display: none; }
+@media (min-width: 640px) { .dev_chefpress_plan_progress-label { display: block; } }
+.dev_chefpress_plan_progress-label .dev_chefpress_plan_label-title {
+    font-size: 0.625rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--gray-400); font-weight: 700;
+}
+#dev_chefpress_plan_step-label { font-size: 0.875rem; font-weight: 600; color: var(--emerald-600); }
+
+.dev_chefpress_plan_progress-ring-wrap {
+    width: 3rem; height: 3rem;
+    border-radius: 50%;
+    border: 4px solid var(--emerald-100);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+}
+.dev_chefpress_plan_progress-ring-wrap svg {
+    width: 100%; height: 100%;
+    transform: rotate(-90deg);
+    position: absolute;
+}
+#dev_chefpress_plan_step-number {
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--emerald-700);
+    position: relative; z-index: 1;
+}
+
+/* ─── Step Transition ─── */
+.dev_chefpress_plan_step-transition {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Buttons ─── */
+.dev_chefpress_plan_btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    background: var(--emerald-500);
+    color: #fff;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(16,185,129,0.2);
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+.dev_chefpress_plan_btn-primary:hover { background: var(--emerald-600); }
+.dev_chefpress_plan_btn-primary:active { transform: scale(0.98); }
+.dev_chefpress_plan_btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.dev_chefpress_plan_btn-primary.dev_chefpress_plan_w-full { width: 100%; }
+
+.dev_chefpress_plan_btn-outline {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    border: 2px solid var(--emerald-500);
+    color: var(--emerald-600);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: background 0.2s, transform 0.1s;
+    background: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.dev_chefpress_plan_btn-outline:hover { background: var(--emerald-50); }
+.dev_chefpress_plan_btn-outline:active { transform: scale(0.98); }
+
+/* ─── Input Field ─── */
+.dev_chefpress_plan_input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--gray-200);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    font-size: 1rem;
+    background: #fff;
+}
+.dev_chefpress_plan_input-field:focus {
+    border-color: var(--emerald-500);
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.1);
+}
+
+/* ─── Card Selectable ─── */
+.dev_chefpress_plan_card-selectable {
+    border: 2px solid transparent;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+.dev_chefpress_plan_card-selectable:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.dev_chefpress_plan_card-selectable.dev_chefpress_plan_active {
+    border-color: var(--emerald-500);
+    background: var(--emerald-50);
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.1);
+}
+
+/* ─── Grid helpers ─── */
+.dev_chefpress_plan_grid { display: grid; }
+.dev_chefpress_plan_grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.dev_chefpress_plan_gap-4 { gap: 1rem; }
+.dev_chefpress_plan_gap-6 { gap: 1.5rem; }
+.dev_chefpress_plan_gap-8 { gap: 2rem; }
+@media (min-width: 640px) {
+    .dev_chefpress_plan_sm-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 768px) {
+    .dev_chefpress_plan_md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .dev_chefpress_plan_lg-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-col-span-1 { grid-column: span 1; }
+    .dev_chefpress_plan_lg-col-span-2 { grid-column: span 2; }
+    .dev_chefpress_plan_lg-col-span-3 { grid-column: span 3; }
+}
+
+/* ─── Custom Scrollbar ─── */
+.dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+.dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+.dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ─── Flatpickr Emerald Overrides ─── */
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: var(--emerald-500) !important;
+    border-color: var(--emerald-500) !important;
+}
+.flatpickr-day:hover { background: var(--emerald-50) !important; }
+.flatpickr-months .flatpickr-month { color: var(--emerald-900) !important; font-weight: 700; }
+.flatpickr-weekday { color: var(--gray-400) !important; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; }
+.flatpickr-calendar { box-shadow: none !important; border: none !important; font-family: 'Inter', sans-serif !important; }
+
+/* ─── Leaflet Map ─── */
+#dev_chefpress_plan_delivery-map, #dev_chefpress_plan_fullscreen-delivery-map { background: var(--emerald-50); }
+.leaflet-container { font-family: 'Inter', sans-serif; }
+
+/* ─── Animate bounce ─── */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+    50% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+.dev_chefpress_plan_animate-bounce { animation: bounce 1s infinite; }
+
+/* ─── Utility classes used in step HTML ─── */
+.dev_chefpress_plan_text-center { text-align: center; }
+.dev_chefpress_plan_text-left { text-align: left; }
+.dev_chefpress_plan_text-right { text-align: right; }
+.dev_chefpress_plan_mb-2 { margin-bottom: 0.5rem; }
+.dev_chefpress_plan_mb-4 { margin-bottom: 1rem; }
+.dev_chefpress_plan_mb-6 { margin-bottom: 1.5rem; }
+.dev_chefpress_plan_mb-8 { margin-bottom: 2rem; }
+.dev_chefpress_plan_mb-10 { margin-bottom: 2.5rem; }
+.dev_chefpress_plan_mb-12 { margin-bottom: 3rem; }
+.dev_chefpress_plan_mt-auto { margin-top: auto; }
+.dev_chefpress_plan_mt-4 { margin-top: 1rem; }
+.dev_chefpress_plan_mt-2 { margin-top: 0.5rem; }
+.dev_chefpress_plan_mt-8 { margin-top: 2rem; }
+.dev_chefpress_plan_mx-auto { margin-left: auto; margin-right: auto; }
+.dev_chefpress_plan_pt-4 { padding-top: 1rem; }
+.dev_chefpress_plan_pt-6 { padding-top: 1.5rem; }
+.dev_chefpress_plan_pb-2 { padding-bottom: 0.5rem; }
+.dev_chefpress_plan_p-4 { padding: 1rem; }
+.dev_chefpress_plan_p-6 { padding: 1.5rem; }
+.dev_chefpress_plan_px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.dev_chefpress_plan_px-4 { padding-left: 1rem; padding-right: 1rem; }
+.dev_chefpress_plan_px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+.dev_chefpress_plan_px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.dev_chefpress_plan_py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.dev_chefpress_plan_py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.dev_chefpress_plan_py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.dev_chefpress_plan_py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.dev_chefpress_plan_py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+.dev_chefpress_plan_space-y-2 > * + * { margin-top: 0.5rem; }
+.dev_chefpress_plan_space-y-3 > * + * { margin-top: 0.75rem; }
+.dev_chefpress_plan_space-y-4 > * + * { margin-top: 1rem; }
+.dev_chefpress_plan_space-y-6 > * + * { margin-top: 1.5rem; }
+.dev_chefpress_plan_flex { display: flex; }
+.dev_chefpress_plan_flex-col { flex-direction: column; }
+.dev_chefpress_plan_flex-row { flex-direction: row; }
+.dev_chefpress_plan_flex-wrap { flex-wrap: wrap; }
+.dev_chefpress_plan_flex-1 { flex: 1 1 0%; }
+.dev_chefpress_plan_flex-grow { flex-grow: 1; }
+.dev_chefpress_plan_items-center { align-items: center; }
+.dev_chefpress_plan_items-start { align-items: flex-start; }
+.dev_chefpress_plan_items-end { align-items: flex-end; }
+.dev_chefpress_plan_justify-center { justify-content: center; }
+.dev_chefpress_plan_justify-between { justify-content: space-between; }
+.dev_chefpress_plan_justify-end { justify-content: flex-end; }
+.dev_chefpress_plan_gap-1 { gap: 0.25rem; }
+.dev_chefpress_plan_gap-2 { gap: 0.5rem; }
+.dev_chefpress_plan_gap-3 { gap: 0.75rem; }
+.dev_chefpress_plan_relative { position: relative; }
+.dev_chefpress_plan_absolute { position: absolute; }
+.dev_chefpress_plan_fixed { position: fixed; }
+.dev_chefpress_plan_inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.dev_chefpress_plan_z-10 { z-index: 10; }
+.dev_chefpress_plan_z-20 { z-index: 20; }
+.dev_chefpress_plan_overflow-hidden { overflow: hidden; }
+.dev_chefpress_plan_overflow-y-auto { overflow-y: auto; }
+.dev_chefpress_plan_overflow-x-auto { overflow-x: auto; }
+.dev_chefpress_plan_w-full { width: 100%; }
+.dev_chefpress_plan_w-3 { width: 0.75rem; }
+.dev_chefpress_plan_w-4 { width: 1rem; }
+.dev_chefpress_plan_w-5 { width: 1.25rem; }
+.dev_chefpress_plan_w-6 { width: 1.5rem; }
+.dev_chefpress_plan_w-7 { width: 1.75rem; }
+.dev_chefpress_plan_w-8 { width: 2rem; }
+.dev_chefpress_plan_w-10 { width: 2.5rem; }
+.dev_chefpress_plan_w-12 { width: 3rem; }
+.dev_chefpress_plan_w-14 { width: 3.5rem; }
+.dev_chefpress_plan_w-24 { width: 6rem; }
+.dev_chefpress_plan_h-2 { height: 0.5rem; }
+.dev_chefpress_plan_h-3 { height: 0.75rem; }
+.dev_chefpress_plan_h-4 { height: 1rem; }
+.dev_chefpress_plan_h-5 { height: 1.25rem; }
+.dev_chefpress_plan_h-6 { height: 1.5rem; }
+.dev_chefpress_plan_h-7 { height: 1.75rem; }
+.dev_chefpress_plan_h-8 { height: 2rem; }
+.dev_chefpress_plan_h-10 { height: 2.5rem; }
+.dev_chefpress_plan_h-12 { height: 3rem; }
+.dev_chefpress_plan_h-14 { height: 3.5rem; }
+.dev_chefpress_plan_h-24 { height: 6rem; }
+.dev_chefpress_plan_h-32 { height: 8rem; }
+.dev_chefpress_plan_h-64 { height: 16rem; }
+.dev_chefpress_plan_h-full { height: 100%; }
+.dev_chefpress_plan_min-h-screen { min-height: 100vh; }
+.dev_chefpress_plan_max-w-md { max-width: 28rem; }
+.dev_chefpress_plan_max-w-lg { max-width: 32rem; }
+.dev_chefpress_plan_max-w-2xl { max-width: 42rem; }
+.dev_chefpress_plan_max-w-full { max-width: 100%; }
+.dev_chefpress_plan_rounded { border-radius: 0.25rem; }
+.dev_chefpress_plan_rounded-full { border-radius: 9999px; }
+.dev_chefpress_plan_rounded-lg { border-radius: 0.5rem; }
+.dev_chefpress_plan_rounded-xl { border-radius: 0.75rem; }
+.dev_chefpress_plan_rounded-2xl { border-radius: 1rem; }
+.dev_chefpress_plan_rounded-3xl { border-radius: 1.5rem; }
+.dev_chefpress_plan_border { border-width: 1px; border-style: solid; }
+.dev_chefpress_plan_border-2 { border-width: 2px; border-style: solid; }
+.dev_chefpress_plan_border-4 { border-width: 4px; border-style: solid; }
+.dev_chefpress_plan_border-t { border-top-width: 1px; border-top-style: solid; }
+.dev_chefpress_plan_border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+.dev_chefpress_plan_border-dashed { border-style: dashed; }
+.dev_chefpress_plan_border-transparent { border-color: transparent; }
+.dev_chefpress_plan_border-white { border-color: #fff; }
+.dev_chefpress_plan_border-gray-50 { border-color: var(--gray-50); }
+.dev_chefpress_plan_border-gray-100 { border-color: var(--gray-100); }
+.dev_chefpress_plan_border-gray-200 { border-color: var(--gray-200); }
+.dev_chefpress_plan_border-emerald-50 { border-color: var(--emerald-50); }
+.dev_chefpress_plan_border-emerald-100 { border-color: var(--emerald-100); }
+.dev_chefpress_plan_border-emerald-200 { border-color: var(--emerald-200); }
+.dev_chefpress_plan_border-emerald-500 { border-color: var(--emerald-500); }
+.dev_chefpress_plan_bg-white { background: #fff; }
+.dev_chefpress_plan_bg-gray-50 { background: var(--gray-50); }
+.dev_chefpress_plan_bg-gray-100 { background: var(--gray-100); }
+.dev_chefpress_plan_bg-emerald-50 { background: var(--emerald-50); }
+.dev_chefpress_plan_bg-emerald-100 { background: var(--emerald-100); }
+.dev_chefpress_plan_bg-emerald-500 { background: var(--emerald-500); }
+.dev_chefpress_plan_bg-emerald-900 { background: var(--emerald-900); }
+.dev_chefpress_plan_bg-red-50 { background: var(--red-50); }
+.dev_chefpress_plan_bg-purple-400 { background: #c084fc; }
+.dev_chefpress_plan_bg-orange-400 { background: #fb923c; }
+.dev_chefpress_plan_bg-blue-400 { background: #60a5fa; }
+.dev_chefpress_plan_text-white { color: #fff; }
+.dev_chefpress_plan_text-gray-300 { color: var(--gray-300); }
+.dev_chefpress_plan_text-gray-400 { color: var(--gray-400); }
+.dev_chefpress_plan_text-gray-500 { color: var(--gray-500); }
+.dev_chefpress_plan_text-gray-600 { color: var(--gray-600); }
+.dev_chefpress_plan_text-gray-700 { color: var(--gray-700); }
+.dev_chefpress_plan_text-gray-900 { color: var(--gray-900); }
+.dev_chefpress_plan_text-emerald-300 { color: var(--emerald-300); }
+.dev_chefpress_plan_text-emerald-400 { color: var(--emerald-400); }
+.dev_chefpress_plan_text-emerald-500 { color: var(--emerald-500); }
+.dev_chefpress_plan_text-emerald-600 { color: var(--emerald-600); }
+.dev_chefpress_plan_text-emerald-700 { color: var(--emerald-700); }
+.dev_chefpress_plan_text-emerald-900 { color: var(--emerald-900); }
+.dev_chefpress_plan_text-red-600 { color: var(--red-600); }
+.dev_chefpress_plan_text-purple-400 { color: #c084fc; }
+.dev_chefpress_plan_text-orange-400 { color: #fb923c; }
+.dev_chefpress_plan_text-blue-400 { color: #60a5fa; }
+.dev_chefpress_plan_text-xs { font-size: 0.75rem; line-height: 1rem; }
+.dev_chefpress_plan_text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.dev_chefpress_plan_text-base { font-size: 1rem; }
+.dev_chefpress_plan_text-lg { font-size: 1.125rem; }
+.dev_chefpress_plan_text-xl { font-size: 1.25rem; }
+.dev_chefpress_plan_text-2xl { font-size: 1.5rem; }
+.dev_chefpress_plan_text-3xl { font-size: 1.875rem; }
+.dev_chefpress_plan_text-4xl { font-size: 2.25rem; }
+.dev_chefpress_plan_text-5xl { font-size: 3rem; }
+.dev_chefpress_plan_text-6xl { font-size: 3.75rem; }
+.dev_chefpress_plan_font-medium { font-weight: 500; }
+.dev_chefpress_plan_font-semibold { font-weight: 600; }
+.dev_chefpress_plan_font-bold { font-weight: 700; }
+.dev_chefpress_plan_font-black { font-weight: 900; }
+.dev_chefpress_plan_font-display { font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif; }
+.dev_chefpress_plan_uppercase { text-transform: uppercase; }
+.dev_chefpress_plan_tracking-tight { letter-spacing: -0.025em; }
+.dev_chefpress_plan_tracking-wider { letter-spacing: 0.05em; }
+.dev_chefpress_plan_tracking-widest { letter-spacing: 0.1em; }
+.dev_chefpress_plan_tracking-tighter { letter-spacing: -0.05em; }
+.dev_chefpress_plan_leading-tight { line-height: 1.25; }
+.dev_chefpress_plan_leading-relaxed { line-height: 1.625; }
+.dev_chefpress_plan_truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dev_chefpress_plan_whitespace-nowrap { white-space: nowrap; }
+.dev_chefpress_plan_opacity-40 { opacity: 0.4; }
+.dev_chefpress_plan_opacity-50 { opacity: 0.5; }
+.dev_chefpress_plan_opacity-60 { opacity: 0.6; }
+.dev_chefpress_plan_shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+.dev_chefpress_plan_shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
+.dev_chefpress_plan_shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); }
+.dev_chefpress_plan_shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+.dev_chefpress_plan_shadow-emerald { box-shadow: 0 10px 15px -3px rgba(16,185,129,0.2); }
+.dev_chefpress_plan_object-cover { object-fit: cover; }
+.dev_chefpress_plan_resize-none { resize: none; }
+.dev_chefpress_plan_appearance-none { appearance: none; }
+.dev_chefpress_plan_accent-emerald { accent-color: var(--emerald-500); }
+.dev_chefpress_plan_cursor-pointer { cursor: pointer; }
+.dev_chefpress_plan_pointer-events-none { pointer-events: none; }
+.dev_chefpress_plan_select-none { user-select: none; }
+
+/* backdrop */
+.dev_chefpress_plan_backdrop-blur { backdrop-filter: blur(8px); }
+
+/* ─── Step-specific styles ─── */
+.dev_chefpress_plan_profile-number-input {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.dev_chefpress_plan_range-slider {
+    width: 100%;
+    height: 0.5rem;
+    background: var(--emerald-200);
+    border-radius: 0.5rem;
+    appearance: none;
+    cursor: pointer;
+    accent-color: var(--emerald-500);
+}
+
+.dev_chefpress_plan_diet-macro-bar {
+    display: flex;
+    gap: 0.25rem;
+    height: 0.5rem;
+    width: 100%;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+/* Fullscreen map overlay */
+.dev_chefpress_plan_fullscreen-map-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Recipe image */
+.dev_chefpress_plan_recipe-img {
+    width: 100%;
+    height: 8rem;
+    object-fit: cover;
+}
+
+/* Category filter button active */
+.dev_chefpress_plan_cat-btn.dev_chefpress_plan_active { background: var(--emerald-500); color: #fff; }
+.dev_chefpress_plan_cat-btn { background: var(--gray-100); color: var(--gray-500); }
+.dev_chefpress_plan_cat-btn:hover { background: var(--gray-200); }
+
+/* inline icon sizing inside lucide */
+[data-lucide] { display: inline-block; }
+.dev_chefpress_plan_lucide-sm [data-lucide] { width: 0.75rem; height: 0.75rem; }
+
+/* Map container */
+.dev_chefpress_plan_map-container {
+    position: relative;
+    width: 100%;
+    height: 16rem;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 2px solid var(--emerald-100);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* success check */
+.dev_chefpress_plan_success-check {
+    width: 6rem; height: 6rem;
+    background: var(--emerald-500);
+    border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 2rem;
+    box-shadow: 0 25px 50px -12px rgba(16,185,129,0.4);
+}
+
+/* ─── Responsive helpers ─── */
+@media (min-width: 640px) {
+    .dev_chefpress_plan_sm-flex-row { flex-direction: row; }
+    .dev_chefpress_plan_sm-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dev_chefpress_plan_sm-col-span-2 { grid-column: span 2; }
+    .dev_chefpress_plan_sm-block { display: block; }
+    .dev_chefpress_plan_hidden-sm { display: none; }
+}
+@media (max-width: 639px) {
+    .dev_chefpress_plan_hidden-xs { display: none; }
+    .dev_chefpress_plan_sm-block { display: none; }
+}
+@media (min-width: 768px) {
+    .dev_chefpress_plan_md-flex-row { flex-direction: row; }
+    .dev_chefpress_plan_md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dev_chefpress_plan_md-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .dev_chefpress_plan_lg-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dev_chefpress_plan_lg-col-span-1 { grid-column: span 1; }
+    .dev_chefpress_plan_lg-col-span-2 { grid-column: span 2; }
+    .dev_chefpress_plan_lg-col-span-3 { grid-column: span 3; }
+}
+
+/* ─── Payment logos ─── */
+.dev_chefpress_plan_payment-logo { height: 0.75rem; opacity: 0.4; }
+
+/* ─── Misc ─── */
+.dev_chefpress_plan_ring-4 { box-shadow: 0 0 0 4px rgba(16,185,129,0.1); }
+.dev_chefpress_plan_bg-white\/90 { background: rgba(255,255,255,0.9); }
+.dev_chefpress_plan_bg-emerald-50\/50 { background: rgba(236,253,245,0.5); }
+.dev_chefpress_plan_border-emerald-700 { border-color: var(--emerald-700); }
+.dev_chefpress_plan_text-emerald-800 { color: var(--emerald-800); }
+.dev_chefpress_plan_text-emerald-800\/40 { color: rgba(6,95,70,0.4); }
+.dev_chefpress_plan_text-emerald-300\/60 { color: rgba(110,231,183,0.6); }
+.dev_chefpress_plan_bg-white\/10 { background: rgba(255,255,255,0.1); }
+.dev_chefpress_plan_border-white\/10 { border-color: rgba(255,255,255,0.1); }
+.dev_chefpress_plan_sm-col-span-2 { grid-column: span 1; }
+@media (min-width: 640px) { .dev_chefpress_plan_sm-col-span-2 { grid-column: span 2; } }
