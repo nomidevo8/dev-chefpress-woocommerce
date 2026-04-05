@@ -91,6 +91,7 @@ add_action( 'plugins_loaded', function (): void {
 register_activation_hook( __FILE__, function (): void {
 	// Ensure the weekly taxonomy is registered before creating terms.
 	\DevChefPress\Plugin::create_default_week_terms();
+	\DevChefPress\Plugin::create_default_meal_type_terms();
 	flush_rewrite_rules();
 } );
 

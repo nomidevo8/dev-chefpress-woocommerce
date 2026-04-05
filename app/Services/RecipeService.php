@@ -34,6 +34,7 @@ class RecipeService {
 		$this->save_groups( $post );
 		$this->save_allergens( $post );
 		$this->save_weeks( $post );
+		$this->save_meal_types( $post );
 		$this->save_nutrition_table( $post );
 
 		// Invalidate model cache.
@@ -66,6 +67,34 @@ class RecipeService {
 		}
 
 		wp_set_object_terms( $this->post_id, $week_ids, 'chefpress_week', false );
+	}
+
+	/**
+	 * Save meal type assignments.
+	 *
+	 * @param array<string, mixed> $post
+	 */
+	private function save_meal_types( array $post ): void {
+		$raw = $post['chefpress_meal_types'] ?? [];
+		if ( ! is_array( $raw ) ) {
+			$raw = [];
+		}
+
+		$meal_type_ids = array_filter(
+			array_map( static function ( $term_id ) {
+				return absint( $term_id );
+			}, $raw ),
+			static function ( $id ) {
+				return $id > 0;
+			}
+		);
+
+		if ( empty( $meal_type_ids ) ) {
+			wp_set_object_terms( $this->post_id, [], 'chefpress_meal_type', false );
+			return;
+		}
+
+		wp_set_object_terms( $this->post_id, $meal_type_ids, 'chefpress_meal_type', false );
 	}
 
 	/**

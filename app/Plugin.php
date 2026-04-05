@@ -123,6 +123,7 @@ final class Plugin {
 		] );
 
 		self::register_week_taxonomy();
+		self::register_meal_type_taxonomy();
 	}
 
 	/**
@@ -136,6 +137,20 @@ final class Plugin {
 			'show_in_rest' => true,
 			'hierarchical' => false,
 			'rewrite'      => [ 'slug' => 'chefpress-week', 'with_front' => false ],
+		] );
+	}
+
+	/**
+	 * Register meal type taxonomy.
+	 */
+	public static function register_meal_type_taxonomy(): void {
+		register_taxonomy( 'chefpress_meal_type', 'product', [
+			'label'        => __( 'Meal Types', 'dev-chefpress' ),
+			'public'       => true,
+			'show_ui'      => true,
+			'show_in_rest' => true,
+			'hierarchical' => false,
+			'rewrite'      => [ 'slug' => 'chefpress-meal-type', 'with_front' => false ],
 		] );
 	}
 
@@ -157,6 +172,26 @@ final class Plugin {
 		foreach ( $weeks as $week ) {
 			if ( ! term_exists( $week, 'chefpress_week' ) ) {
 				wp_insert_term( $week, 'chefpress_week', [ 'slug' => sanitize_title( $week ) ] );
+			}
+		}
+	}
+
+	/**
+	 * Create default meal type terms as part of activation.
+	 */
+	public static function create_default_meal_type_terms(): void {
+		self::register_meal_type_taxonomy();
+
+		$meal_types = [
+			__( 'Breakfast', 'dev-chefpress' ),
+			__( 'Lunch', 'dev-chefpress' ),
+			__( 'Dinner', 'dev-chefpress' ),
+			__( 'Snack', 'dev-chefpress' ),
+		];
+
+		foreach ( $meal_types as $meal_type ) {
+			if ( ! term_exists( $meal_type, 'chefpress_meal_type' ) ) {
+				wp_insert_term( $meal_type, 'chefpress_meal_type', [ 'slug' => sanitize_title( $meal_type ) ] );
 			}
 		}
 	}

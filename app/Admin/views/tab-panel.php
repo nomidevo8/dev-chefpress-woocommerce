@@ -172,6 +172,42 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 					</div>
 				</div>
 			</div>
+			<?php
+			$meal_type_terms = get_terms([
+				'taxonomy' => 'chefpress_meal_type',
+				'hide_empty' => false,
+			]);
+			$current_meal_types = array_map(
+				static fn( $term ) => absint( $term->term_id ),
+				array_filter( get_the_terms( $post->ID, 'chefpress_meal_type' ) ?: [] )
+			);
+			?>
+
+			<div class="cp-card">
+				<div class="cp-card__header" data-toggle="meal-type-assign-body">
+					<div class="cp-card__header-left">
+						<span class="cp-card__icon"></span>
+						<h3 class="cp-card__title"><?php esc_html_e( 'Meal Type Assignment', 'dev-chefpress' ); ?></h3>
+					</div>
+					<span class="cp-card__arrow">▼</span>
+				</div>
+				<div class="cp-card__body" id="meal-type-assign-body">
+					<p class="cp-hint"><?php esc_html_e( 'Assign recipes to one or more meal types (e.g., Breakfast, Lunch, Dinner, Snack).', 'dev-chefpress' ); ?></p>
+					<div class="cp-week-grid">
+						<?php if ( ! empty( $meal_type_terms ) && ! is_wp_error( $meal_type_terms ) ) : ?>
+							<?php foreach ( $meal_type_terms as $meal_type_term ) : ?>
+								<?php $is_active = in_array( absint( $meal_type_term->term_id ), $current_meal_types, true ); ?>
+								<label class="cp-week-chip<?php echo $is_active ? ' is-active' : ''; ?>">
+									<input type="checkbox" name="chefpress_meal_types[]" value="<?php echo esc_attr( absint( $meal_type_term->term_id ) ); ?>"<?php checked( $is_active ); ?> />
+									<span class="cp-week-chip__label"><?php echo esc_html( $meal_type_term->name ); ?></span>
+								</label>
+							<?php endforeach; ?>
+						<?php else : ?>
+							<p><?php esc_html_e( 'No meal types are available yet. Create them in the Meal Types taxonomy.', 'dev-chefpress' ); ?></p>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
 			<!-- Nutrition Summary Card -->
 			<div class="cp-card">
 				<div class="cp-card__header" data-toggle="nutr-summary-body">
