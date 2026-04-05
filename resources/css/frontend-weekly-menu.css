@@ -740,7 +740,7 @@
 }
 
 .cp_weekly_menu_app {
-  padding-bottom: 100px !important;
+  /* padding-bottom: 100px !important; */
   /* Space for sticky footer */
 }
 
@@ -938,8 +938,8 @@
   justify-content: center !important;
   align-items: center !important;
   gap: 0.5rem !important;
-  margin: 3rem 0 !important;
-  padding: 2rem 0 !important;
+  /* margin: 3rem 0 !important; */
+  padding: 1rem 0 !important;
   flex-wrap: wrap !important;
 }
 
