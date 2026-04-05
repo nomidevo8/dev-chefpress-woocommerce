@@ -150,6 +150,18 @@ class Frontend {
 	}
 
 	public function enqueue_assets_our_plans(): void {
+		// Get theme colors once
+		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+		$inline_css = ':root {' .
+			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'}';
+
 		// Ensure jQuery is enqueued first
 		wp_enqueue_script( 'jquery' );
 
@@ -228,6 +240,8 @@ class Frontend {
 			[],
 			DEVCHEFPRESS_VERSION
 		);
+
+		wp_add_inline_style( 'dev-chefpress-weekly-menu', $inline_css );
 
 		wp_enqueue_script(
 			'dev-chefpress-weekly-menu',
