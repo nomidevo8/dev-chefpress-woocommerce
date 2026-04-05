@@ -30,18 +30,8 @@
 }
 
 /* ─── Reset & Base ─── */
-*, *::before, *::after { box-sizing: border-box !important; margin: 0 !important; padding: 0 !important; }
+main *,main *::before,main *::after { box-sizing: border-box !important; margin: 0 !important; padding: 0 !important; }
 
-html { font-size: 16px !important; }
-
-body {
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
-    color: var(--text-main) !important;
-    background: linear-gradient(135deg, rgba(236,253,245,0.3) 0%, #ffffff 50%, rgba(236,253,245,0.2) 100%) !important;
-    min-height: 100vh !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
 
 
 

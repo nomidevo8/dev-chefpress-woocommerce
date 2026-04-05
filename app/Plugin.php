@@ -66,10 +66,11 @@ final class Plugin {
 	}
 
 	/**
-	 * Add rewrite rules for weekly menu.
+	 * Add rewrite rules for weekly menu and our plans.
 	 */
 	public function add_rewrite_rules(): void {
 		add_rewrite_rule( '^weekly-menu/?$', 'index.php?weekly_menu=1', 'top' );
+		add_rewrite_rule( '^our-plans/?$', 'index.php?our_plans=1', 'top' );
 	}
 
 	/**
@@ -77,15 +78,22 @@ final class Plugin {
 	 */
 	public function add_query_vars( array $vars ): array {
 		$vars[] = 'weekly_menu';
+		$vars[] = 'our_plans';
 		return $vars;
 	}
 
 	/**
-	 * Load the weekly menu template.
+	 * Load the weekly menu or our plans template.
 	 */
 	public function load_weekly_menu_template( string $template ): string {
 		if ( get_query_var( 'weekly_menu' ) ) {
 			$custom_template = DEVCHEFPRESS_TEMPLATES_PATH . 'weekly-menu.php';
+			if ( file_exists( $custom_template ) ) {
+				return $custom_template;
+			}
+		}
+		if ( get_query_var( 'our_plans' ) ) {
+			$custom_template = DEVCHEFPRESS_TEMPLATES_PATH . 'our-plans.php';
 			if ( file_exists( $custom_template ) ) {
 				return $custom_template;
 			}

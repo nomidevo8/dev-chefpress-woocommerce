@@ -82,8 +82,9 @@ class Frontend {
 		}
 
 		$is_weekly_menu_page = ( is_page() && has_shortcode( get_post()->post_content ?? '', 'weekly_menu' ) ) || get_query_var( 'weekly_menu' );
+		$is_our_plans_page = get_query_var( 'our_plans' );
 
-		if ( ! $is_recipe_page && ! $is_weekly_menu_page ) {
+		if ( ! $is_recipe_page && ! $is_weekly_menu_page && ! $is_our_plans_page ) {
 			return;
 		}
 		
@@ -141,6 +142,10 @@ class Frontend {
 				'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
 				'ajax_url'    => admin_url( 'admin-ajax.php' ),
 			] );
+		}
+
+		if ( $is_our_plans_page ) {
+			$this->enqueue_assets_our_plans();
 		}
 	}
 
@@ -215,6 +220,28 @@ class Frontend {
 			DEVCHEFPRESS_VERSION,
 			true
 		);
+
+		// Enqueue weekly menu assets for menu selection step
+		wp_enqueue_style(
+			'dev-chefpress-weekly-menu',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/frontend-weekly-menu.css',
+			[],
+			DEVCHEFPRESS_VERSION
+		);
+
+		wp_enqueue_script(
+			'dev-chefpress-weekly-menu',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend-weekly-menu.js',
+			[ 'jquery' ],
+			DEVCHEFPRESS_VERSION,
+			true
+		);
+
+		// Localize config for weekly menu
+		wp_localize_script( 'dev-chefpress-weekly-menu', 'ChefPressConfig', [
+			'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
+			'ajax_url'    => admin_url( 'admin-ajax.php' ),
+		] );
 
 		// Fetch allergen tags dynamically
 		$allergen_tags = get_terms( [

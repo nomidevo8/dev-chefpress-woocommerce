@@ -649,88 +649,29 @@
   // Step 9 – Menu Selection
   var currentSlotId = '';
   function renderMenuSelection(el) {
-    var days = state.selectedDays;
-    var activeMeals = [];
-    $.each(state.mealQuantities, function(m, q){ if (q > 0) activeMeals.push(m); });
-    var totalSlots = days.length * activeMeals.length;
-    var filledSlots = Object.keys(state.menu).length;
-
-    var slots = days.map(function(day) {
-      var mSlots = activeMeals.map(function(meal) {
-        var slotId = day + '-' + meal;
-        var hasRecipe = !!state.menu[slotId];
-        var recipe = hasRecipe ? RECIPES.find(function(r){ return r.id === state.menu[slotId]; }) : null;
-        return '<div onclick="openRecipePicker(\'' + slotId + '\')" style="padding:0.75rem !important;border-radius:0.75rem !important;border:2px ' + (hasRecipe ? 'solid var(--emerald-500)' : 'dashed var(--gray-200)') + ' !important;cursor:pointer !important;background:' + (hasRecipe ? 'var(--emerald-50)' : '#fff') + ' !important;transition:all 0.2s !important;">' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
-            '<span style="font-size:0.75rem !important;font-weight:700 !important;color:' + (hasRecipe ? 'var(--emerald-700)' : 'var(--gray-400)') + ' !important;">' + meal + '</span>' +
-            '<i data-lucide="' + (hasRecipe ? 'check' : 'plus') + '" style="width:0.75rem !important;height:0.75rem !important;color:' + (hasRecipe ? 'var(--emerald-500)' : 'var(--gray-300)') + ' !important;"></i>' +
-          '</div>' +
-          '<p style="font-size:0.625rem !important;font-weight:500 !important;color:' + (hasRecipe ? 'var(--emerald-900)' : 'var(--gray-300)') + ' !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;">' + (recipe ? recipe.name : 'Select Recipe') + '</p>' +
-        '</div>';
-      }).join('');
-      return '<div style="margin-bottom:0.75rem !important;">' +
-        '<p style="font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.5rem !important;">' + day + '</p>' +
-        mSlots +
-      '</div>';
-    }).join('');
-
-    var filteredRecipes = state.menuFilter === 'All' ? RECIPES : RECIPES.filter(function(r){ return r.category === state.menuFilter; });
-
-    var recipeCards = filteredRecipes.map(function(r) {
-      return '<div style="background:#fff !important;border-radius:1rem !important;overflow:hidden !important;border:1px solid var(--gray-100) !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;transition:box-shadow 0.2s !important;">' +
-        '<img src="' + r.image + '" alt="' + r.name + '" style="width:100% !important;height:8rem !important;object-fit:cover !important;">' +
-        '<div style="padding:1rem !important;">' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="margin-bottom:0.5rem !important;">' +
-            '<h4 style="font-weight:700 !important;color:var(--gray-900) !important;font-size:0.875rem !important;line-height:1.25 !important;">' + r.name + '</h4>' +
-            '<span style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-600) !important;background:var(--emerald-50) !important;padding:0.125rem 0.5rem !important;border-radius:9999px !important;white-space:nowrap !important;">' + r.calories + ' kcal</span>' +
-          '</div>' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-1 dev_chefpress_plan_mb-4">' +
-            r.tags.map(function(t){ return '<span style="font-size:0.5625rem !important;font-weight:700 !important;color:var(--gray-400) !important;background:var(--gray-50) !important;padding:0.125rem 0.5rem !important;border-radius:9999px !important;">' + t + '</span>'; }).join('') +
-          '</div>' +
-          '<button onclick="assignRecipe(\'' + r.id + '\')" style="width:100% !important;padding:0.5rem !important;background:var(--emerald-50) !important;color:var(--emerald-600) !important;font-size:0.75rem !important;font-weight:700 !important;border-radius:0.5rem !important;border:none !important;cursor:pointer !important;transition:all 0.2s !important;font-family:inherit !important;">Add to Slot</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    var cats = ['All', 'Fish', 'Meat', 'Veggie', 'Fruit', 'Dairy'];
-    var catBtns = cats.map(function(c) {
-      var isA = c === state.menuFilter;
-      return '<button onclick="filterMenu(\'' + c + '\')" style="padding:0.5rem 1rem !important;border-radius:9999px !important;font-size:0.75rem !important;font-weight:700 !important;white-space:nowrap !important;border:none !important;cursor:pointer !important;background:' + (isA ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;color:' + (isA ? '#fff' : 'var(--gray-500)') + ' !important;transition:all 0.2s !important;">' + c + '</button>';
-    }).join('');
-
-    el.innerHTML =
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="flex-wrap:wrap !important;">' +
-        '<div style="flex-grow:1 !important;">' +
-          '<h2 class="dev_chefpress_plan_text-3xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-1" style="font-family:\'Outfit\',sans-serif !important;">Select your menu</h2>' +
-          '<p style="font-size:0.875rem !important;color:var(--gray-500) !important;">Pick your favorite recipes for each slot.</p>' +
-        '</div>' +
-        '<div style="background:var(--emerald-100) !important;padding:0.75rem 1.5rem !important;border-radius:1rem !important;color:var(--emerald-700) !important;font-weight:700 !important;">' +
-          filledSlots + ' / ' + totalSlots + ' Slots Filled' +
-        '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_menu-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
-        '<div id="dev_chefpress_plan_slot-panel" class="dev_chefpress_plan_custom-scrollbar" style="max-height:400px !important;overflow-y:auto !important;padding-right:0.5rem !important;">' + slots + '</div>' +
-        '<div id="dev_chefpress_plan_recipe-panel">' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-2 dev_chefpress_plan_mb-6 dev_chefpress_plan_custom-scrollbar" style="overflow-x:auto !important;padding-bottom:0.5rem !important;">' + catBtns + '</div>' +
-          '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_recipe-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' + recipeCards + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (filledSlots < totalSlots ? 'disabled' : '') + '>Review Order</button>' +
-      '</div>';
-
-    if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_recipe-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
-    if (window.innerWidth >= 1024) {
-      el.querySelector('#dev_chefpress_plan_menu-grid').style.gridTemplateColumns = 'repeat(4,minmax(0,1fr))';
-      el.querySelector('#dev_chefpress_plan_slot-panel').style.gridColumn = 'span 1';
-      el.querySelector('#dev_chefpress_plan_recipe-panel').style.gridColumn = 'span 3';
+    // Get the pre-rendered weekly menu container
+    var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
+    if (!weeklyMenuContainer) {
+      el.innerHTML = '<p>Weekly menu component not found.</p>';
+      return;
     }
 
-    $(el).find('#dev_chefpress_plan_recipe-panel button[style*="emerald-50"]').hover(
-      function(){ $(this).css({background:'var(--emerald-500)',color:'#fff'}); },
-      function(){ $(this).css({background:'var(--emerald-50)',color:'var(--emerald-600)'}); }
-    );
+    // Clone the weekly menu container and inject it into the step content
+    var clonedMenu = weeklyMenuContainer.cloneNode(true);
+    clonedMenu.style.display = 'block';
+    
+    el.innerHTML = '';
+    el.appendChild(clonedMenu);
+
+    // Initialize weekly menu JS if available
+    if (typeof initWeeklyMenu === 'function') {
+      initWeeklyMenu();
+    }
+
+    // Render lucide icons
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
   }
 
   // Step 10 – Summary
