@@ -440,7 +440,7 @@
       var isActive = state.dietType === d.name;
       return '<div onclick="setDiet(\'' + d.name + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_text-left" style="padding:1.5rem!important;position:relative!important;">' +
         (d.recommended ? '<div style="position:absolute!important;top:1rem!important;left:1rem!important;background:var(--emerald-500)!important;color:#fff!important;font-size:0.625rem!important;font-weight:900!important;padding:0.375rem 0.75rem!important;border-radius:0.5rem!important;text-transform:uppercase!important;letter-spacing:0.05em!important;">RECOMMENDED</div>' : '') +
-        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="' + (d.recommended ? 'margin-top:2rem;' : '') + '">' +
+        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="' + (d.recommended ? 'margin-top:2rem !important;' : '') + '">' +
           '<div>' +
             '<h3 style="font-size:1.25rem!important;font-weight:900!important;color:var(--emerald-900)!important;margin-bottom:0.25rem!important;">' + d.name + '</h3>' +
             '<p style="font-size:0.6875rem!important;color:var(--gray-400)!important;font-weight:500!important;line-height:1.5!important;margin-bottom:1rem!important;">' + d.desc + '</p>' +
@@ -494,11 +494,11 @@
       $.each(state.mealQuantities, function(_, q){ totalMeals += q; });
 
       return '<div onclick="setPlan(\'' + p + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_p-6 dev_chefpress_plan_text-center" style="height:100%!important;">' +
-        '<div class="dev_chefpress_plan_mb-6">' +
+        '<div class="">' +
           '<h3 style="font-size:1.25rem!important;font-weight:900!important;color:var(--emerald-900)!important;">' + p + '</h3>' +
           '<p style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:0.05em!important;">' + det.billing + '</p>' +
         '</div>' +
-        '<div class="dev_chefpress_plan_mb-6">' +
+        '<div class="">' +
           '<p style="font-size:1.5rem!important;font-weight:900!important;color:var(--emerald-900)!important;">AED ' + pricing.perDay + '</p>' +
           '<p style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:0.1em!important;">PER DAY</p>' +
         '</div>' +
@@ -547,7 +547,7 @@
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-10" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + planCards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-10" style="grid-template-columns:repeat(1,minmax(0,1fr))!important; margin-top:3rem!important;">' + planCards + '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
         '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.planDuration ? 'disabled' : '') + '>Personalize Box</button>' +
@@ -579,20 +579,20 @@
           '<div style="width:3rem!important;height:3rem!important;background:var(--emerald-50)!important;border-radius:1rem!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:1.25rem!important;">' + m.icon + '</div>' +
           '<div>' +
             '<h3 style="font-weight:900!important;color:var(--emerald-900)!important;font-size:0.875rem!important;">' + m.name + '</h3>' +
-            '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);">$' + m.price + '/meal</p>' +
+            '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;">$' + m.price + '/meal</p>' +
           '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-          '<button onclick="updateMealQuantity(\'' + m.name + '\',-1)" style="width:2rem;height:2rem;border-radius:9999px;border:1px solid var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-400);background:transparent;cursor:pointer;transition:all 0.2s;font-size:1rem;font-weight:700;">-</button>' +
-          '<span style="width:1rem;text-align:center;font-weight:900;color:var(--emerald-900);font-size:0.875rem;">' + (state.mealQuantities[m.name] || 0) + '</span>' +
-          '<button onclick="updateMealQuantity(\'' + m.name + '\',1)" style="width:2rem;height:2rem;border-radius:9999px;border:1px solid var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-400);background:transparent;cursor:pointer;transition:all 0.2s;font-size:1rem;font-weight:700;">+</button>' +
+          '<button onclick="updateMealQuantity(\'' + m.name + '\',-1)" style="width:2rem !important;height:2rem !important;border-radius:9999px !important;border:1px solid var(--gray-100) !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--gray-400) !important;background:transparent !important;cursor:pointer !important;transition:all 0.2s !important;font-size:1rem !important;font-weight:700 !important;">-</button>' +
+          '<span style="width:1rem !important;text-align:center !important;font-weight:900 !important;color:var(--emerald-900) !important;font-size:0.875rem !important;">' + (state.mealQuantities[m.name] || 0) + '</span>' +
+          '<button onclick="updateMealQuantity(\'' + m.name + '\',1)" style="width:2rem !important;height:2rem !important;border-radius:9999px !important;border:1px solid var(--gray-100) !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--gray-400) !important;background:transparent !important;cursor:pointer !important;transition:all 0.2s !important;font-size:1rem !important;font-weight:700 !important;">+</button>' +
         '</div>' +
       '</div>';
     }).join('');
 
     var dayBtns = daysOfWeek.map(function(day) {
       var sel = state.selectedDays.indexOf(day) !== -1;
-      return '<button onclick="toggleDay(\'' + day + '\')" style="padding:0.75rem 1.25rem;border-radius:1rem;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ';background:' + (sel ? 'var(--emerald-500)' : '#fff') + ';color:' + (sel ? '#fff' : 'var(--gray-400)') + ';font-weight:900;font-size:0.75rem;min-width:70px;transition:all 0.2s;box-shadow:' + (sel ? '0 4px 14px rgba(16,185,129,0.2)' : 'none') + ';cursor:pointer;">' + day + '</button>';
+      return '<button onclick="toggleDay(\'' + day + '\')" style="padding:0.75rem 1.25rem !important;border-radius:1rem !important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;background:' + (sel ? 'var(--emerald-500)' : '#fff') + ' !important;color:' + (sel ? '#fff' : 'var(--gray-400)') + ' !important;font-weight:900 !important;font-size:0.75rem !important;min-width:70px !important;transition:all 0.2s !important;box-shadow:' + (sel ? '0 4px 14px rgba(16,185,129,0.2)' : 'none') + ' !important;cursor:pointer !important;">' + day + '</button>';
     }).join('');
 
     var kcalPerMeal = totalMealsPerDay > 0 ? Math.round(target / totalMealsPerDay) : 0;
@@ -602,35 +602,35 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Personalize your box</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Select your meals and delivery frequency.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_box-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' +
-        '<div style="grid-column:span 1;" id="dev_chefpress_plan_box-left">' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_box-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
+        '<div style="grid-column:span 1 !important;" id="dev_chefpress_plan_box-left">' +
           '<div class="dev_chefpress_plan_mb-8">' +
-            '<p style="font-size:0.6875rem;font-weight:900;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:1rem;">HOW MANY MEALS PER DAY?</p>' +
-            '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="grid-template-columns:repeat(1,minmax(0,1fr));" id="dev_chefpress_plan_meal-cards">' + mealCards + '</div>' +
+            '<p style="font-size:0.6875rem !important;font-weight:900 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.2em !important;margin-bottom:1rem !important;">HOW MANY MEALS PER DAY?</p>' +
+            '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;" id="dev_chefpress_plan_meal-cards">' + mealCards + '</div>' +
           '</div>' +
           '<div>' +
-            '<p style="font-size:0.6875rem;font-weight:900;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:1rem;">WHICH DAYS OF THE WEEK?</p>' +
+            '<p style="font-size:0.6875rem !important;font-weight:900 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.2em !important;margin-bottom:1rem !important;">WHICH DAYS OF THE WEEK?</p>' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-2">' + dayBtns + '</div>' +
           '</div>' +
         '</div>' +
         '<div id="dev_chefpress_plan_box-right">' +
-          '<div style="background:var(--emerald-900);padding:1.5rem;border-radius:2rem;color:#fff;box-shadow:0 20px 25px -5px rgba(6,78,59,0.1);" class="dev_chefpress_plan_mb-4">' +
+          '<div style="background:var(--emerald-900) !important;padding:1.5rem !important;border-radius:2rem !important;color:#fff !important;box-shadow:0 20px 25px -5px rgba(6,78,59,0.1) !important;" class="dev_chefpress_plan_mb-4">' +
             '<div class="dev_chefpress_plan_mb-6">' +
-              '<p style="font-size:0.625rem;font-weight:700;color:var(--emerald-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem;">Daily Target</p>' +
-              '<p style="font-size:2.25rem;font-weight:900;">' + target + ' <span style="font-size:1.125rem;font-weight:500;opacity:0.6;">kcal</span></p>' +
-              '<p style="font-size:0.625rem;color:rgba(110,231,183,0.6);margin-top:0.5rem;">Estimated ~' + kcalPerMeal + ' kcal per meal</p>' +
+              '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-300) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.25rem !important;">Daily Target</p>' +
+              '<p style="font-size:2.25rem !important;font-weight:900 !important;">' + target + ' <span style="font-size:1.125rem !important;font-weight:500 !important;opacity:0.6 !important;">kcal</span></p>' +
+              '<p style="font-size:0.625rem !important;color:rgba(110,231,183,0.6) !important;margin-top:0.5rem !important;">Estimated ~' + kcalPerMeal + ' kcal per meal</p>' +
             '</div>' +
-            '<div style="padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);">' +
-              '<p style="font-size:0.625rem;font-weight:700;color:var(--emerald-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem;">Weekly Total</p>' +
-              '<p style="font-size:1.875rem;font-weight:900;">AED ' + pricing.final + '</p>' +
-              '<p style="font-size:0.625rem;font-weight:700;color:rgba(110,231,183,0.6);margin-top:0.25rem;">' + state.selectedDays.length + ' days / week</p>' +
+            '<div style="padding-top:1.5rem !important;border-top:1px solid rgba(255,255,255,0.1) !important;">' +
+              '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-300) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.25rem !important;">Weekly Total</p>' +
+              '<p style="font-size:1.875rem !important;font-weight:900 !important;">AED ' + pricing.final + '</p>' +
+              '<p style="font-size:0.625rem !important;font-weight:700 !important;color:rgba(110,231,183,0.6) !important;margin-top:0.25rem !important;">' + state.selectedDays.length + ' days / week</p>' +
             '</div>' +
           '</div>' +
-          '<div style="background:#fff;border:1px solid var(--gray-100);padding:1rem;border-radius:1rem;display:flex;align-items:center;gap:0.75rem;">' +
-            '<div style="width:2rem;height:2rem;background:var(--emerald-50);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;">' +
-              '<i data-lucide="truck" style="color:var(--emerald-600);width:1rem;height:1rem;"></i>' +
+          '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1rem !important;border-radius:1rem !important;display:flex !important;align-items:center !important;gap:0.75rem !important;">' +
+            '<div style="width:2rem !important;height:2rem !important;background:var(--emerald-50) !important;border-radius:0.5rem !important;display:flex !important;align-items:center !important;justify-content:center !important;">' +
+              '<i data-lucide="truck" style="color:var(--emerald-600) !important;width:1rem !important;height:1rem !important;"></i>' +
             '</div>' +
-            '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-500);line-height:1.4;">Free delivery included in your plan</p>' +
+            '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-500) !important;line-height:1.4 !important;">Free delivery included in your plan</p>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -660,16 +660,16 @@
         var slotId = day + '-' + meal;
         var hasRecipe = !!state.menu[slotId];
         var recipe = hasRecipe ? RECIPES.find(function(r){ return r.id === state.menu[slotId]; }) : null;
-        return '<div onclick="openRecipePicker(\'' + slotId + '\')" style="padding:0.75rem;border-radius:0.75rem;border:2px ' + (hasRecipe ? 'solid var(--emerald-500)' : 'dashed var(--gray-200)') + ';cursor:pointer;background:' + (hasRecipe ? 'var(--emerald-50)' : '#fff') + ';transition:all 0.2s;">' +
+        return '<div onclick="openRecipePicker(\'' + slotId + '\')" style="padding:0.75rem !important;border-radius:0.75rem !important;border:2px ' + (hasRecipe ? 'solid var(--emerald-500)' : 'dashed var(--gray-200)') + ' !important;cursor:pointer !important;background:' + (hasRecipe ? 'var(--emerald-50)' : '#fff') + ' !important;transition:all 0.2s !important;">' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
-            '<span style="font-size:0.75rem;font-weight:700;color:' + (hasRecipe ? 'var(--emerald-700)' : 'var(--gray-400)') + ';">' + meal + '</span>' +
-            '<i data-lucide="' + (hasRecipe ? 'check' : 'plus') + '" style="width:0.75rem;height:0.75rem;color:' + (hasRecipe ? 'var(--emerald-500)' : 'var(--gray-300)') + ';"></i>' +
+            '<span style="font-size:0.75rem !important;font-weight:700 !important;color:' + (hasRecipe ? 'var(--emerald-700)' : 'var(--gray-400)') + ' !important;">' + meal + '</span>' +
+            '<i data-lucide="' + (hasRecipe ? 'check' : 'plus') + '" style="width:0.75rem !important;height:0.75rem !important;color:' + (hasRecipe ? 'var(--emerald-500)' : 'var(--gray-300)') + ' !important;"></i>' +
           '</div>' +
-          '<p style="font-size:0.625rem;font-weight:500;color:' + (hasRecipe ? 'var(--emerald-900)' : 'var(--gray-300)') + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (recipe ? recipe.name : 'Select Recipe') + '</p>' +
+          '<p style="font-size:0.625rem !important;font-weight:500 !important;color:' + (hasRecipe ? 'var(--emerald-900)' : 'var(--gray-300)') + ' !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;">' + (recipe ? recipe.name : 'Select Recipe') + '</p>' +
         '</div>';
       }).join('');
-      return '<div style="margin-bottom:0.75rem;">' +
-        '<p style="font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">' + day + '</p>' +
+      return '<div style="margin-bottom:0.75rem !important;">' +
+        '<p style="font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.5rem !important;">' + day + '</p>' +
         mSlots +
       '</div>';
     }).join('');
@@ -677,17 +677,17 @@
     var filteredRecipes = state.menuFilter === 'All' ? RECIPES : RECIPES.filter(function(r){ return r.category === state.menuFilter; });
 
     var recipeCards = filteredRecipes.map(function(r) {
-      return '<div style="background:#fff;border-radius:1rem;overflow:hidden;border:1px solid var(--gray-100);box-shadow:0 1px 3px rgba(0,0,0,0.05);transition:box-shadow 0.2s;">' +
-        '<img src="' + r.image + '" alt="' + r.name + '" style="width:100%;height:8rem;object-fit:cover;">' +
-        '<div style="padding:1rem;">' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="margin-bottom:0.5rem;">' +
-            '<h4 style="font-weight:700;color:var(--gray-900);font-size:0.875rem;line-height:1.25;">' + r.name + '</h4>' +
-            '<span style="font-size:0.625rem;font-weight:700;color:var(--emerald-600);background:var(--emerald-50);padding:0.125rem 0.5rem;border-radius:9999px;white-space:nowrap;">' + r.calories + ' kcal</span>' +
+      return '<div style="background:#fff !important;border-radius:1rem !important;overflow:hidden !important;border:1px solid var(--gray-100) !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;transition:box-shadow 0.2s !important;">' +
+        '<img src="' + r.image + '" alt="' + r.name + '" style="width:100% !important;height:8rem !important;object-fit:cover !important;">' +
+        '<div style="padding:1rem !important;">' +
+          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="margin-bottom:0.5rem !important;">' +
+            '<h4 style="font-weight:700 !important;color:var(--gray-900) !important;font-size:0.875rem !important;line-height:1.25 !important;">' + r.name + '</h4>' +
+            '<span style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-600) !important;background:var(--emerald-50) !important;padding:0.125rem 0.5rem !important;border-radius:9999px !important;white-space:nowrap !important;">' + r.calories + ' kcal</span>' +
           '</div>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-1 dev_chefpress_plan_mb-4">' +
-            r.tags.map(function(t){ return '<span style="font-size:0.5625rem;font-weight:700;color:var(--gray-400);background:var(--gray-50);padding:0.125rem 0.5rem;border-radius:9999px;">' + t + '</span>'; }).join('') +
+            r.tags.map(function(t){ return '<span style="font-size:0.5625rem !important;font-weight:700 !important;color:var(--gray-400) !important;background:var(--gray-50) !important;padding:0.125rem 0.5rem !important;border-radius:9999px !important;">' + t + '</span>'; }).join('') +
           '</div>' +
-          '<button onclick="assignRecipe(\'' + r.id + '\')" style="width:100%;padding:0.5rem;background:var(--emerald-50);color:var(--emerald-600);font-size:0.75rem;font-weight:700;border-radius:0.5rem;border:none;cursor:pointer;transition:all 0.2s;font-family:inherit;">Add to Slot</button>' +
+          '<button onclick="assignRecipe(\'' + r.id + '\')" style="width:100% !important;padding:0.5rem !important;background:var(--emerald-50) !important;color:var(--emerald-600) !important;font-size:0.75rem !important;font-weight:700 !important;border-radius:0.5rem !important;border:none !important;cursor:pointer !important;transition:all 0.2s !important;font-family:inherit !important;">Add to Slot</button>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -695,24 +695,24 @@
     var cats = ['All', 'Fish', 'Meat', 'Veggie', 'Fruit', 'Dairy'];
     var catBtns = cats.map(function(c) {
       var isA = c === state.menuFilter;
-      return '<button onclick="filterMenu(\'' + c + '\')" style="padding:0.5rem 1rem;border-radius:9999px;font-size:0.75rem;font-weight:700;white-space:nowrap;border:none;cursor:pointer;background:' + (isA ? 'var(--emerald-500)' : 'var(--gray-100)') + ';color:' + (isA ? '#fff' : 'var(--gray-500)') + ';transition:all 0.2s;">' + c + '</button>';
+      return '<button onclick="filterMenu(\'' + c + '\')" style="padding:0.5rem 1rem !important;border-radius:9999px !important;font-size:0.75rem !important;font-weight:700 !important;white-space:nowrap !important;border:none !important;cursor:pointer !important;background:' + (isA ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;color:' + (isA ? '#fff' : 'var(--gray-500)') + ' !important;transition:all 0.2s !important;">' + c + '</button>';
     }).join('');
 
     el.innerHTML =
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="flex-wrap:wrap;">' +
-        '<div style="flex-grow:1;">' +
-          '<h2 class="dev_chefpress_plan_text-3xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-1" style="font-family:\'Outfit\',sans-serif;">Select your menu</h2>' +
-          '<p style="font-size:0.875rem;color:var(--gray-500);">Pick your favorite recipes for each slot.</p>' +
+      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="flex-wrap:wrap !important;">' +
+        '<div style="flex-grow:1 !important;">' +
+          '<h2 class="dev_chefpress_plan_text-3xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-1" style="font-family:\'Outfit\',sans-serif !important;">Select your menu</h2>' +
+          '<p style="font-size:0.875rem !important;color:var(--gray-500) !important;">Pick your favorite recipes for each slot.</p>' +
         '</div>' +
-        '<div style="background:var(--emerald-100);padding:0.75rem 1.5rem;border-radius:1rem;color:var(--emerald-700);font-weight:700;">' +
+        '<div style="background:var(--emerald-100) !important;padding:0.75rem 1.5rem !important;border-radius:1rem !important;color:var(--emerald-700) !important;font-weight:700 !important;">' +
           filledSlots + ' / ' + totalSlots + ' Slots Filled' +
         '</div>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_menu-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' +
-        '<div id="dev_chefpress_plan_slot-panel" class="dev_chefpress_plan_custom-scrollbar" style="max-height:400px;overflow-y:auto;padding-right:0.5rem;">' + slots + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_menu-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
+        '<div id="dev_chefpress_plan_slot-panel" class="dev_chefpress_plan_custom-scrollbar" style="max-height:400px !important;overflow-y:auto !important;padding-right:0.5rem !important;">' + slots + '</div>' +
         '<div id="dev_chefpress_plan_recipe-panel">' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-2 dev_chefpress_plan_mb-6 dev_chefpress_plan_custom-scrollbar" style="overflow-x:auto;padding-bottom:0.5rem;">' + catBtns + '</div>' +
-          '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_recipe-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + recipeCards + '</div>' +
+          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-2 dev_chefpress_plan_mb-6 dev_chefpress_plan_custom-scrollbar" style="overflow-x:auto !important;padding-bottom:0.5rem !important;">' + catBtns + '</div>' +
+          '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_recipe-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' + recipeCards + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
@@ -747,46 +747,46 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Order Summary</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Review your nutritional snapshot and billing details.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_summary-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_summary-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
         '<div class="dev_chefpress_plan_space-y-6">' +
-          '<div style="background:var(--emerald-50);padding:1.5rem;border-radius:2rem;">' +
-            '<h3 style="font-size:0.875rem;font-weight:700;color:var(--emerald-600);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;">Weekly Nutrition</h3>' +
+          '<div style="background:var(--emerald-50) !important;padding:1.5rem !important;border-radius:2rem !important;">' +
+            '<h3 style="font-size:0.875rem !important;font-weight:700 !important;color:var(--emerald-600) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Weekly Nutrition</h3>' +
             '<div class="dev_chefpress_plan_space-y-4">' +
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
-                '<span style="color:var(--gray-600);font-weight:500;">Total Calories</span>' +
-                '<span style="color:var(--emerald-900);font-weight:900;">' + totalCals + ' kcal</span>' +
+                '<span style="color:var(--gray-600) !important;font-weight:500 !important;">Total Calories</span>' +
+                '<span style="color:var(--emerald-900) !important;font-weight:900 !important;">' + totalCals + ' kcal</span>' +
               '</div>' +
-              '<div style="width:100%;height:0.5rem;background:var(--emerald-100);border-radius:9999px;overflow:hidden;">' +
-                '<div style="height:100%;background:var(--emerald-500);width:85%;"></div>' +
+              '<div style="width:100% !important;height:0.5rem !important;background:var(--emerald-100) !important;border-radius:9999px !important;overflow:hidden !important;">' +
+                '<div style="height:100% !important;background:var(--emerald-500) !important;width:85% !important;"></div>' +
               '</div>' +
-              '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_pt-4" style="grid-template-columns:repeat(2,minmax(0,1fr));">' +
-                '<div><p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;">Protein</p><p style="font-size:1.25rem;font-weight:900;color:var(--emerald-900);">' + totalProtein + 'g</p></div>' +
-                '<div><p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;">Carbs</p><p style="font-size:1.25rem;font-weight:900;color:var(--emerald-900);">' + totalCarbs + 'g</p></div>' +
+              '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_pt-4" style="grid-template-columns:repeat(2,minmax(0,1fr)) !important;">' +
+                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;">Protein</p><p style="font-size:1.25rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">' + totalProtein + 'g</p></div>' +
+                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;">Carbs</p><p style="font-size:1.25rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">' + totalCarbs + 'g</p></div>' +
               '</div>' +
             '</div>' +
           '</div>' +
-          '<div style="background:#fff;border:1px solid var(--gray-100);padding:1.5rem;border-radius:2rem;box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
-            '<h3 style="font-size:0.875rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;">Plan Details</h3>' +
-            '<div class="dev_chefpress_plan_space-y-2" style="font-size:0.875rem;">' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500);">Goal</span><span style="font-weight:700;color:var(--gray-900);">' + state.goal + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500);">Diet</span><span style="font-weight:700;color:var(--gray-900);">' + state.dietType + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500);">Duration</span><span style="font-weight:700;color:var(--gray-900);">' + state.planDuration + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500);">Delivery</span><span style="font-weight:700;color:var(--gray-900);">' + state.selectedDays.length + ' Days / Week</span></div>' +
+          '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1.5rem !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
+            '<h3 style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Plan Details</h3>' +
+            '<div class="dev_chefpress_plan_space-y-2" style="font-size:0.875rem !important;">' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Goal</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.goal + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Diet</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.dietType + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Duration</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.planDuration + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Delivery</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.selectedDays.length + ' Days / Week</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_space-y-6">' +
-          '<div style="background:#fff;border:1px solid var(--gray-100);padding:1.5rem;border-radius:2rem;box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
-            '<h3 style="font-size:0.875rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;">Billing Details</h3>' +
-            '<div class="dev_chefpress_plan_space-y-2" style="font-size:0.875rem;">' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500);">Base Price (' + state.selectedDays.length + ' days)</span><span style="font-weight:700;color:var(--gray-900);">AED ' + pricing.base + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="color:var(--emerald-600);font-weight:700;"><span>Total Discount (' + pricing.discount + '%)</span><span>-AED ' + (Number(pricing.base) * (Number(pricing.discount) / 100)).toFixed(2) + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-50);">' +
-                '<span style="font-weight:700;color:var(--gray-900);">Total to Pay</span>' +
-                '<span style="font-size:1.875rem;font-weight:900;color:var(--emerald-900);">AED ' + pricing.final + '</span>' +
+          '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1.5rem !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
+            '<h3 style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Billing Details</h3>' +
+            '<div class="dev_chefpress_plan_space-y-2" style="font-size:0.875rem !important;">' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Base Price (' + state.selectedDays.length + ' days)</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="color:var(--emerald-600) !important;font-weight:700 !important;"><span>Total Discount (' + pricing.discount + '%)</span><span>-AED ' + (Number(pricing.base) * (Number(pricing.discount) / 100)).toFixed(2) + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-50) !important;">' +
+                '<span style="font-weight:700 !important;color:var(--gray-900) !important;">Total to Pay</span>' +
+                '<span style="font-size:1.875rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +
               '</div>' +
             '</div>' +
-            '<p style="font-size:0.625rem;color:var(--gray-400);margin-top:1rem;line-height:1.625;">Your subscription will renew automatically every ' + state.planDuration + '. You can cancel or modify anytime before your next billing cycle.</p>' +
+            '<p style="font-size:0.625rem !important;color:var(--gray-400) !important;margin-top:1rem !important;line-height:1.625 !important;">Your subscription will renew automatically every ' + state.planDuration + '. You can cancel or modify anytime before your next billing cycle.</p>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -806,8 +806,8 @@
         '<p class="dev_chefpress_plan_text-gray-500">We need 48 hours to prepare your fresh ingredients.</p>' +
       '</div>' +
       '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
-        '<div style="background:#fff;border:1px solid var(--gray-100);border-radius:2rem;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;justify-content:center;">' +
-          '<div id="dev_chefpress_plan_start-date-picker" style="width:100%;"></div>' +
+        '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;border-radius:2rem !important;padding:1.5rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;display:flex !important;justify-content:center !important;">' +
+          '<div id="dev_chefpress_plan_start-date-picker" style="width:100% !important;"></div>' +
         '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
@@ -826,20 +826,20 @@
 
     var slotCards = slots.map(function(s) {
       var isA = state.deliverySlot === s.id;
-      return '<div onclick="setSlot(\'' + s.id + '\')" class="dev_chefpress_plan_card-selectable ' + (isA ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_items-center dev_chefpress_plan_text-center dev_chefpress_plan_gap-4" style="padding:1.5rem;">' +
-        '<div style="width:3.5rem;height:3.5rem;background:var(--emerald-100);border-radius:1rem;display:flex;align-items:center;justify-content:center;color:var(--emerald-600);">' +
-          '<i data-lucide="' + s.icon + '" style="width:1.75rem;height:1.75rem;"></i>' +
+      return '<div onclick="setSlot(\'' + s.id + '\')" class="dev_chefpress_plan_card-selectable ' + (isA ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_items-center dev_chefpress_plan_text-center dev_chefpress_plan_gap-4" style="padding:1.5rem !important;">' +
+        '<div style="width:3.5rem !important;height:3.5rem !important;background:var(--emerald-100) !important;border-radius:1rem !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--emerald-600) !important;">' +
+          '<i data-lucide="' + s.icon + '" style="width:1.75rem !important;height:1.75rem !important;"></i>' +
         '</div>' +
         '<div>' +
-          '<h3 style="font-size:1.125rem;font-weight:700;color:var(--gray-900);">' + s.label + '</h3>' +
-          '<p style="font-size:0.75rem;color:var(--gray-500);">' + s.time + '</p>' +
+          '<h3 style="font-size:1.125rem !important;font-weight:700 !important;color:var(--gray-900) !important;">' + s.label + '</h3>' +
+          '<p style="font-size:0.75rem !important;color:var(--gray-500) !important;">' + s.time + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
 
     var instrBtns = instructions.map(function(inst) {
       var sel = state.deliveryInstructions.indexOf(inst) !== -1;
-      return '<button onclick="toggleInstruction(\'' + inst + '\')" style="padding:0.75rem 1.5rem;border-radius:0.75rem;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ';background:' + (sel ? 'var(--emerald-50)' : 'transparent') + ';color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ';font-weight:700;font-size:0.875rem;cursor:pointer;transition:all 0.2s;font-family:inherit;">' + inst + '</button>';
+      return '<button onclick="toggleInstruction(\'' + inst + '\')" style="padding:0.75rem 1.5rem !important;border-radius:0.75rem !important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;background:' + (sel ? 'var(--emerald-50)' : 'transparent') + ' !important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ' !important;font-weight:700 !important;font-size:0.875rem !important;cursor:pointer !important;transition:all 0.2s !important;font-family:inherit !important;">' + inst + '</button>';
     }).join('');
 
     el.innerHTML =
@@ -847,9 +847,9 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Delivery Window</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Pick a time that works best for your schedule.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_slot-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + slotCards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_slot-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' + slotCards + '</div>' +
       '<div class="dev_chefpress_plan_space-y-4 dev_chefpress_plan_mb-8">' +
-        '<p style="font-size:0.875rem;font-weight:700;color:var(--gray-700);">Delivery Instructions</p>' +
+        '<p style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-700) !important;">Delivery Instructions</p>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-3">' + instrBtns + '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
@@ -864,38 +864,38 @@
   function renderAddress(el) {
     var typeBtns = ['Apartment', 'Home', 'Office'].map(function(type) {
       var sel = state.address.type === type;
-      return '<button onclick="setAddressType(\'' + type + '\')" style="flex:1;padding:0.75rem;border-radius:1rem;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ';background:' + (sel ? 'var(--emerald-50)' : 'transparent') + ';color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ';font-size:0.875rem;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;">' + type + '</button>';
+      return '<button onclick="setAddressType(\'' + type + '\')" style="flex:1 !important;padding:0.75rem !important;border-radius:1rem !important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;background:' + (sel ? 'var(--emerald-50)' : 'transparent') + ' !important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ' !important;font-size:0.875rem !important;font-weight:700 !important;cursor:pointer !important;transition:all 0.2s !important;font-family:inherit !important;">' + type + '</button>';
     }).join('');
 
     var fullscreenOverlay = state.isMapFullscreen ?
-      '<div style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;">' +
-        '<div style="padding:1rem;border-bottom:1px solid var(--emerald-100);display:flex;align-items:center;justify-content:space-between;background:#fff;">' +
+      '<div style="position:fixed !important;inset:0 !important;z-index:9999 !important;background:#fff !important;display:flex !important;flex-direction:column !important;">' +
+        '<div style="padding:1rem !important;border-bottom:1px solid var(--emerald-100) !important;display:flex !important;align-items:center !important;justify-content:space-between !important;background:#fff !important;">' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-3">' +
-            '<div style="width:2.5rem;height:2.5rem;background:var(--emerald-100);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;color:var(--emerald-600);">' +
+            '<div style="width:2.5rem !important;height:2.5rem !important;background:var(--emerald-100) !important;border-radius:0.75rem !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--emerald-600) !important;">' +
               '<i data-lucide="map"></i>' +
             '</div>' +
-            '<div><h3 style="font-weight:700;color:var(--emerald-900);">Select Delivery Location</h3><p style="font-size:0.625rem;color:var(--gray-500);">Drag marker to your exact building</p></div>' +
+            '<div><h3 style="font-weight:700 !important;color:var(--emerald-900) !important;">Select Delivery Location</h3><p style="font-size:0.625rem !important;color:var(--gray-500) !important;">Drag marker to your exact building</p></div>' +
           '</div>' +
-          '<button onclick="toggleMapFullscreen()" style="width:2.5rem;height:2.5rem;border-radius:0.75rem;border:2px solid var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-400);background:transparent;cursor:pointer;transition:all 0.2s;">' +
+          '<button onclick="toggleMapFullscreen()" style="width:2.5rem !important;height:2.5rem !important;border-radius:0.75rem !important;border:2px solid var(--gray-100) !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--gray-400) !important;background:transparent !important;cursor:pointer !important;transition:all 0.2s !important;">' +
             '<i data-lucide="x"></i>' +
           '</button>' +
         '</div>' +
-        '<div style="flex:1;position:relative;">' +
-          '<div id="dev_chefpress_plan_fullscreen-delivery-map" style="width:100%;height:100%;"></div>' +
-          '<div style="position:absolute;top:1.5rem;left:50%;transform:translateX(-50%);z-index:1000;width:100%;max-width:32rem;padding:0 1.5rem;">' +
-            '<div style="position:relative;">' +
-              '<input type="text" id="dev_chefpress_plan_fullscreen-map-search" placeholder="Search for your building, street or area..." style="width:100%;padding:1rem 6rem 1rem 3rem;border-radius:1rem;border:2px solid var(--emerald-100);outline:none;font-size:0.875rem;font-weight:500;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);font-family:inherit;">' +
-              '<i data-lucide="search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:1.25rem;height:1.25rem;color:var(--emerald-400);"></i>' +
-              '<button onclick="searchLocation(\'dev_chefpress_plan_fullscreen-map-search\')" style="position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);padding:0.5rem 1rem;background:var(--emerald-500);color:#fff;font-size:0.75rem;font-weight:700;border-radius:0.75rem;border:none;cursor:pointer;font-family:inherit;">Search</button>' +
+        '<div style="flex:1 !important;position:relative !important;">' +
+          '<div id="dev_chefpress_plan_fullscreen-delivery-map" style="width:100% !important;height:100% !important;"></div>' +
+          '<div style="position:absolute !important;top:1.5rem !important;left:50% !important;transform:translateX(-50%) !important;z-index:1000 !important;width:100% !important;max-width:32rem !important;padding:0 1.5rem !important;">' +
+            '<div style="position:relative !important;">' +
+              '<input type="text" id="dev_chefpress_plan_fullscreen-map-search" placeholder="Search for your building, street or area..." style="width:100% !important;padding:1rem 6rem 1rem 3rem !important;border-radius:1rem !important;border:2px solid var(--emerald-100) !important;outline:none !important;font-size:0.875rem !important;font-weight:500 !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;font-family:inherit !important;">' +
+              '<i data-lucide="search" style="position:absolute !important;left:1rem !important;top:50% !important;transform:translateY(-50%) !important;width:1.25rem !important;height:1.25rem !important;color:var(--emerald-400) !important;"></i>' +
+              '<button onclick="searchLocation(\'dev_chefpress_plan_fullscreen-map-search\')" style="position:absolute !important;right:0.5rem !important;top:50% !important;transform:translateY(-50%) !important;padding:0.5rem 1rem !important;background:var(--emerald-500) !important;color:#fff !important;font-size:0.75rem !important;font-weight:700 !important;border-radius:0.75rem !important;border:none !important;cursor:pointer !important;font-family:inherit !important;">Search</button>' +
             '</div>' +
           '</div>' +
-          '<div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:1000;background:var(--emerald-900);color:#fff;padding:0.75rem 1.5rem;border-radius:9999px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;align-items:center;gap:0.75rem;white-space:nowrap;">' +
-            '<i data-lucide="info" style="width:1rem;height:1rem;color:var(--emerald-400);"></i>' +
-            '<span style="font-size:0.875rem;font-weight:500;">Pinpoint your exact delivery entrance</span>' +
+          '<div style="position:absolute !important;bottom:2.5rem !important;left:50% !important;transform:translateX(-50%) !important;z-index:1000 !important;background:var(--emerald-900) !important;color:#fff !important;padding:0.75rem 1.5rem !important;border-radius:9999px !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;display:flex !important;align-items:center !important;gap:0.75rem !important;white-space:nowrap !important;">' +
+            '<i data-lucide="info" style="width:1rem !important;height:1rem !important;color:var(--emerald-400) !important;"></i>' +
+            '<span style="font-size:0.875rem !important;font-weight:500 !important;">Pinpoint your exact delivery entrance</span>' +
           '</div>' +
         '</div>' +
-        '<div style="padding:1.5rem;background:#fff;border-top:1px solid var(--emerald-100);">' +
-          '<button onclick="toggleMapFullscreen()" class="dev_chefpress_plan_btn-primary dev_chefpress_plan_w-full" style="padding:1rem;border-radius:1rem;box-shadow:0 10px 15px -3px rgba(16,185,129,0.2);">Confirm Location & Close</button>' +
+        '<div style="padding:1.5rem !important;background:#fff !important;border-top:1px solid var(--emerald-100) !important;">' +
+          '<button onclick="toggleMapFullscreen()" class="dev_chefpress_plan_btn-primary dev_chefpress_plan_w-full" style="padding:1rem !important;border-radius:1rem !important;box-shadow:0 10px 15px -3px rgba(16,185,129,0.2) !important;">Confirm Location & Close</button>' +
         '</div>' +
       '</div>' : '';
 
@@ -904,41 +904,41 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Where to deliver?</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Provide your exact location for seamless delivery.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_mb-8 dev_chefpress_plan_space-y-6" style="max-width:42rem;margin:0 auto;">' +
-        '<div style="position:relative;">' +
-          '<input type="text" id="dev_chefpress_plan_map-search" placeholder="Search for your building, street or area..." style="width:100%;padding:1rem 6rem 1rem 3rem;border-radius:1rem;border:2px solid var(--emerald-100);outline:none;font-size:0.875rem;font-weight:500;font-family:inherit;transition:all 0.2s;">' +
-          '<i data-lucide="search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:1.25rem;height:1.25rem;color:var(--emerald-400);"></i>' +
-          '<button onclick="searchLocation(\'dev_chefpress_plan_map-search\')" style="position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);padding:0.5rem 1rem;background:var(--emerald-500);color:#fff;font-size:0.75rem;font-weight:700;border-radius:0.75rem;border:none;cursor:pointer;font-family:inherit;">Search</button>' +
+      '<div class="dev_chefpress_plan_mb-8 dev_chefpress_plan_space-y-6" style="max-width:42rem !important;margin:0 auto !important;">' +
+        '<div style="position:relative !important;">' +
+          '<input type="text" id="dev_chefpress_plan_map-search" placeholder="Search for your building, street or area..." style="width:100% !important;padding:1rem 6rem 1rem 3rem !important;border-radius:1rem !important;border:2px solid var(--emerald-100) !important;outline:none !important;font-size:0.875rem !important;font-weight:500 !important;font-family:inherit !important;transition:all 0.2s !important;">' +
+          '<i data-lucide="search" style="position:absolute !important;left:1rem !important;top:50% !important;transform:translateY(-50%) !important;width:1.25rem !important;height:1.25rem !important;color:var(--emerald-400) !important;"></i>' +
+          '<button onclick="searchLocation(\'dev_chefpress_plan_map-search\')" style="position:absolute !important;right:0.5rem !important;top:50% !important;transform:translateY(-50%) !important;padding:0.5rem 1rem !important;background:var(--emerald-500) !important;color:#fff !important;font-size:0.75rem !important;font-weight:700 !important;border-radius:0.75rem !important;border:none !important;cursor:pointer !important;font-family:inherit !important;">Search</button>' +
         '</div>' +
-        '<div style="position:relative;width:100%;height:16rem;border-radius:1.5rem;overflow:hidden;border:2px solid var(--emerald-100);box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
-          '<div id="dev_chefpress_plan_delivery-map" style="width:100%;height:100%;z-index:10;"></div>' +
-          '<button onclick="toggleMapFullscreen()" style="position:absolute;top:1rem;right:1rem;z-index:20;width:2.5rem;height:2.5rem;background:#fff;border-radius:0.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid var(--emerald-100);display:flex;align-items:center;justify-content:center;color:var(--emerald-600);cursor:pointer;transition:all 0.2s;">' +
-            '<i data-lucide="maximize-2" style="width:1.25rem;height:1.25rem;"></i>' +
+        '<div style="position:relative !important;width:100% !important;height:16rem !important;border-radius:1.5rem !important;overflow:hidden !important;border:2px solid var(--emerald-100) !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
+          '<div id="dev_chefpress_plan_delivery-map" style="width:100% !important;height:100% !important;z-index:10 !important;"></div>' +
+          '<button onclick="toggleMapFullscreen()" style="position:absolute !important;top:1rem !important;right:1rem !important;z-index:20 !important;width:2.5rem !important;height:2.5rem !important;background:#fff !important;border-radius:0.75rem !important;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1) !important;border:1px solid var(--emerald-100) !important;display:flex !important;align-items:center !important;justify-content:center !important;color:var(--emerald-600) !important;cursor:pointer !important;transition:all 0.2s !important;">' +
+            '<i data-lucide="maximize-2" style="width:1.25rem !important;height:1.25rem !important;"></i>' +
           '</button>' +
-          '<div style="position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);z-index:20;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:0.5rem 1rem;border-radius:9999px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid var(--emerald-100);">' +
-            '<p style="font-size:0.625rem;font-weight:700;color:var(--emerald-900);display:flex;align-items:center;gap:0.5rem;">' +
-              '<i data-lucide="map-pin" style="width:0.75rem;height:0.75rem;color:var(--emerald-500);"></i>' +
+          '<div style="position:absolute !important;bottom:1rem !important;left:50% !important;transform:translateX(-50%) !important;z-index:20 !important;background:rgba(255,255,255,0.9) !important;backdrop-filter:blur(8px) !important;padding:0.5rem 1rem !important;border-radius:9999px !important;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1) !important;border:1px solid var(--emerald-100) !important;">' +
+            '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-900) !important;display:flex !important;align-items:center !important;gap:0.5rem !important;">' +
+              '<i data-lucide="map-pin" style="width:0.75rem !important;height:0.75rem !important;color:var(--emerald-500) !important;"></i>' +
               'Drag marker or click map to set location' +
             '</p>' +
           '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-4">' + typeBtns + '</div>' +
-        '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_addr-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' +
-          '<div id="dev_chefpress_plan_addr-building" style="grid-column:span 1;">' +
-            '<label style="display:block;font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.5rem;">Building Name / Villa Number</label>' +
+        '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_addr-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
+          '<div id="dev_chefpress_plan_addr-building" style="grid-column:span 1 !important;">' +
+            '<label style="display:block !important;font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:0.5rem !important;">Building Name / Villa Number</label>' +
             '<input type="text" id="dev_chefpress_plan_addr-building-input" value="' + state.address.building + '" class="dev_chefpress_plan_input-field" placeholder="e.g. Burj Khalifa">' +
           '</div>' +
           '<div>' +
-            '<label style="display:block;font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.5rem;">Floor</label>' +
+            '<label style="display:block !important;font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:0.5rem !important;">Floor</label>' +
             '<input type="text" id="dev_chefpress_plan_addr-floor" value="' + state.address.floor + '" class="dev_chefpress_plan_input-field" placeholder="e.g. 12">' +
           '</div>' +
           '<div>' +
-            '<label style="display:block;font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.5rem;">Flat / Office Number</label>' +
+            '<label style="display:block !important;font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:0.5rem !important;">Flat / Office Number</label>' +
             '<input type="text" id="dev_chefpress_plan_addr-flat" value="' + state.address.flat + '" class="dev_chefpress_plan_input-field" placeholder="e.g. 1204">' +
           '</div>' +
-          '<div id="dev_chefpress_plan_addr-details-wrap" style="grid-column:span 1;">' +
-            '<label style="display:block;font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.5rem;">Additional Details</label>' +
-            '<textarea id="dev_chefpress_plan_addr-details" class="dev_chefpress_plan_input-field" style="height:6rem;resize:none;" placeholder="e.g. Near the main gate, code 1234...">' + state.address.details + '</textarea>' +
+          '<div id="dev_chefpress_plan_addr-details-wrap" style="grid-column:span 1 !important;">' +
+            '<label style="display:block !important;font-size:0.75rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:0.5rem !important;">Additional Details</label>' +
+            '<textarea id="dev_chefpress_plan_addr-details" class="dev_chefpress_plan_input-field" style="height:6rem !important;resize:none !important;" placeholder="e.g. Near the main gate, code 1234...">' + state.address.details + '</textarea>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -973,36 +973,36 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Secure Checkout</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Complete your subscription to start your journey.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_pay-grid" style="grid-template-columns:repeat(1,minmax(0,1fr));">' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_pay-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;">' +
         '<div class="dev_chefpress_plan_space-y-6">' +
-          '<div style="background:var(--gray-50);padding:1.5rem;border-radius:2rem;" class="dev_chefpress_plan_space-y-4">' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem;"><span style="color:var(--gray-500);">Plan: ' + state.planDuration + '</span><span style="font-weight:700;color:var(--gray-900);">AED ' + pricing.base + '</span></div>' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem;color:var(--emerald-600);font-weight:700;"><span>Plan Discount</span><span>-' + (planDisc * 100) + '%</span></div>' +
-            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem;color:var(--emerald-600);font-weight:700;"><span>Promo: FRESH10</span><span>-10%</span></div>' : '') +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-200);">' +
-              '<span style="font-weight:700;color:var(--gray-900);">' + label + '</span>' +
-              '<span style="font-size:1.875rem;font-weight:900;color:var(--emerald-900);">AED ' + pricing.final + '</span>' +
+          '<div style="background:var(--gray-50) !important;padding:1.5rem !important;border-radius:2rem !important;" class="dev_chefpress_plan_space-y-4">' +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;"><span style="color:var(--gray-500) !important;">Plan: ' + state.planDuration + '</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Plan Discount</span><span>-' + (planDisc * 100) + '%</span></div>' +
+            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Promo: FRESH10</span><span>-10%</span></div>' : '') +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-200) !important;">' +
+              '<span style="font-weight:700 !important;color:var(--gray-900) !important;">' + label + '</span>' +
+              '<span style="font-size:1.875rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +
             '</div>' +
           '</div>' +
-          '<div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:var(--emerald-50);border-radius:1rem;border:1px solid var(--emerald-100);">' +
-            '<i data-lucide="shield-check" style="color:var(--emerald-500);flex-shrink:0;"></i>' +
-            '<p style="font-size:0.625rem;color:var(--emerald-700);font-weight:500;">SSL Encrypted &amp; Secure Payment Processing</p>' +
+          '<div style="display:flex !important;align-items:center !important;gap:1rem !important;padding:1rem !important;background:var(--emerald-50) !important;border-radius:1rem !important;border:1px solid var(--emerald-100) !important;">' +
+            '<i data-lucide="shield-check" style="color:var(--emerald-500) !important;flex-shrink:0 !important;"></i>' +
+            '<p style="font-size:0.625rem !important;color:var(--emerald-700) !important;font-weight:500 !important;">SSL Encrypted &amp; Secure Payment Processing</p>' +
           '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_space-y-4">' +
           '<div class="dev_chefpress_plan_space-y-3">' +
-            '<label style="display:block;font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;">Card Details</label>' +
-            '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem;" placeholder="Card Number">' +
+            '<label style="display:block !important;font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;">Card Details</label>' +
+            '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem !important;" placeholder="Card Number">' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-4">' +
-              '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem;" placeholder="MM/YY">' +
-              '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem;" placeholder="CVC">' +
+              '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem !important;" placeholder="MM/YY">' +
+              '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem !important;" placeholder="CVC">' +
             '</div>' +
-            '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem;" placeholder="Cardholder Name">' +
+            '<input type="text" class="dev_chefpress_plan_input-field" style="padding:0.625rem 1rem !important;" placeholder="Cardholder Name">' +
           '</div>' +
-          '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary dev_chefpress_plan_w-full" style="padding:0.875rem;font-size:1.125rem;">Pay &amp; Subscribe</button>' +
+          '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary dev_chefpress_plan_w-full" style="padding:0.875rem !important;font-size:1.125rem !important;">Pay &amp; Subscribe</button>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-center dev_chefpress_plan_gap-4">' +
-            '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Tabby_logo.svg/2560px-Tabby_logo.svg.png" style="height:0.75rem;opacity:0.4;" alt="Tabby">' +
-            '<img src="https://tamara.co/assets/images/tamara-logo.svg" style="height:0.75rem;opacity:0.4;" alt="Tamara">' +
+            '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Tabby_logo.svg/2560px-Tabby_logo.svg.png" style="height:0.75rem !important;opacity:0.4 !important;" alt="Tabby">' +
+            '<img src="https://tamara.co/assets/images/tamara-logo.svg" style="height:0.75rem !important;opacity:0.4 !important;" alt="Tamara">' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -1016,11 +1016,11 @@
   // Step 15 – Success
   function renderSuccess(el) {
     el.innerHTML =
-      '<div class="dev_chefpress_plan_text-center" style="padding:3rem 0; !important">' +
+      '<div class="dev_chefpress_plan_text-center" style="padding:3rem 0 !important; !important">' +
         '<div class="dev_chefpress_plan_animate-bounce" style="width:6rem !important;height:6rem !important;background:var(--emerald-500) !important;border-radius:9999px !important;display:flex !important;align-items:center !important;justify-content:center !important;margin:0 auto 2rem !important;box-shadow:0 25px 50px -12px rgba(16,185,129,0.4) !important;">' +
           '<i data-lucide="check" style="color:#fff !important;width:3rem !important;height:3rem !important;"></i>' +
         '</div>' +
-        '<h2 style="font-size:3rem !important;font-weight:900 !important;color:var(--emerald-900) !important;margin-bottom:1rem !important;font-family:\'Outfit\',sans-serif;">You\'re all set!</h2>' +
+        '<h2 style="font-size:3rem !important;font-weight:900 !important;color:var(--emerald-900) !important;margin-bottom:1rem !important;font-family:\'Outfit\',sans-serif !important;">You\'re all set!</h2>' +
         '<p style="color:var(--gray-500) !important;font-size:1.125rem !important;max-width:28rem !important;margin:0 auto 3rem !important;">Your first box will arrive on <span style="font-weight:700 !important;color:var(--emerald-600) !important;">' + state.startDate + '</span>. Get ready for a healthier you!</p>' +
         '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="max-width:32rem !important;margin:0 auto !important;grid-template-columns:repeat(1,minmax(0,1fr)) !important;" id="dev_chefpress_plan_success-btns">' +
           '<button onclick="location.reload()" class="dev_chefpress_plan_btn-primary">Go to Dashboard</button>' +
@@ -1183,3 +1183,4 @@
     renderStep();
   });
 })(jQuery);
+
