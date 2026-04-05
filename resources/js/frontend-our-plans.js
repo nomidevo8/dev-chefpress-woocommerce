@@ -310,8 +310,7 @@
 
     // spin-button style
     $(el).find('.dev_chefpress_plan_spinBtn').css({
-      width:'2.5rem !important', height:'2.5rem !important', borderRadius:'9999px !important',
-      border:'2px solid var(--emerald-100) !important', display:'flex !important',
+      width:'2.5rem !important', height:'2.5rem !important', borderRadius:'9999px !important', display:'flex !important',
       alignItems:'center !important', justifyContent:'center !important',
       color:'var(--emerald-600) !important', background:'transparent !important',
       transition:'background 0.2s !important', cursor:'pointer !important', flexShrink:'0 !important'

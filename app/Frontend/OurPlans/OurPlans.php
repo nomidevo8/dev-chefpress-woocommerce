@@ -1,3 +1,8 @@
+<?php 
+use DevChefPress\Helpers\WeekCalculator;
+
+?>
+
 <main id="dev_chefpress_plan_main">
     <div id="dev_chefpress_plan_wizard-container" class="dev_chefpress_plan_glass-card">
         <!-- Progress Header -->
@@ -31,6 +36,40 @@
 
 <div id="dev_chefpress_weekly_menu_container" style="display: none;">
     <?php
+
+
+    // Get all week terms
+    $week_terms = get_terms([
+        'taxonomy' => 'chefpress_week',
+        'hide_empty' => false,
+        'orderby' => 'name',
+        'order' => 'ASC',
+    ]);
+
+    // If no terms, use defaults
+    if (empty($week_terms) || is_wp_error($week_terms)) {
+        $week_terms = [
+            (object) ['name' => 'Week 1'],
+            (object) ['name' => 'Week 2'],
+            (object) ['name' => 'Week 3'],
+            (object) ['name' => 'Week 4'],
+            (object) ['name' => 'Week 5'],
+            (object) ['name' => 'Week 6'],
+        ];
+    }
+
+    // Use all terms dynamically
+    $display_terms = array_values($week_terms);
+    $term_count = count($display_terms);
+
+    // Get carousel weeks to display: up to 3 past + current + future (looping)
+    $carousel_weeks = WeekCalculator::get_carousel_weeks($term_count);
+
+    // Calculate date ranges for all base weeks (for API calls)
+    $date_ranges = WeekCalculator::calculate_week_ranges($term_count);
+
+    // Determine the currently active week (1-based index)
+    $active_week_index = WeekCalculator::get_active_week_index($term_count);
     // Get dynamic terms for the weekly menu
     $product_cats = get_terms([
         'taxonomy' => 'product_cat',
@@ -54,6 +93,17 @@
     ]);
     ?>
 
+    <!-- Banner -->
+    <div class="cp_weekly_menu_banner">
+        <span class="cp_weekly_menu_banner_text">
+            <?php
+            $current_range = $date_ranges[$active_week_index] ?? $date_ranges[1];
+            echo esc_html('Choose from ' . count($display_terms) . ' recipes for the week of ' . $current_range['range'] . ' ' . $current_range['month']);
+            ?>
+        </span>
+    </div>
+
+
     <div class="cp_weekly_menu_app">
         <div class="cp_weekly_menu_container">
             <!-- Filter Toolbar -->
@@ -70,7 +120,7 @@
     <!-- Navigation Buttons -->
     <div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_mt-8">
         <button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>
-        <button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Review Order</button>
+        <!-- <button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Review Order</button> -->
     </div>
 </div>
 <!-- Sidebar Overlay -->
