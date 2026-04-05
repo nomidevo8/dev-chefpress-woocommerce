@@ -1,3 +1,4 @@
+(function ($) {
   // ─────────────────────────────────────────────────────────
   //  CONSTANTS
   // ─────────────────────────────────────────────────────────
@@ -1150,7 +1151,35 @@
   // ─────────────────────────────────────────────────────────
   //  INIT
   // ─────────────────────────────────────────────────────────
+  
+  // Expose all functions to global scope for HTML onclick handlers
+  window.setGoal = setGoal;
+  window.updateWeight = updateWeight;
+  window.updateHeight = updateHeight;
+  window.setActivity = setActivity;
+  window.setHasAllergies = setHasAllergies;
+  window.handleAllergyBack = handleAllergyBack;
+  window.toggleAllergen = toggleAllergen;
+  window.setDiet = setDiet;
+  window.setPlan = setPlan;
+  window.applyPromo = applyPromo;
+  window.removePromo = removePromo;
+  window.updateMealQuantity = updateMealQuantity;
+  window.toggleDay = toggleDay;
+  window.filterMenu = filterMenu;
+  window.openRecipePicker = openRecipePicker;
+  window.assignRecipe = assignRecipe;
+  window.setSlot = setSlot;
+  window.toggleInstruction = toggleInstruction;
+  window.setAddressType = setAddressType;
+  window.toggleMapFullscreen = toggleMapFullscreen;
+  window.searchLocation = searchLocation;
+  window.modifyPlan = modifyPlan;
+  window.nextStep = nextStep;
+  window.prevStep = prevStep;
+
   $(document).ready(function() {
     if (window.lucide) window.lucide.createIcons();
     renderStep();
   });
+})(jQuery);

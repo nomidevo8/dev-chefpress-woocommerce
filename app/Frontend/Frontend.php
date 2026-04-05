@@ -23,7 +23,6 @@ class Frontend {
 
 	private function register_hooks(): void {
 		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets' , 999 );
-		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_assets_our_plans' , 999 );
 
 		// Override product page for recipe_product.
 		$this->loader->add_action( 'template_redirect', $this, 'maybe_override_product_page', 1 );
@@ -146,6 +145,8 @@ class Frontend {
 	}
 
 	public function enqueue_assets_our_plans(): void {
+		// Ensure jQuery is enqueued first
+		wp_enqueue_script( 'jquery' );
 
 		// Google Fonts (Inter + Outfit)
 		wp_enqueue_style(
@@ -179,41 +180,38 @@ class Frontend {
 			DEVCHEFPRESS_VERSION
 		);
 
-		// jQuery (WordPress already includes it, just enqueue)
-		wp_enqueue_script('jquery');
-
-		// Lucide Icons
+		// Lucide Icons (jQuery as dependency)
 		wp_enqueue_script(
 			'lucide-icons',
 			'https://unpkg.com/lucide@latest',
-			[],
+			[ 'jquery' ],
 			null,
 			true
 		);
 
-		// Flatpickr JS
+		// Flatpickr JS (jQuery as dependency)
 		wp_enqueue_script(
 			'flatpickr-js',
 			'https://cdn.jsdelivr.net/npm/flatpickr',
-			[],
+			[ 'jquery' ],
 			null,
 			true
 		);
 
-		// Leaflet JS
+		// Leaflet JS (jQuery as dependency)
 		wp_enqueue_script(
 			'leaflet-js',
 			'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-			[],
+			[ 'jquery' ],
 			null,
 			true
 		);
 
-		// Your Custom JS
+		// Your Custom JS (depends on jQuery and all external libraries)
 		wp_enqueue_script(
 			'dev-chefpress-our-plans',
 			DEVCHEFPRESS_RESOURCES_URL . 'js/frontend-our-plans.js',
-			['jquery', 'flatpickr-js', 'leaflet-js'],
+			[ 'jquery', 'flatpickr-js', 'leaflet-js', 'lucide-icons' ],
 			DEVCHEFPRESS_VERSION,
 			true
 		);
@@ -291,6 +289,9 @@ class Frontend {
 	 * Render the OurPlans shortcode.
 	 */
 	public function render_our_plans(): string {
+		// Enqueue OurPlans assets only when shortcode is used
+		$this->enqueue_assets_our_plans();
+		
 		ob_start();
 		include DEVCHEFPRESS_PATH . 'templates/our-plans.php';
 		return ob_get_clean();
