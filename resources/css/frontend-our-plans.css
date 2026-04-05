@@ -80,7 +80,7 @@ main {
 /* ─── Progress Header ─── */
 #dev_chefpress_plan_progress-container {
     display: flex !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
     align-items: center !important;
     padding-bottom: 2rem !important;
     border-bottom: 1px solid var(--emerald-50) !important;
@@ -435,6 +435,7 @@ main {
     text-align: center !important;
     font-size: 1.5rem !important;
     font-weight: 700 !important;
+        color: var(--emerald-900) !important;
 }
 
 .dev_chefpress_plan_range-slider {

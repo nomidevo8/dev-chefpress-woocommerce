@@ -3,10 +3,6 @@
         <!-- Progress Header -->
         <div id="dev_chefpress_plan_progress-container">
             <div class="dev_chefpress_plan_logo-area">
-                <div class="dev_chefpress_plan_logo-icon">
-                    <i data-lucide="leaf" style="color:#fff;width:1.5rem;height:1.5rem;"></i>
-                </div>
-                <span class="dev_chefpress_plan_logo-text">FreshFit</span>
             </div>
 
             <div class="dev_chefpress_plan_progress-right">

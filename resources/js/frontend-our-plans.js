@@ -256,7 +256,7 @@
           '<i data-lucide="' + icons[i] + '" style="width:1.25rem!important;height:1.25rem!important;"></i>' +
         '</div>' +
         '<div class="dev_chefpress_plan_text-left">' +
-          '<h3 class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-900">' + g + '</h3>' +
+          '<h3 class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-900" style="font-size:1.25rem!important;">' + g + '</h3>' +
           '<p style="font-size:0.75rem!important;color:var(--gray-500)!important;">' + GOAL_DESCS[g] + '</p>' +
         '</div>' +
       '</div>';
@@ -371,8 +371,8 @@
             '<i data-lucide="zap" style="width:1rem!important;height:1rem!important;"></i>' +
           '</div>' +
           '<div class="dev_chefpress_plan_text-left">' +
-            '<h3 style="font-weight:700!important;color:var(--gray-900)!important;font-size:0.875rem!important;">' + l + '</h3>' +
-            '<p style="font-size:0.625rem!important;color:var(--gray-500)!important;">' + descs[i] + '</p>' +
+            '<h3 style="font-weight:700!important;color:var(--gray-900)!important;font-size:1.25rem!important;">' + l + '</h3>' +
+            '<p style="font-size:0.875rem!important;color:var(--gray-500)!important;">' + descs[i] + '</p>' +
           '</div>' +
         '</div>' +
         (isActive ? '<i data-lucide="check-circle-2" style="color:var(--emerald-500)!important;width:1.25rem!important;height:1.25rem!important;flex-shrink:0!important;"></i>' : '') +
