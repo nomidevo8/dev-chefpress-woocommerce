@@ -29,6 +29,8 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 	define( 'DEVCHEFPRESS_VERSION', time() );
 } else {
 	// For production, use plugin version or filemtime for cache busting.
+	define( 'DEVCHEFPRESS_VERSION', time() );
+
 	define( 'DEVCHEFPRESS_VERSION', '1.0.0' );
 }
 define( 'DEVCHEFPRESS_FILE', __FILE__ );
