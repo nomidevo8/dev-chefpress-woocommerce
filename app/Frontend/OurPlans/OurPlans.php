@@ -26,69 +26,71 @@
     </div>
 
     <!-- Hidden Weekly Menu Component (for Step 9) -->
-    <div id="dev_chefpress_weekly_menu_container" style="display: none;">
-        <?php
-        // Get dynamic terms for the weekly menu
-        $product_cats = get_terms([
-            'taxonomy' => 'product_cat',
-            'hide_empty' => false,
-            'orderby' => 'name',
-            'order' => 'ASC',
-        ]);
 
-        $recipe_tags = get_terms([
-            'taxonomy' => 'chefpress_recipe_tag',
-            'hide_empty' => false,
-            'orderby' => 'name',
-            'order' => 'ASC',
-        ]);
+</main>
 
-        $allergen_tags = get_terms([
-            'taxonomy' => 'chefpress_allergen_tag',
-            'hide_empty' => false,
-            'orderby' => 'name',
-            'order' => 'ASC',
-        ]);
-        ?>
-        
-        <div class="cp_weekly_menu_app">
-            <div class="cp_weekly_menu_container">
-                <!-- Filter Toolbar -->
-                <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags); ?>
-                
-                <!-- Recipe Grid -->
-                <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_recipe_grid(); ?>
-            </div>
+<div id="dev_chefpress_weekly_menu_container" style="display: none;">
+    <?php
+    // Get dynamic terms for the weekly menu
+    $product_cats = get_terms([
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false,
+        'orderby' => 'name',
+        'order' => 'ASC',
+    ]);
 
-            <!-- Sidebar Overlay -->
-            <div class="cp_weekly_menu_sidebar_overlay" id="cp_weekly_sidebar_overlay"></div>
+    $recipe_tags = get_terms([
+        'taxonomy' => 'chefpress_recipe_tag',
+        'hide_empty' => false,
+        'orderby' => 'name',
+        'order' => 'ASC',
+    ]);
 
-            <!-- Sidebar -->
-            <div class="cp_weekly_menu_sidebar" id="cp_weekly_filter_sidebar">
-                <div class="cp_weekly_menu_sidebar_header">
-                    <h2>Filter by</h2>
-                    <button class="cp_weekly_menu_sidebar_close" id="cp_weekly_close_sidebar_btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
+    $allergen_tags = get_terms([
+        'taxonomy' => 'chefpress_allergen_tag',
+        'hide_empty' => false,
+        'orderby' => 'name',
+        'order' => 'ASC',
+    ]);
+    ?>
 
-                <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_sidebar($product_cats, $recipe_tags, $allergen_tags); ?>
+    <div class="cp_weekly_menu_app">
+        <div class="cp_weekly_menu_container">
+            <!-- Filter Toolbar -->
+            <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags); ?>
 
-                <div class="cp_weekly_menu_sidebar_footer">
-                    <button class="cp_weekly_menu_sidebar_clear">Clear all</button>
-                    <button class="cp_weekly_menu_sidebar_apply">Apply filters</button>
-                </div>
-            </div>
+            <!-- Recipe Grid -->
+            <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_recipe_grid(); ?>
         </div>
 
-        <!-- Navigation Buttons -->
-        <div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_mt-8">
-            <button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>
-            <button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Review Order</button>
+        <!-- Sidebar Overlay -->
+        <div class="cp_weekly_menu_sidebar_overlay" id="cp_weekly_sidebar_overlay"></div>
+
+        <!-- Sidebar -->
+        <div class="cp_weekly_menu_sidebar" id="cp_weekly_filter_sidebar">
+            <div class="cp_weekly_menu_sidebar_header">
+                <h2>Filter by</h2>
+                <button class="cp_weekly_menu_sidebar_close" id="cp_weekly_close_sidebar_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_sidebar($product_cats, $recipe_tags, $allergen_tags); ?>
+
+            <div class="cp_weekly_menu_sidebar_footer">
+                <button class="cp_weekly_menu_sidebar_clear">Clear all</button>
+                <button class="cp_weekly_menu_sidebar_apply">Apply filters</button>
+            </div>
         </div>
     </div>
-</main>
+
+    <!-- Navigation Buttons -->
+    <div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_mt-8">
+        <button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>
+        <button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Review Order</button>
+    </div>
+</div>

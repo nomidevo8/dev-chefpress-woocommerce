@@ -656,12 +656,10 @@
       return;
     }
 
-    // Clone the weekly menu container and inject it into the step content
-    var clonedMenu = weeklyMenuContainer.cloneNode(true);
-    clonedMenu.style.display = 'block';
-    
+    // Move the weekly menu container to the step content (instead of cloning to avoid duplication)
+    weeklyMenuContainer.style.display = 'block';
     el.innerHTML = '';
-    el.appendChild(clonedMenu);
+    el.appendChild(weeklyMenuContainer);
 
     // Initialize weekly menu JS if available
     if (typeof initWeeklyMenu === 'function') {

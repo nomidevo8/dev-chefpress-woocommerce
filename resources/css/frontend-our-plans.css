@@ -535,3 +535,39 @@ main {
 .dev_chefpress_plan_border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
 .dev_chefpress_plan_sm-col-span-2 { grid-column: span 1 !important; }
 @media (min-width: 640px) { .dev_chefpress_plan_sm-col-span-2 { grid-column: span 2 !important; } }
+
+/* ─── Weekly Menu Sidebar in Wizard ─── */
+#dev_chefpress_plan_main .cp_weekly_menu_sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 400px !important;
+    height: 100vh !important;
+    z-index: 10000 !important;
+    background: white !important;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s ease !important;
+}
+
+#dev_chefpress_plan_main .cp_weekly_menu_sidebar.active {
+    transform: translateX(0) !important;
+}
+
+#dev_chefpress_plan_main .cp_weekly_menu_sidebar_overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0,0,0,0.5) !important;
+    z-index: 9999 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease !important;
+}
+
+#dev_chefpress_plan_main .cp_weekly_menu_sidebar_overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
