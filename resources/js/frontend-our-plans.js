@@ -129,7 +129,7 @@
     $('#dev_chefpress_plan_progress-circle').css('stroke-dashoffset', offset);
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ────────────────���────────────────────────────────────────
   //  MAP helpers (module-level refs to avoid re-init issues)
   // ─────────────────────────────────────────────────────────
   var leafletMap = null;
@@ -252,12 +252,12 @@
     var icons = ['apple', 'trending-down', 'trending-up', 'dumbbell', 'activity'];
     var cards = goals.map(function(g, i) {
       return '<div onclick="setGoal(\'' + g + '\')" class="dev_chefpress_plan_card-selectable ' + (state.goal === g ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4 dev_chefpress_plan_p-4">' +
-        '<div style="width:3rem;height:3rem;background:var(--emerald-100);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;color:var(--emerald-600);">' +
-          '<i data-lucide="' + icons[i] + '" style="width:1.25rem;height:1.25rem;"></i>' +
+        '<div style="width:3rem!important;height:3rem!important;background:var(--emerald-100)!important;border-radius:0.75rem!important;display:flex!important;align-items:center!important;justify-content:center!important;color:var(--emerald-600)!important;">' +
+          '<i data-lucide="' + icons[i] + '" style="width:1.25rem!important;height:1.25rem!important;"></i>' +
         '</div>' +
         '<div class="dev_chefpress_plan_text-left">' +
           '<h3 class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-900">' + g + '</h3>' +
-          '<p style="font-size:0.75rem;color:var(--gray-500);">' + GOAL_DESCS[g] + '</p>' +
+          '<p style="font-size:0.75rem!important;color:var(--gray-500)!important;">' + GOAL_DESCS[g] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -265,11 +265,11 @@
     el.innerHTML =
       '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_mb-8">' +
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">What\'s your primary goal?</h2>' +
-        '<p class="dev_chefpress_plan_text-gray-500" style="max-width:28rem;margin:0 auto;">We\'ll tailor your nutrition plan based on your objective.</p>' +
+        '<p class="dev_chefpress_plan_text-gray-500" style="max-width:28rem!important;margin:0 auto!important;">We\'ll tailor your nutrition plan based on your objective.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + cards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-end">' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.goal ? 'disabled' : '') + '>Continue <i data-lucide="arrow-right" style="width:1rem;height:1rem;"></i></button>' +
+        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.goal ? 'disabled' : '') + '>Continue <i data-lucide="arrow-right" style="width:1rem!important;height:1rem!important;"></i></button>' +
       '</div>';
 
     // responsive
@@ -285,21 +285,21 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Tell us about yourself</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">This helps us calculate your metabolic rate accurately.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_space-y-6 dev_chefpress_plan_mb-8" style="max-width:28rem;margin:0 auto;">' +
+      '<div class="dev_chefpress_plan_space-y-6 dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
         '<div>' +
-          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block;font-size:0.875rem;margin-bottom:0.75rem;">Current Weight (kg)</label>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Current Weight (kg)</label>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-            '<button onclick="updateWeight(-1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="minus" style="width:1rem;height:1rem;"></i></button>' +
+            '<button onclick="updateWeight(-1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="minus" style="width:1rem!important;height:1rem!important;"></i></button>' +
             '<input type="number" id="dev_chefpress_plan_weight-input" value="' + state.weight + '" class="dev_chefpress_plan_input-field dev_chefpress_plan_profile-number-input" min="30">' +
-            '<button onclick="updateWeight(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem;height:1rem;"></i></button>' +
+            '<button onclick="updateWeight(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem!important;height:1rem!important;"></i></button>' +
           '</div>' +
         '</div>' +
         '<div>' +
-          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block;font-size:0.875rem;margin-bottom:0.75rem;">Height (cm)</label>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Height (cm)</label>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-            '<button onclick="updateHeight(-1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="minus" style="width:1rem;height:1rem;"></i></button>' +
+            '<button onclick="updateHeight(-1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="minus" style="width:1rem!important;height:1rem!important;"></i></button>' +
             '<input type="number" id="dev_chefpress_plan_height-input" value="' + state.height + '" class="dev_chefpress_plan_input-field dev_chefpress_plan_profile-number-input" min="100">' +
-            '<button onclick="updateHeight(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem;height:1rem;"></i></button>' +
+            '<button onclick="updateHeight(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem!important;height:1rem!important;"></i></button>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -310,13 +310,13 @@
 
     // spin-button style
     $(el).find('.dev_chefpress_plan_spinBtn').css({
-      width:'2.5rem', height:'2.5rem', borderRadius:'9999px',
-      border:'2px solid var(--emerald-100)', display:'flex',
-      alignItems:'center', justifyContent:'center',
-      color:'var(--emerald-600)', background:'transparent',
-      transition:'background 0.2s', cursor:'pointer', flexShrink:'0'
-    }).hover(function(){ $(this).css('background','var(--emerald-50)'); },
-              function(){ $(this).css('background','transparent'); });
+      width:'2.5rem !important', height:'2.5rem !important', borderRadius:'9999px !important',
+      border:'2px solid var(--emerald-100) !important', display:'flex !important',
+      alignItems:'center !important', justifyContent:'center !important',
+      color:'var(--emerald-600) !important', background:'transparent !important',
+      transition:'background 0.2s !important', cursor:'pointer !important', flexShrink:'0 !important'
+    }).hover(function(){ $(this).css('background','var(--emerald-50) !important'); },
+              function(){ $(this).css('background','transparent !important'); });
 
     $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); });
     $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); });
@@ -329,17 +329,17 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Set your target</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">What\'s your ideal weight goal?</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem;margin:0 auto;">' +
-        '<div style="background:var(--emerald-50);padding:1.5rem;border-radius:1.5rem;text-align:center;margin-bottom:1.5rem;">' +
-          '<span style="font-size:0.75rem;font-weight:700;color:var(--emerald-600);text-transform:uppercase;letter-spacing:0.1em;">Target Weight</span>' +
-          '<div style="font-size:3.75rem;font-weight:900;color:var(--emerald-900);margin:0.5rem 0;" id="dev_chefpress_plan_target-display">' +
-            state.targetWeight + '<span style="font-size:1.5rem;font-weight:500;color:var(--emerald-500);margin-left:0.25rem;">kg</span>' +
+      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
+        '<div style="background:var(--emerald-50)!important;padding:1.5rem!important;border-radius:1.5rem!important;text-align:center!important;margin-bottom:1.5rem!important;">' +
+          '<span style="font-size:0.75rem!important;font-weight:700!important;color:var(--emerald-600)!important;text-transform:uppercase!important;letter-spacing:0.1em!important;">Target Weight</span>' +
+          '<div style="font-size:3.75rem!important;font-weight:900!important;color:var(--emerald-900)!important;margin:0.5rem 0!important;" id="dev_chefpress_plan_target-display">' +
+            state.targetWeight + '<span style="font-size:1.5rem!important;font-weight:500!important;color:var(--emerald-500)!important;margin-left:0.25rem!important;">kg</span>' +
           '</div>' +
-          '<input type="range" min="40" max="150" value="' + state.targetWeight + '" id="dev_chefpress_plan_target-range" class="dev_chefpress_plan_range-slider" style="width:100%;">' +
+          '<input type="range" min="40" max="150" value="' + state.targetWeight + '" id="dev_chefpress_plan_target-range" class="dev_chefpress_plan_range-slider" style="width:100%!important;">' +
         '</div>' +
-        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem;font-weight:500;color:var(--gray-400);">' +
+        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem!important;font-weight:500!important;color:var(--gray-400)!important;">' +
           '<span>Current: ' + state.weight + 'kg</span>' +
-          '<span style="color:var(--emerald-600);font-weight:700;" id="dev_chefpress_plan_diff-label">Difference: ' + Math.abs(state.targetWeight - state.weight) + 'kg</span>' +
+          '<span style="color:var(--emerald-600)!important;font-weight:700!important;" id="dev_chefpress_plan_diff-label">Difference: ' + Math.abs(state.targetWeight - state.weight) + 'kg</span>' +
         '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
@@ -349,7 +349,7 @@
 
     $('#dev_chefpress_plan_target-range').on('input', function() {
       state.targetWeight = Number($(this).val());
-      $('#dev_chefpress_plan_target-display').html(state.targetWeight + '<span style="font-size:1.5rem;font-weight:500;color:var(--emerald-500);margin-left:0.25rem;">kg</span>');
+      $('#dev_chefpress_plan_target-display').html(state.targetWeight + '<span style="font-size:1.5rem!important;font-weight:500!important;color:var(--emerald-500)!important;margin-left:0.25rem!important;">kg</span>');
       $('#dev_chefpress_plan_diff-label').text('Difference: ' + Math.abs(state.targetWeight - state.weight) + 'kg');
     });
   }
@@ -367,15 +367,15 @@
       var isActive = state.activityLevel === l;
       return '<div onclick="setActivity(\'' + l + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_justify-between dev_chefpress_plan_p-4">' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-          '<div style="width:2.5rem;height:2.5rem;background:var(--emerald-100);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;color:var(--emerald-600);">' +
-            '<i data-lucide="zap" style="width:1rem;height:1rem;"></i>' +
+          '<div style="width:2.5rem!important;height:2.5rem!important;background:var(--emerald-100)!important;border-radius:0.5rem!important;display:flex!important;align-items:center!important;justify-content:center!important;color:var(--emerald-600)!important;">' +
+            '<i data-lucide="zap" style="width:1rem!important;height:1rem!important;"></i>' +
           '</div>' +
           '<div class="dev_chefpress_plan_text-left">' +
-            '<h3 style="font-weight:700;color:var(--gray-900);font-size:0.875rem;">' + l + '</h3>' +
-            '<p style="font-size:0.625rem;color:var(--gray-500);">' + descs[i] + '</p>' +
+            '<h3 style="font-weight:700!important;color:var(--gray-900)!important;font-size:0.875rem!important;">' + l + '</h3>' +
+            '<p style="font-size:0.625rem!important;color:var(--gray-500)!important;">' + descs[i] + '</p>' +
           '</div>' +
         '</div>' +
-        (isActive ? '<i data-lucide="check-circle-2" style="color:var(--emerald-500);width:1.25rem;height:1.25rem;flex-shrink:0;"></i>' : '') +
+        (isActive ? '<i data-lucide="check-circle-2" style="color:var(--emerald-500)!important;width:1.25rem!important;height:1.25rem!important;flex-shrink:0!important;"></i>' : '') +
       '</div>';
     }).join('');
 
@@ -384,7 +384,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Activity Level</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">How active is your daily lifestyle?</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + cards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
         '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.activityLevel ? 'disabled' : '') + '>Next</button>' +
@@ -397,22 +397,22 @@
     var inner;
     if (state.hasAllergies !== true) {
       inner =
-        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="max-width:28rem;margin:0 auto;">' +
+        '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
           '<button onclick="setHasAllergies(true)" class="dev_chefpress_plan_btn-outline dev_chefpress_plan_flex-1 dev_chefpress_plan_py-6 dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-            '<i data-lucide="alert-circle" style="width:2rem;height:2rem;"></i>Yes, I have allergies' +
+            '<i data-lucide="alert-circle" style="width:2rem!important;height:2rem!important;"></i>Yes, I have allergies' +
           '</button>' +
           '<button onclick="setHasAllergies(false)" class="dev_chefpress_plan_flex-1 ' + (state.hasAllergies === false ? 'dev_chefpress_plan_btn-primary' : 'dev_chefpress_plan_btn-outline') + ' dev_chefpress_plan_py-6 dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-            '<i data-lucide="check-circle" style="width:2rem;height:2rem;"></i>No, I\'m good' +
+            '<i data-lucide="check-circle" style="width:2rem!important;height:2rem!important;"></i>No, I\'m good' +
           '</button>' +
         '</div>';
     } else {
       var chips = ALLERGENS.map(function(a) {
         var sel = state.selectedAllergens.indexOf(a.name) !== -1;
-        return '<div onclick="toggleAllergen(\'' + a.name + '\')" class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2 dev_chefpress_plan_cursor-pointer dev_chefpress_plan_font-bold" style="padding:0.75rem 1.5rem;border-radius:9999px;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ';background:' + (sel ? 'var(--emerald-50)' : '#fff') + ';color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ';font-size:0.875rem;transition:all 0.2s;box-shadow:' + (sel ? '0 0 0 4px rgba(16,185,129,0.1)' : 'none') + ';">' +
-          '<span style="font-size:1.125rem;">' + a.icon + '</span><span>' + a.name + '</span>' +
+        return '<div onclick="toggleAllergen(\'' + a.name + '\')" class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2 dev_chefpress_plan_cursor-pointer dev_chefpress_plan_font-bold" style="padding:0.75rem 1.5rem!important;border-radius:9999px!important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + '!important;background:' + (sel ? 'var(--emerald-50)' : '#fff') + '!important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + '!important;font-size:0.875rem!important;transition:all 0.2s!important;box-shadow:' + (sel ? '0 0 0 4px rgba(16,185,129,0.1)' : 'none') + '!important;">' +
+          '<span style="font-size:1.125rem!important;">' + a.icon + '</span><span>' + a.name + '</span>' +
         '</div>';
       }).join('');
-      inner = '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_justify-center dev_chefpress_plan_gap-3 dev_chefpress_plan_mb-8" style="max-width:42rem;margin:0 auto;">' + chips + '</div>';
+      inner = '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_justify-center dev_chefpress_plan_gap-3 dev_chefpress_plan_mb-8" style="max-width:42rem!important;margin:0 auto!important;">' + chips + '</div>';
     }
 
     el.innerHTML =
@@ -438,22 +438,22 @@
 
     var cards = diets.map(function(d) {
       var isActive = state.dietType === d.name;
-      return '<div onclick="setDiet(\'' + d.name + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_text-left" style="padding:1.5rem;position:relative;">' +
-        (d.recommended ? '<div style="position:absolute;top:1rem;left:1rem;background:var(--emerald-500);color:#fff;font-size:0.625rem;font-weight:900;padding:0.375rem 0.75rem;border-radius:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">RECOMMENDED</div>' : '') +
+      return '<div onclick="setDiet(\'' + d.name + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_text-left" style="padding:1.5rem!important;position:relative!important;">' +
+        (d.recommended ? '<div style="position:absolute!important;top:1rem!important;left:1rem!important;background:var(--emerald-500)!important;color:#fff!important;font-size:0.625rem!important;font-weight:900!important;padding:0.375rem 0.75rem!important;border-radius:0.5rem!important;text-transform:uppercase!important;letter-spacing:0.05em!important;">RECOMMENDED</div>' : '') +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-start" style="' + (d.recommended ? 'margin-top:2rem;' : '') + '">' +
           '<div>' +
-            '<h3 style="font-size:1.25rem;font-weight:900;color:var(--emerald-900);margin-bottom:0.25rem;">' + d.name + '</h3>' +
-            '<p style="font-size:0.6875rem;color:var(--gray-400);font-weight:500;line-height:1.5;margin-bottom:1rem;">' + d.desc + '</p>' +
+            '<h3 style="font-size:1.25rem!important;font-weight:900!important;color:var(--emerald-900)!important;margin-bottom:0.25rem!important;">' + d.name + '</h3>' +
+            '<p style="font-size:0.6875rem!important;color:var(--gray-400)!important;font-weight:500!important;line-height:1.5!important;margin-bottom:1rem!important;">' + d.desc + '</p>' +
           '</div>' +
-          '<span style="font-size:1.5rem;">' + d.icon + '</span>' +
+          '<span style="font-size:1.5rem!important;">' + d.icon + '</span>' +
         '</div>' +
-        '<div style="margin-top:auto;">' +
-          '<div class="dev_chefpress_plan_diet-macro-bar" style="margin-bottom:0.75rem;">' +
-            '<div style="background:#c084fc;height:100%;border-radius:9999px;width:' + d.widths.p + ';"></div>' +
-            '<div style="background:#fb923c;height:100%;border-radius:9999px;width:' + d.widths.c + ';"></div>' +
-            '<div style="background:#60a5fa;height:100%;border-radius:9999px;width:' + d.widths.f + ';"></div>' +
+        '<div style="margin-top:auto!important;">' +
+          '<div class="dev_chefpress_plan_diet-macro-bar" style="margin-bottom:0.75rem!important;">' +
+            '<div style="background:#c084fc!important;height:100%!important;border-radius:9999px!important;width:' + d.widths.p + '!important;"></div>' +
+            '<div style="background:#fb923c!important;height:100%!important;border-radius:9999px!important;width:' + d.widths.c + '!important;"></div>' +
+            '<div style="background:#60a5fa!important;height:100%!important;border-radius:9999px!important;width:' + d.widths.f + '!important;"></div>' +
           '</div>' +
-          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:-0.05em;">' +
+          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:-0.05em!important;">' +
             '<span>' + d.macros.p + ' Protein</span><span>' + d.macros.c + ' Carbs</span><span>' + d.macros.f + ' Fat</span>' +
           '</div>' +
         '</div>' +
@@ -465,7 +465,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Diet Preference</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Choose a macro distribution that fits your lifestyle.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + cards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
         '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.dietType ? 'disabled' : '') + '>Next</button>' +
@@ -493,34 +493,34 @@
       var totalMeals = 0;
       $.each(state.mealQuantities, function(_, q){ totalMeals += q; });
 
-      return '<div onclick="setPlan(\'' + p + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_p-6 dev_chefpress_plan_text-center" style="height:100%;">' +
+      return '<div onclick="setPlan(\'' + p + '\')" class="dev_chefpress_plan_card-selectable ' + (isActive ? 'dev_chefpress_plan_active' : '') + ' dev_chefpress_plan_flex dev_chefpress_plan_flex-col dev_chefpress_plan_p-6 dev_chefpress_plan_text-center" style="height:100%!important;">' +
         '<div class="dev_chefpress_plan_mb-6">' +
-          '<h3 style="font-size:1.25rem;font-weight:900;color:var(--emerald-900);">' + p + '</h3>' +
-          '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;">' + det.billing + '</p>' +
+          '<h3 style="font-size:1.25rem!important;font-weight:900!important;color:var(--emerald-900)!important;">' + p + '</h3>' +
+          '<p style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:0.05em!important;">' + det.billing + '</p>' +
         '</div>' +
         '<div class="dev_chefpress_plan_mb-6">' +
-          '<p style="font-size:1.5rem;font-weight:900;color:var(--emerald-900);">AED ' + pricing.perDay + '</p>' +
-          '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;">PER DAY</p>' +
+          '<p style="font-size:1.5rem!important;font-weight:900!important;color:var(--emerald-900)!important;">AED ' + pricing.perDay + '</p>' +
+          '<p style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:0.1em!important;">PER DAY</p>' +
         '</div>' +
-        '<div style="background:rgba(236,253,245,0.5);border-radius:1rem;padding:1rem;margin-bottom:1.5rem;text-align:left;">' +
-          '<p style="font-size:0.5625rem;font-weight:900;color:rgba(6,95,70,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">BUNDLE INCLUDES:</p>' +
+        '<div style="background:rgba(236,253,245,0.5)!important;border-radius:1rem!important;padding:1rem!important;margin-bottom:1.5rem!important;text-align:left!important;">' +
+          '<p style="font-size:0.5625rem!important;font-weight:900!important;color:rgba(6,95,70,0.4)!important;text-transform:uppercase!important;letter-spacing:0.1em!important;margin-bottom:0.5rem!important;">BUNDLE INCLUDES:</p>' +
           '<div class="dev_chefpress_plan_space-y-1">' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2" style="font-size:0.6875rem;font-weight:700;color:var(--emerald-900);">' +
-              '<i data-lucide="check" style="width:0.75rem;height:0.75rem;color:var(--emerald-500);"></i>' +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2" style="font-size:0.6875rem!important;font-weight:700!important;color:var(--emerald-900)!important;">' +
+              '<i data-lucide="check" style="width:0.75rem!important;height:0.75rem!important;color:var(--emerald-500)!important;"></i>' +
               '<span>' + state.selectedDays.length + ' Days / Week</span>' +
             '</div>' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2" style="font-size:0.6875rem;font-weight:700;color:var(--emerald-900);">' +
-              '<i data-lucide="check" style="width:0.75rem;height:0.75rem;color:var(--emerald-500);"></i>' +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2" style="font-size:0.6875rem!important;font-weight:700!important;color:var(--emerald-900)!important;">' +
+              '<i data-lucide="check" style="width:0.75rem!important;height:0.75rem!important;color:var(--emerald-500)!important;"></i>' +
               '<span>' + totalMeals + ' Meals / Day</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="dev_chefpress_plan_mb-6 dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-100);">' +
-          '<p style="font-size:1.125rem;font-weight:900;color:var(--emerald-900);">' + det.weeks + '</p>' +
-          '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;">TOTAL DURATION</p>' +
+        '<div class="dev_chefpress_plan_mb-6 dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-100)!important;">' +
+          '<p style="font-size:1.125rem!important;font-weight:900!important;color:var(--emerald-900)!important;">' + det.weeks + '</p>' +
+          '<p style="font-size:0.625rem!important;font-weight:700!important;color:var(--gray-400)!important;text-transform:uppercase!important;letter-spacing:0.1em!important;">TOTAL DURATION</p>' +
         '</div>' +
         '<div class="dev_chefpress_plan_mt-auto">' +
-          '<div style="display:inline-block;padding:0.5rem 1rem;border-radius:9999px;background:rgba(209,250,229,0.5);color:var(--emerald-700);font-size:0.625rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;">' +
+          '<div style="display:inline-block!important;padding:0.5rem 1rem!important;border-radius:9999px!important;background:rgba(209,250,229,0.5)!important;color:var(--emerald-700)!important;font-size:0.625rem!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:0.05em!important;">' +
             det.discount +
           '</div>' +
         '</div>' +
@@ -532,22 +532,22 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Choose your plan</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Commit longer to unlock premium discounts.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem;margin:0 auto;">' +
-        '<div style="background:#fff;border:1px solid var(--gray-100);border-radius:1.5rem;padding:1rem;box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
-          '<p style="font-size:0.75rem;font-weight:700;color:var(--emerald-900);margin-bottom:0.75rem;text-align:center;">New Subscriber? Use code <span style="color:var(--emerald-500);">FRESH10</span> for an extra 10% off!</p>' +
+      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
+        '<div style="background:#fff!important;border:1px solid var(--gray-100)!important;border-radius:1.5rem!important;padding:1rem!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;">' +
+          '<p style="font-size:0.75rem!important;font-weight:700!important;color:var(--emerald-900)!important;margin-bottom:0.75rem!important;text-align:center!important;">New Subscriber? Use code <span style="color:var(--emerald-500)!important;">FRESH10</span> for an extra 10% off!</p>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-3">' +
             '<div class="dev_chefpress_plan_relative dev_chefpress_plan_flex-grow">' +
-              '<input type="text" id="dev_chefpress_plan_promo-input" value="' + state.promoCode + '" placeholder="ENTER CODE" style="width:100%;padding:0.75rem 1.5rem;border-radius:1rem;border:1px solid var(--gray-100);outline:none;font-weight:700;font-size:0.875rem;text-transform:uppercase;background:#fff;font-family:inherit;" ' + (state.isPromoApplied ? 'disabled' : '') + '>' +
-              (state.isPromoApplied ? '<i data-lucide="check-circle-2" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:var(--emerald-500);width:1.25rem;height:1.25rem;"></i>' : '') +
+              '<input type="text" id="dev_chefpress_plan_promo-input" value="' + state.promoCode + '" placeholder="ENTER CODE" style="width:100%!important;padding:0.75rem 1.5rem!important;border-radius:1rem!important;border:1px solid var(--gray-100)!important;outline:none!important;font-weight:700!important;font-size:0.875rem!important;text-transform:uppercase!important;background:#fff!important;font-family:inherit!important;" ' + (state.isPromoApplied ? 'disabled' : '') + '>' +
+              (state.isPromoApplied ? '<i data-lucide="check-circle-2" style="position:absolute!important;right:1rem!important;top:50%!important;transform:translateY(-50%)!important;color:var(--emerald-500)!important;width:1.25rem!important;height:1.25rem!important;"></i>' : '') +
             '</div>' +
             (state.isPromoApplied ?
-              '<button onclick="removePromo()" style="padding:0.75rem 1.5rem;background:var(--red-50);color:var(--red-600);font-weight:900;border-radius:1rem;border:none;cursor:pointer;font-size:0.875rem;transition:background 0.2s;">Remove</button>' :
-              '<button onclick="applyPromo()" style="padding:0.75rem 1.5rem;background:var(--emerald-500);color:#fff;font-weight:900;border-radius:1rem;border:none;cursor:pointer;font-size:0.875rem;box-shadow:0 4px 14px rgba(16,185,129,0.2);transition:background 0.2s;">Apply</button>'
+              '<button onclick="removePromo()" style="padding:0.75rem 1.5rem!important;background:var(--red-50)!important;color:var(--red-600)!important;font-weight:900!important;border-radius:1rem!important;border:none!important;cursor:pointer!important;font-size:0.875rem!important;transition:background 0.2s!important;">Remove</button>' :
+              '<button onclick="applyPromo()" style="padding:0.75rem 1.5rem!important;background:var(--emerald-500)!important;color:#fff!important;font-weight:900!important;border-radius:1rem!important;border:none!important;cursor:pointer!important;font-size:0.875rem!important;box-shadow:0 4px 14px rgba(16,185,129,0.2)!important;transition:background 0.2s!important;">Apply</button>'
             ) +
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-10" style="grid-template-columns:repeat(1,minmax(0,1fr));">' + planCards + '</div>' +
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-10" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + planCards + '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
         '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.planDuration ? 'disabled' : '') + '>Personalize Box</button>' +
@@ -574,11 +574,11 @@
     $.each(state.mealQuantities, function(_, q){ totalMealsPerDay += q; });
 
     var mealCards = mealTypes.map(function(m) {
-      return '<div style="background:#fff;border:1px solid var(--gray-100);border-radius:1.5rem;padding:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.05);transition:box-shadow 0.2s;">' +
+      return '<div style="background:#fff!important;border:1px solid var(--gray-100)!important;border-radius:1.5rem!important;padding:1rem!important;display:flex!important;align-items:center!important;justify-content:space-between!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;transition:box-shadow 0.2s!important;">' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
-          '<div style="width:3rem;height:3rem;background:var(--emerald-50);border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem;">' + m.icon + '</div>' +
+          '<div style="width:3rem!important;height:3rem!important;background:var(--emerald-50)!important;border-radius:1rem!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:1.25rem!important;">' + m.icon + '</div>' +
           '<div>' +
-            '<h3 style="font-weight:900;color:var(--emerald-900);font-size:0.875rem;">' + m.name + '</h3>' +
+            '<h3 style="font-weight:900!important;color:var(--emerald-900)!important;font-size:0.875rem!important;">' + m.name + '</h3>' +
             '<p style="font-size:0.625rem;font-weight:700;color:var(--gray-400);">$' + m.price + '/meal</p>' +
           '</div>' +
         '</div>' +
@@ -805,7 +805,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">When should we start?</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">We need 48 hours to prepare your fresh ingredients.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem;margin:0 auto;">' +
+      '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
         '<div style="background:#fff;border:1px solid var(--gray-100);border-radius:2rem;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;justify-content:center;">' +
           '<div id="dev_chefpress_plan_start-date-picker" style="width:100%;"></div>' +
         '</div>' +
@@ -1016,19 +1016,19 @@
   // Step 15 – Success
   function renderSuccess(el) {
     el.innerHTML =
-      '<div class="dev_chefpress_plan_text-center" style="padding:3rem 0;">' +
-        '<div class="dev_chefpress_plan_animate-bounce" style="width:6rem;height:6rem;background:var(--emerald-500);border-radius:9999px;display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;box-shadow:0 25px 50px -12px rgba(16,185,129,0.4);">' +
-          '<i data-lucide="check" style="color:#fff;width:3rem;height:3rem;"></i>' +
+      '<div class="dev_chefpress_plan_text-center" style="padding:3rem 0; !important">' +
+        '<div class="dev_chefpress_plan_animate-bounce" style="width:6rem !important;height:6rem !important;background:var(--emerald-500) !important;border-radius:9999px !important;display:flex !important;align-items:center !important;justify-content:center !important;margin:0 auto 2rem !important;box-shadow:0 25px 50px -12px rgba(16,185,129,0.4) !important;">' +
+          '<i data-lucide="check" style="color:#fff !important;width:3rem !important;height:3rem !important;"></i>' +
         '</div>' +
-        '<h2 style="font-size:3rem;font-weight:900;color:var(--emerald-900);margin-bottom:1rem;font-family:\'Outfit\',sans-serif;">You\'re all set!</h2>' +
-        '<p style="color:var(--gray-500);font-size:1.125rem;max-width:28rem;margin:0 auto 3rem;">Your first box will arrive on <span style="font-weight:700;color:var(--emerald-600);">' + state.startDate + '</span>. Get ready for a healthier you!</p>' +
-        '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="max-width:32rem;margin:0 auto;grid-template-columns:repeat(1,minmax(0,1fr));" id="dev_chefpress_plan_success-btns">' +
+        '<h2 style="font-size:3rem !important;font-weight:900 !important;color:var(--emerald-900) !important;margin-bottom:1rem !important;font-family:\'Outfit\',sans-serif;">You\'re all set!</h2>' +
+        '<p style="color:var(--gray-500) !important;font-size:1.125rem !important;max-width:28rem !important;margin:0 auto 3rem !important;">Your first box will arrive on <span style="font-weight:700 !important;color:var(--emerald-600) !important;">' + state.startDate + '</span>. Get ready for a healthier you!</p>' +
+        '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="max-width:32rem !important;margin:0 auto !important;grid-template-columns:repeat(1,minmax(0,1fr)) !important;" id="dev_chefpress_plan_success-btns">' +
           '<button onclick="location.reload()" class="dev_chefpress_plan_btn-primary">Go to Dashboard</button>' +
           '<button onclick="modifyPlan()" class="dev_chefpress_plan_btn-outline">Modify Subscription</button>' +
         '</div>' +
       '</div>';
 
-    if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_success-btns').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+    if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_success-btns').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr)) !important';
   }
 
   // ─────────────────────────────────────────────────────────
