@@ -104,6 +104,7 @@ final class SettingsPage {
 					'addPreset' => __( 'Add to list', 'dev-chefpress' ),
 					'presetPh'  => __( 'Type and press Enter…', 'dev-chefpress' ),
 				],
+				'pricing' => PluginSettings::get_presets_for_js(),
 			]
 		);
 	}

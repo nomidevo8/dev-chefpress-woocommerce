@@ -20,11 +20,11 @@
     'Gain Weight': 500, 'Build Muscle': 300, 'Maintain Weight': 0
   };
 
-  var PLAN_DISCOUNTS = {
+  var PLAN_DISCOUNTS = window.ChefPressOurPlans && window.ChefPressOurPlans.planDiscounts ? window.ChefPressOurPlans.planDiscounts : {
     '1 Week': 0, '1 Month': 0.10, '3 Months': 0.20, '6 Months': 0.25
   };
 
-  var MEAL_PRICES = { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
+  var MEAL_PRICES = window.ChefPressOurPlans && window.ChefPressOurPlans.mealPrices ? window.ChefPressOurPlans.mealPrices : { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
 
   var RECIPES = [
     { id: 'r1', name: 'Grilled Salmon w/ Asparagus', calories: 450, protein: 35, carbs: 10, fats: 25, category: 'Fish', tags: ['Low Carb', 'Express'], image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80' },
@@ -477,9 +477,9 @@
     var plans = ['1 Week', '1 Month', '3 Months', '6 Months'];
     var planDetails = {
       '1 Week':  { billing: 'Billed every week',        weeks: '1 Week',  discount: 'Standard Rate' },
-      '1 Month': { billing: 'Billed every month',       weeks: '4 Weeks', discount: 'Save 10% Overall' },
-      '3 Months':{ billing: 'Billed every 3 months',    weeks: '12 Weeks',discount: 'Save 20% Overall' },
-      '6 Months':{ billing: 'Billed every 6 months',    weeks: '24 Weeks',discount: 'Save 25% Overall' }
+      '1 Month': { billing: 'Billed every month',       weeks: '4 Weeks', discount: 'Save ' + Math.round(PLAN_DISCOUNTS['1 Month'] * 100) + '% Overall' },
+      '3 Months':{ billing: 'Billed every 3 months',    weeks: '12 Weeks',discount: 'Save ' + Math.round(PLAN_DISCOUNTS['3 Months'] * 100) + '% Overall' },
+      '6 Months':{ billing: 'Billed every 6 months',    weeks: '24 Weeks',discount: 'Save ' + Math.round(PLAN_DISCOUNTS['6 Months'] * 100) + '% Overall' }
     };
 
     var planCards = plans.map(function(p) {

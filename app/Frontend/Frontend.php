@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace DevChefPress\Frontend;
 
 use DevChefPress\Hooks\Loader;
+use DevChefPress\Services\PluginSettings;
 
 /**
  * Class Frontend
@@ -274,9 +275,14 @@ class Frontend {
 			];
 		}, $allergen_tags );
 
-		// Localize the script with dynamic allergens
+		// Get pricing settings
+		$pricing_presets = PluginSettings::get_presets_for_js();
+
+		// Localize the script with dynamic allergens and pricing
 		wp_localize_script( 'dev-chefpress-our-plans', 'ChefPressOurPlans', [
-			'allergens' => $allergens,
+			'allergens'    => $allergens,
+			'mealPrices'   => $pricing_presets['mealPrices'] ?? [],
+			'planDiscounts' => $pricing_presets['planDiscounts'] ?? [],
 		] );
 	}
 

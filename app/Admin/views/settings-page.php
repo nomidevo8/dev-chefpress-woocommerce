@@ -219,6 +219,103 @@ $labels_p    = $settings['preset_recipe_labels'];
 			</div>
 		</section>
 
+		<section class="cp-card cp-card--settings">
+			<div class="cp-card__header-static">
+				<span class="cp-card__icon cp-card__icon--price"></span>
+				<div>
+					<h2 class="cp-card__title"><?php esc_html_e( 'Meal Pricing', 'dev-chefpress' ); ?></h2>
+					<p class="cp-card__subtitle"><?php esc_html_e( 'Set the base price per meal type. Used in pricing calculations.', 'dev-chefpress' ); ?></p>
+				</div>
+			</div>
+			<div class="cp-card__body">
+				<div class="chefpress-table-scroll">
+					<table class="chefpress-schema-table" id="chefpress-meal-prices-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Meal Type', 'dev-chefpress' ); ?></th>
+								<th><?php esc_html_e( 'Price (per unit)', 'dev-chefpress' ); ?></th>
+								<th><?php esc_html_e( 'Currency', 'dev-chefpress' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php 
+							$meal_prices = $settings['meal_prices'] ?? [];
+							foreach ( $meal_prices as $meal => $price ) : ?>
+								<tr>
+									<td>
+										<strong><?php echo esc_html( $meal ); ?></strong>
+									</td>
+									<td>
+										<input type="number" 
+											name="chefpress_settings[meal_prices][<?php echo esc_attr( $meal ); ?>]"
+											value="<?php echo esc_attr( number_format( (float) $price, 2, '.', '' ) ); ?>"
+											step="0.01"
+											min="0"
+											class="cp-input cp-input--sm" 
+											required />
+									</td>
+									<td style="text-align: center; color: var(--text_muted); font-size: 0.875rem;">AED</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+
+		<section class="cp-card cp-card--settings">
+			<div class="cp-card__header-static">
+				<span class="cp-card__icon cp-card__icon--discount"></span>
+				<div>
+					<h2 class="cp-card__title"><?php esc_html_e( 'Plan Discounts', 'dev-chefpress' ); ?></h2>
+					<p class="cp-card__subtitle"><?php esc_html_e( 'Set discount rates for different plan durations (expressed as percentage).', 'dev-chefpress' ); ?></p>
+				</div>
+			</div>
+			<div class="cp-card__body">
+				<div class="chefpress-table-scroll">
+					<table class="chefpress-schema-table" id="chefpress-plan-discounts-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Plan Duration', 'dev-chefpress' ); ?></th>
+								<th><?php esc_html_e( 'Discount (%)', 'dev-chefpress' ); ?></th>
+								<th><?php esc_html_e( 'Description', 'dev-chefpress' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php 
+							$plan_discounts = $settings['plan_discounts'] ?? [];
+							$discount_descs = [
+								'1 Week' => 'No discount for weekly plans',
+								'1 Month' => 'Discount for monthly commitment',
+								'3 Months' => 'Discount for quarterly commitment',
+								'6 Months' => 'Discount for half-year commitment',
+							];
+							foreach ( $plan_discounts as $plan => $discount ) : ?>
+								<tr>
+									<td>
+										<strong><?php echo esc_html( $plan ); ?></strong>
+									</td>
+									<td>
+										<input type="number" 
+											name="chefpress_settings[plan_discounts][<?php echo esc_attr( $plan ); ?>]"
+											value="<?php echo esc_attr( number_format( (float) $discount * 100, 1, '.', '' ) ); ?>"
+											step="0.1"
+											min="0"
+											max="100"
+											class="cp-input cp-input--sm" 
+											required />
+									</td>
+									<td style="font-size: 0.875rem; color: var(--text_muted);">
+										<?php echo esc_html( $discount_descs[ $plan ] ?? '' ); ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+
 		<p class="submit chefpress-submit-wrap">
 			<button type="submit" class="cp-btn cp-btn--primary cp-btn--lg">
 				<?php esc_html_e( 'Save settings', 'dev-chefpress' ); ?>
