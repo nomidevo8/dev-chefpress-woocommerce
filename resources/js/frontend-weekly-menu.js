@@ -19,10 +19,10 @@
 
     function updateBanner(recipeCount) {
         const activeWeekElement = $('.cp_weekly_menu_date_item.active');
-        const weekIndex = parseInt(activeWeekElement.data('week') || 1, 10);
+        const weekIndex = parseInt(activeWeekElement.data('week') || $('#active_week_index').val() || 1, 10);
         const weekLabel = activeWeekElement.find('.cp_weekly_menu_date_range').text() || '';
         const weekMonth = activeWeekElement.find('.cp_weekly_menu_date_month').text() || '';
-        const fullRange = `${weekLabel} ${weekMonth}`.trim();
+        const fullRange = `${weekLabel} ${weekMonth}`.trim() || $('#week_date_ranges').length ? (JSON.parse($('#week_date_ranges').val())[weekIndex]?.range + ' ' + JSON.parse($('#week_date_ranges').val())[weekIndex]?.month) : `Week ${weekIndex}`;
         
         if ($cp_weekly_banner.length) {
             $cp_weekly_banner.text(`Choose from ${recipeCount} recipes for the week of ${fullRange}`);

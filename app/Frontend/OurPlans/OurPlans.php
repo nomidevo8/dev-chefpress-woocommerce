@@ -93,7 +93,7 @@ use DevChefPress\Helpers\WeekCalculator;
         'order' => 'ASC',
     ]);
     ?>
-
+    
     <!-- Banner -->
     <div class="cp_weekly_menu_banner">
         <span class="cp_weekly_menu_banner_text">
@@ -109,6 +109,7 @@ use DevChefPress\Helpers\WeekCalculator;
         <div class="cp_weekly_menu_container">
             <!-- Filter Toolbar -->
              <input type="hidden" name="active_week_index" id="active_week_index" value="<?php echo esc_attr($active_week_index); ?>">
+             <input type="hidden" name="week_date_ranges" id="week_date_ranges" value='<?php echo esc_attr(json_encode($date_ranges)); ?>'>
             <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags); ?>
 
             <!-- Recipe Grid -->
