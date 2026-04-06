@@ -198,7 +198,8 @@
 
     function collectSidebarFilters() {
         const activeWeekElement = $('.cp_weekly_menu_date_item.active');
-        const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || 1, 10) : 1;
+        // const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || 1, 10) : 1;
+        const week = $('#active_week_index').length ? parseInt($('#active_week_index').val() || 1, 10) : 1;
 
         return {
             week: isNaN(week) ? 1 : week,

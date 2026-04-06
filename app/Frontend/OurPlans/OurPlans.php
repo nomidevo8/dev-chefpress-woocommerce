@@ -70,6 +70,7 @@ use DevChefPress\Helpers\WeekCalculator;
 
     // Determine the currently active week (1-based index)
     $active_week_index = WeekCalculator::get_active_week_index($term_count);
+   
     // Get dynamic terms for the weekly menu
     $product_cats = get_terms([
         'taxonomy' => 'product_cat',
@@ -107,6 +108,7 @@ use DevChefPress\Helpers\WeekCalculator;
     <div class="cp_weekly_menu_app">
         <div class="cp_weekly_menu_container">
             <!-- Filter Toolbar -->
+             <input type="hidden" name="active_week_index" id="active_week_index" value="<?php echo esc_attr($active_week_index); ?>">
             <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags); ?>
 
             <!-- Recipe Grid -->
