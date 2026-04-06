@@ -248,6 +248,17 @@
     if (state.currentStep < 15) { state.currentStep++; renderStep(); }
   }
   function prevStep() {
+    if (state.currentStep === 9) {
+      var clearBtn = document.querySelector('#cp_weekly_filter_sidebar .cp_weekly_menu_sidebar_clear');
+      if (clearBtn) {
+        clearBtn.dispatchEvent(new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        }));
+      }
+    }
+
     if (state.currentStep > 1) { state.currentStep--; renderStep(); }
   }
 
