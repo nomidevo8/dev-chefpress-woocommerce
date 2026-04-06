@@ -280,9 +280,10 @@ class Frontend {
 
 		// Localize the script with dynamic allergens and pricing
 		wp_localize_script( 'dev-chefpress-our-plans', 'ChefPressOurPlans', [
-			'allergens'    => $allergens,
-			'mealPrices'   => $pricing_presets['mealPrices'] ?? [],
+			'allergens'     => $allergens,
+			'mealPrices'    => $pricing_presets['mealPrices'] ?? [],
 			'planDiscounts' => $pricing_presets['planDiscounts'] ?? [],
+			'promoCodes'    => $pricing_presets['promoCodes'] ?? [],
 		] );
 	}
 

@@ -43,6 +43,7 @@ $allergens_p = $settings['preset_allergens'];
 $labels_p    = $settings['preset_recipe_labels'];
 $meal_prices = $settings['meal_prices'] ?? [];
 $plan_discounts = $settings['plan_discounts'] ?? [];
+$promo_codes = $settings['promo_codes'] ?? [];
 ?>
 
 <div class="wrap chefpress-settings-wrap">
@@ -331,8 +332,62 @@ $plan_discounts = $settings['plan_discounts'] ?? [];
 												<?php endforeach; ?>
 											</tbody>
 										</table>
-									</div>
 								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="chefpress-card chefpress-card--full-width">
+						<div class="chefpress-card__header">
+							<h3 class="chefpress-card__title">
+								<span class="chefpress-card__icon">🎫</span>
+								<?php esc_html_e( 'Promo Codes', 'dev-chefpress' ); ?>
+							</h3>
+							<p class="chefpress-card__subtitle"><?php esc_html_e( 'Create, update, and remove promo codes with discount rates.', 'dev-chefpress' ); ?></p>
+						</div>
+						<div class="chefpress-card__body">
+							<div class="chefpress-table-scroll">
+								<table class="chefpress-schema-table" id="chefpress-promo-codes-table">
+									<thead>
+										<tr>
+											<th><?php esc_html_e( 'Promo Code', 'dev-chefpress' ); ?></th>
+											<th><?php esc_html_e( 'Discount (%)', 'dev-chefpress' ); ?></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ( $promo_codes as $index => $discount ) : ?>
+											<tr class="chefpress-promo-row">
+												<td>
+													<input type="text"
+													name="chefpress_settings[promo_codes][<?php echo esc_attr( $index ); ?>][code]"
+													value="<?php echo esc_attr( strtoupper( (string) $index ) ); ?>"
+													class="cp-input cp-input--sm"
+													required />
+											</td>
+											<td>
+												<input type="number"
+													name="chefpress_settings[promo_codes][<?php echo esc_attr( $index ); ?>][discount]"
+													value="<?php echo esc_attr( number_format( (float) $discount * 100, 1, '.', '' ) ); ?>"
+													step="0.1"
+													min="0"
+													max="100"
+													class="cp-input cp-input--sm"
+													required />
+											</td>
+											<td>
+												<button type="button" class="cp-btn cp-btn--ghost cp-btn--sm chefpress-remove-promo-row" aria-label="<?php esc_attr_e( 'Remove promo row', 'dev-chefpress' ); ?>">×</button>
+											</td>
+										</tr>
+									<?php endforeach; ?>
+									</tbody>
+								</table>
+							</div>
+							<div class="chefpress-card__actions">
+								<button type="button" class="cp-btn cp-btn--secondary" id="chefpress-add-promo-row">
+									<?php esc_html_e( '+ Add promo code', 'dev-chefpress' ); ?>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -447,6 +502,31 @@ $plan_discounts = $settings['plan_discounts'] ?? [];
 		</td>
 		<td>
 			<button type="button" class="cp-btn cp-btn--ghost cp-btn--sm chefpress-remove-row" aria-label="<?php echo esc_attr__( 'Remove row', 'dev-chefpress' ); ?>">×</button>
+		</td>
+	</tr>
+</script>
+
+<script type="text/template" id="tmpl-chefpress-promo-code-row">
+	<tr class="chefpress-promo-row">
+		<td>
+			<input type="text"
+				name="chefpress_settings[promo_codes][{{IDX}}][code]"
+				value=""
+				class="cp-input cp-input--sm"
+				required />
+		</td>
+		<td>
+			<input type="number"
+				name="chefpress_settings[promo_codes][{{IDX}}][discount]"
+				value="0"
+				step="0.1"
+				min="0"
+				max="100"
+				class="cp-input cp-input--sm"
+				required />
+		</td>
+		<td>
+			<button type="button" class="cp-btn cp-btn--ghost cp-btn--sm chefpress-remove-promo-row" aria-label="<?php esc_attr_e( 'Remove promo row', 'dev-chefpress' ); ?>">×</button>
 		</td>
 	</tr>
 </script>

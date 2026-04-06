@@ -60,6 +60,17 @@ final class PluginSettings {
 	}
 
 	/**
+	 * Default promo codes with discount rates.
+	 *
+	 * @return array<string, float>
+	 */
+	public static function default_promo_codes(): array {
+		return [
+			'FRESH10' => 0.10,
+		];
+	}
+
+	/**
 	 * @return array<string, mixed>
 	 */
 	public static function defaults(): array {
@@ -80,6 +91,7 @@ final class PluginSettings {
 			'weekly_start_date'     => \DateTime::createFromFormat( 'Y-m-d', date( 'Y-m-d' ) )->modify('monday this week')->format( 'Y-m-d' ),
 			'meal_prices'           => self::default_meal_prices(),
 			'plan_discounts'        => self::default_plan_discounts(),
+			'promo_codes'           => self::default_promo_codes(),
 		];
 	}
 
@@ -107,6 +119,7 @@ final class PluginSettings {
 			'weekly_start_date'    => self::sanitize_date( $saved['weekly_start_date'] ?? $defaults['weekly_start_date'] ),
 			'meal_prices'          => self::sanitize_meal_prices( $saved['meal_prices'] ?? [] ),
 			'plan_discounts'       => self::sanitize_plan_discounts( $saved['plan_discounts'] ?? [] ),
+			'promo_codes'          => self::sanitize_promo_codes( $saved['promo_codes'] ?? [] ),
 		];
 	}
 
@@ -157,6 +170,49 @@ final class PluginSettings {
 	 */
 	public static function get_plan_discounts(): array {
 		return self::all()['plan_discounts'];
+	}
+
+	/**
+	 * @return array<string, float>
+	 */
+	public static function get_promo_codes(): array {
+		return self::all()['promo_codes'];
+	}
+
+	/**
+	 * @param mixed $raw
+	 * @return array<string, float>
+	 */
+	public static function sanitize_promo_codes( $raw ): array {
+		$defaults = self::default_promo_codes();
+		if ( ! is_array( $raw ) ) {
+			return $defaults;
+		}
+
+		$out = [];
+		foreach ( $raw as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$code = isset( $value['code'] ) ? trim( sanitize_text_field( (string) $value['code'] ) ) : '';
+				$discount = isset( $value['discount'] ) ? floatval( (string) $value['discount'] ) : 0;
+			} else {
+				$code = trim( sanitize_text_field( (string) $key ) );
+				$discount = floatval( (string) $value );
+			}
+
+			$code = strtoupper( $code );
+			if ( '' === $code ) {
+				continue;
+			}
+
+			$discount = $discount / 100;
+			if ( $discount < 0 || $discount > 1 ) {
+				continue;
+			}
+
+			$out[ $code ] = $discount;
+		}
+
+		return $out;
 	}
 
 	/**
@@ -324,6 +380,7 @@ final class PluginSettings {
 			'weekly_start_date'    => self::sanitize_date( $post['weekly_start_date'] ?? '' ),
 			'meal_prices'          => self::sanitize_meal_prices( $post['meal_prices'] ?? [] ),
 			'plan_discounts'       => self::sanitize_plan_discounts( $post['plan_discounts'] ?? [] ),
+			'promo_codes'          => self::sanitize_promo_codes( $post['promo_codes'] ?? [] ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );
@@ -342,6 +399,7 @@ final class PluginSettings {
 			'recipeLabels'  => $a['preset_recipe_labels'],
 			'mealPrices'    => $a['meal_prices'],
 			'planDiscounts' => $a['plan_discounts'],
+			'promoCodes'    => $a['promo_codes'],
 		];
 	}
 }

@@ -24,6 +24,8 @@
     '1 Week': 0, '1 Month': 0.10, '3 Months': 0.20, '6 Months': 0.25
   };
 
+  var PROMO_CODES = window.ChefPressOurPlans && window.ChefPressOurPlans.promoCodes ? window.ChefPressOurPlans.promoCodes : { 'FRESH10': 0.10 };
+
   var MEAL_PRICES = window.ChefPressOurPlans && window.ChefPressOurPlans.mealPrices ? window.ChefPressOurPlans.mealPrices : { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
 
   var RECIPES = [
@@ -73,6 +75,7 @@
     dietType: null,
     planDuration: null,
     promoCode: '',
+    promoDiscount: 0,
     isPromoApplied: false,
     mealQuantities: { 'Breakfast': 0, 'Lunch': 1, 'Dinner': 1, 'Snacks': 1 },
     selectedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -106,7 +109,7 @@
     });
     var weeklyBase = dailyBase * state.selectedDays.length;
     var planDiscount = state.planDuration ? PLAN_DISCOUNTS[state.planDuration] : 0;
-    var promoDiscount = state.isPromoApplied ? 0.10 : 0;
+    var promoDiscount = state.isPromoApplied ? state.promoDiscount : 0;
     var totalDiscount = planDiscount + promoDiscount;
     var finalPrice = weeklyBase * (1 - totalDiscount);
     var perDay = finalPrice / (state.selectedDays.length || 1);
@@ -533,7 +536,7 @@
       '</div>' +
       '<div class="dev_chefpress_plan_mb-8" style="max-width:28rem!important;margin:0 auto!important;">' +
         '<div style="background:#fff!important;border:1px solid var(--gray-100)!important;border-radius:1.5rem!important;padding:1rem!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;">' +
-          '<p style="font-size:0.75rem!important;font-weight:700!important;color:var(--emerald-900)!important;margin-bottom:0.75rem!important;text-align:center!important;">New Subscriber? Use code <span style="color:var(--emerald-500)!important;">FRESH10</span> for an extra 10% off!</p>' +
+          '<p style="font-size:0.75rem!important;font-weight:700!important;color:var(--emerald-900)!important;margin-bottom:0.75rem!important;text-align:center!important;">Have a promo code? Enter it for extra savings.</p>' +
           '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-3">' +
             '<div class="dev_chefpress_plan_relative dev_chefpress_plan_flex-grow">' +
               '<input type="text" id="dev_chefpress_plan_promo-input" value="' + state.promoCode + '" placeholder="ENTER CODE" style="width:100%!important;padding:0.75rem 1.5rem!important;border-radius:1rem!important;border:1px solid var(--gray-100)!important;outline:none!important;font-weight:700!important;font-size:0.875rem!important;text-transform:uppercase!important;background:#fff!important;font-family:inherit!important;" ' + (state.isPromoApplied ? 'disabled' : '') + '>' +
@@ -916,7 +919,7 @@
           '<div style="background:var(--gray-50) !important;padding:1.5rem !important;border-radius:2rem !important;" class="dev_chefpress_plan_space-y-4">' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;"><span style="color:var(--gray-500) !important;">Plan: ' + state.planDuration + '</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Plan Discount</span><span>-' + (planDisc * 100) + '%</span></div>' +
-            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Promo: FRESH10</span><span>-10%</span></div>' : '') +
+            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Promo: ' + state.promoCode + '</span><span>-' + Math.round( state.promoDiscount * 100 ) + '%</span></div>' : '') +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-200) !important;">' +
               '<span style="font-weight:700 !important;color:var(--gray-900) !important;">' + label + '</span>' +
               '<span style="font-size:1.875rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +
@@ -997,13 +1000,20 @@
 
   function applyPromo() {
     var input = document.getElementById('dev_chefpress_plan_promo-input');
-    if (input && input.value.toUpperCase() === 'FRESH10') {
-      state.promoCode = 'FRESH10';
+    if (!input) {
+      return;
+    }
+    var code = input.value.toUpperCase().trim();
+    if (code && Object.prototype.hasOwnProperty.call(PROMO_CODES, code)) {
+      state.promoCode = code;
+      state.promoDiscount = PROMO_CODES[code];
       state.isPromoApplied = true;
       renderStep();
-    } else { alert('Invalid Promo Code'); }
+      return;
+    }
+    alert('Invalid Promo Code');
   }
-  function removePromo() { state.promoCode = ''; state.isPromoApplied = false; renderStep(); }
+  function removePromo() { state.promoCode = ''; state.promoDiscount = 0; state.isPromoApplied = false; renderStep(); }
 
   function updateMealQuantity(meal, delta) {
     var cur = state.mealQuantities[meal] || 0;

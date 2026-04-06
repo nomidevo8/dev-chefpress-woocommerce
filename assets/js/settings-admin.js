@@ -15,6 +15,15 @@
         });
     }
 
+    function reindexPromoRows() {
+        var rows = document.querySelectorAll('#chefpress-promo-codes-table tbody tr.chefpress-promo-row');
+        rows.forEach(function (tr, idx) {
+            tr.querySelectorAll('input[name*="[promo_codes]"]').forEach(function (inp) {
+                inp.name = inp.name.replace(/\[promo_codes\]\[.*?\]/, '[promo_codes][' + idx + ']');
+            });
+        });
+    }
+
     function onReady(fn) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', fn);
@@ -40,11 +49,23 @@
 
         document.addEventListener('click', function (e) {
             var rm = e.target.closest('.chefpress-remove-row');
-            if (!rm) return;
-            var tr = rm.closest('tr');
-            if (tr && tr.parentNode) {
-                tr.parentNode.removeChild(tr);
-                reindexNutritionRows();
+            if (rm) {
+                var tr = rm.closest('tr');
+                if (tr && tr.parentNode) {
+                    tr.parentNode.removeChild(tr);
+                    reindexNutritionRows();
+                }
+                return;
+            }
+
+            var promoRm = e.target.closest('.chefpress-remove-promo-row');
+            if (promoRm) {
+                var promoTr = promoRm.closest('tr');
+                if (promoTr && promoTr.parentNode) {
+                    promoTr.parentNode.removeChild(promoTr);
+                    reindexPromoRows();
+                }
+                return;
             }
         });
 
@@ -129,6 +150,25 @@
                     }
                 });
             });
+        });
+
+        var addPromoBtn = document.getElementById('chefpress-add-promo-row');
+        if (addPromoBtn) {
+            addPromoBtn.addEventListener('click', function () {
+                var tmpl = document.getElementById('tmpl-chefpress-promo-code-row');
+                if (!tmpl) return;
+                var tbody = document.querySelector('#chefpress-promo-codes-table tbody');
+                if (!tbody) return;
+                var idx = tbody.querySelectorAll('tr.chefpress-promo-row').length;
+                var html = tmpl.innerHTML.replace(/\{\{IDX\}\}/g, String(idx));
+                tbody.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        document.addEventListener('change', function (e) {
+            if (e.target.matches('#chefpress-promo-codes-table input[name*="[code]"]')) {
+                e.target.value = String(e.target.value || '').toUpperCase();
+            }
         });
 
         /* Sidebar Navigation */
