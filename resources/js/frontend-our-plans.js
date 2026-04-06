@@ -21,10 +21,10 @@
   };
 
   var PLAN_DISCOUNTS = window.ChefPressOurPlans && window.ChefPressOurPlans.planDiscounts ? window.ChefPressOurPlans.planDiscounts : {
-    '1 Week': 0, '1 Month': 0.10, '3 Months': 0.20, '6 Months': 0.25
+    '1 Week': 0, '1 Month': 10, '3 Months': 20, '6 Months': 25
   };
 
-  var PROMO_CODES = window.ChefPressOurPlans && window.ChefPressOurPlans.promoCodes ? window.ChefPressOurPlans.promoCodes : { 'FRESH10': 0.10 };
+  var PROMO_CODES = window.ChefPressOurPlans && window.ChefPressOurPlans.promoCodes ? window.ChefPressOurPlans.promoCodes : { 'FRESH10': 10 };
 
   var MEAL_PRICES = window.ChefPressOurPlans && window.ChefPressOurPlans.mealPrices ? window.ChefPressOurPlans.mealPrices : { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
 
@@ -110,12 +110,13 @@
     var weeklyBase = dailyBase * state.selectedDays.length;
     var planDiscount = state.planDuration ? PLAN_DISCOUNTS[state.planDuration] : 0;
     var promoDiscount = state.isPromoApplied ? state.promoDiscount : 0;
-    var totalDiscount = planDiscount + promoDiscount;
+    var totalDiscountPercent = planDiscount + promoDiscount;
+    var totalDiscount = totalDiscountPercent / 100;
     var finalPrice = weeklyBase * (1 - totalDiscount);
     var perDay = finalPrice / (state.selectedDays.length || 1);
     return {
       base: weeklyBase.toFixed(2),
-      discount: (totalDiscount * 100).toFixed(0),
+      discount: totalDiscountPercent.toFixed(2),
       final: finalPrice.toFixed(2),
       perDay: perDay.toFixed(2)
     };
@@ -502,9 +503,9 @@
     var plans = ['1 Week', '1 Month', '3 Months', '6 Months'];
     var planDetails = {
       '1 Week':  { billing: 'Billed every week',        weeks: '1 Week',  discount: 'Standard Rate' },
-      '1 Month': { billing: 'Billed every month',       weeks: '4 Weeks', discount: 'Save ' + Math.round(PLAN_DISCOUNTS['1 Month'] * 100) + '% Overall' },
-      '3 Months':{ billing: 'Billed every 3 months',    weeks: '12 Weeks',discount: 'Save ' + Math.round(PLAN_DISCOUNTS['3 Months'] * 100) + '% Overall' },
-      '6 Months':{ billing: 'Billed every 6 months',    weeks: '24 Weeks',discount: 'Save ' + Math.round(PLAN_DISCOUNTS['6 Months'] * 100) + '% Overall' }
+      '1 Month': { billing: 'Billed every month',       weeks: '4 Weeks', discount: 'Save ' + PLAN_DISCOUNTS['1 Month'] + '% Overall' },
+      '3 Months':{ billing: 'Billed every 3 months',    weeks: '12 Weeks',discount: 'Save ' + PLAN_DISCOUNTS['3 Months'] + '% Overall' },
+      '6 Months':{ billing: 'Billed every 6 months',    weeks: '24 Weeks',discount: 'Save ' + PLAN_DISCOUNTS['6 Months'] + '% Overall' }
     };
 
     var planCards = plans.map(function(p) {
@@ -996,8 +997,8 @@
         '<div class="dev_chefpress_plan_space-y-6">' +
           '<div style="background:var(--gray-50) !important;padding:1.5rem !important;border-radius:2rem !important;" class="dev_chefpress_plan_space-y-4">' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;"><span style="color:var(--gray-500) !important;">Plan: ' + state.planDuration + '</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Plan Discount</span><span>-' + (planDisc * 100) + '%</span></div>' +
-            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Promo: ' + state.promoCode + '</span><span>-' + Math.round( state.promoDiscount * 100 ) + '%</span></div>' : '') +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Plan Discount</span><span>-' + planDisc + '%</span></div>' +
+            (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:0.875rem !important;color:var(--emerald-600) !important;font-weight:700 !important;"><span>Promo: ' + state.promoCode + '</span><span>-' + state.promoDiscount + '%</span></div>' : '') +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-200) !important;">' +
               '<span style="font-weight:700 !important;color:var(--gray-900) !important;">' + label + '</span>' +
               '<span style="font-size:1.875rem !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +

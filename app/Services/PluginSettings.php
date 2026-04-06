@@ -46,27 +46,27 @@ final class PluginSettings {
 	}
 
 	/**
-	 * Default plan discount rates (as decimals: 0.10 = 10%).
+	 * Default plan discount rates as percentages.
 	 *
 	 * @return array<string, float>
 	 */
 	public static function default_plan_discounts(): array {
 		return [
 			'1 Week'    => 0.00,
-			'1 Month'   => 0.10,
-			'3 Months'  => 0.20,
-			'6 Months'  => 0.25,
+			'1 Month'   => 10.00,
+			'3 Months'  => 20.00,
+			'6 Months'  => 25.00,
 		];
 	}
 
 	/**
-	 * Default promo codes with discount rates.
+	 * Default promo codes with discount rates as percentages.
 	 *
 	 * @return array<string, float>
 	 */
 	public static function default_promo_codes(): array {
 		return [
-			'FRESH10' => 0.10,
+			'FRESH10' => 10.00,
 		];
 	}
 
@@ -118,8 +118,8 @@ final class PluginSettings {
 			'theme_colors'         => self::sanitize_theme_colors( $saved['theme_colors'] ?? [] ),
 			'weekly_start_date'    => self::sanitize_date( $saved['weekly_start_date'] ?? $defaults['weekly_start_date'] ),
 			'meal_prices'          => self::sanitize_meal_prices( $saved['meal_prices'] ?? [] ),
-			'plan_discounts'       => self::sanitize_plan_discounts( $saved['plan_discounts'] ?? [] ),
-			'promo_codes'          => self::sanitize_promo_codes( $saved['promo_codes'] ?? [] ),
+			'plan_discounts'       => self::sanitize_plan_discounts( $saved['plan_discounts'] ?? [], true ),
+			'promo_codes'          => self::sanitize_promo_codes( $saved['promo_codes'] ?? [], true ),
 		];
 	}
 
@@ -181,9 +181,10 @@ final class PluginSettings {
 
 	/**
 	 * @param mixed $raw
+	 * @param bool $from_saved If true, converts legacy decimals (0.1 => 10%) from stored settings.
 	 * @return array<string, float>
 	 */
-	public static function sanitize_promo_codes( $raw ): array {
+	public static function sanitize_promo_codes( $raw, bool $from_saved = false ): array {
 		$defaults = self::default_promo_codes();
 		if ( ! is_array( $raw ) ) {
 			return $defaults;
@@ -204,12 +205,14 @@ final class PluginSettings {
 				continue;
 			}
 
-			$discount = $discount / 100;
-			if ( $discount < 0 || $discount > 1 ) {
+			if ( $from_saved && $discount >= 0 && $discount <= 1 ) {
+				$discount *= 100;
+			}
+			if ( $discount < 0 || $discount > 100 ) {
 				continue;
 			}
 
-			$out[ $code ] = $discount;
+			$out[ $code ] = round( $discount, 2 );
 		}
 
 		return $out;
@@ -337,12 +340,13 @@ final class PluginSettings {
 	}
 
 	/**
-	 * Sanitize plan discounts (as floats between 0 and 1).
+	 * Sanitize plan discounts as percentages (0-100).
 	 *
 	 * @param mixed $raw
+	 * @param bool $from_saved If true, converts legacy decimals (0.1 => 10%) from stored settings.
 	 * @return array<string, float>
 	 */
-	public static function sanitize_plan_discounts( $raw ): array {
+	public static function sanitize_plan_discounts( $raw, bool $from_saved = false ): array {
 		$defaults = self::default_plan_discounts();
 		if ( ! is_array( $raw ) ) {
 			return $defaults;
@@ -350,11 +354,13 @@ final class PluginSettings {
 		$out = [];
 		foreach ( $defaults as $plan => $default_discount ) {
 			$discount = isset( $raw[ $plan ] ) ? floatval( (string) $raw[ $plan ] ) : $default_discount;
-			// Ensure discount is between 0 and 1
-			if ( $discount < 0 || $discount > 1 ) {
+			if ( $from_saved && $discount >= 0 && $discount <= 1 ) {
+				$discount *= 100;
+			}
+			if ( $discount < 0 || $discount > 100 ) {
 				$discount = $default_discount;
 			}
-			$out[ $plan ] = round( $discount, 4 );
+			$out[ $plan ] = round( $discount, 2 );
 		}
 		return $out;
 	}
@@ -379,8 +385,8 @@ final class PluginSettings {
 			'theme_colors'         => self::sanitize_theme_colors( $post['theme_colors'] ?? [] ),
 			'weekly_start_date'    => self::sanitize_date( $post['weekly_start_date'] ?? '' ),
 			'meal_prices'          => self::sanitize_meal_prices( $post['meal_prices'] ?? [] ),
-			'plan_discounts'       => self::sanitize_plan_discounts( $post['plan_discounts'] ?? [] ),
-			'promo_codes'          => self::sanitize_promo_codes( $post['promo_codes'] ?? [] ),
+			'plan_discounts'       => self::sanitize_plan_discounts( $post['plan_discounts'] ?? [], false ),
+			'promo_codes'          => self::sanitize_promo_codes( $post['promo_codes'] ?? [], false ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );
