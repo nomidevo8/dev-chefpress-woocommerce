@@ -561,10 +561,10 @@
   // Step 8 – Box Config
   function renderBoxConfig(el) {
     var mealTypes = [
-      { name: 'Breakfast', icon: '🍳', price: 5 },
-      { name: 'Lunch',     icon: '🥗', price: 12 },
-      { name: 'Dinner',    icon: '🥩', price: 15 },
-      { name: 'Snacks',    icon: '🍎', price: 4 }
+      { name: 'Breakfast', icon: '🍳', price: MEAL_PRICES['Breakfast'] || 5 },
+      { name: 'Lunch',     icon: '🥗', price: MEAL_PRICES['Lunch'] || 12 },
+      { name: 'Dinner',    icon: '🥩', price: MEAL_PRICES['Dinner'] || 15 },
+      { name: 'Snacks',    icon: '🍎', price: MEAL_PRICES['Snacks'] || 4 }
     ];
     var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var target = calculateDailyTarget();
@@ -578,7 +578,7 @@
           '<div style="width:3rem!important;height:3rem!important;background:var(--emerald-50)!important;border-radius:1rem!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:1.25rem!important;">' + m.icon + '</div>' +
           '<div>' +
             '<h3 style="font-weight:900!important;color:var(--emerald-900)!important;font-size:0.875rem!important;">' + m.name + '</h3>' +
-            '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;">$' + m.price + '/meal</p>' +
+            '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;">AED ' + m.price + '/meal</p>' +
           '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
