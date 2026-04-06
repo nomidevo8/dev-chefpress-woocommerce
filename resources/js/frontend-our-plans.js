@@ -668,6 +668,73 @@
       initWeeklyMenu();
     }
 
+    // Auto-apply filters based on previous choices
+    setTimeout(function () {
+
+      // -------------------------
+      // 1. Apply allergen filters
+      // -------------------------
+      if (state.selectedAllergens && state.selectedAllergens.length > 0) {
+
+        state.selectedAllergens.forEach(function (allergen) {
+          var normalizedAllergen = allergen.toLowerCase();
+
+          var button = document.querySelector(
+            '#cp_weekly_filter_sidebar button[data-allergen="' + normalizedAllergen + '"]'
+          );
+
+          console.log('Allergen button:', normalizedAllergen, button);
+
+          if (button) {
+            button.dispatchEvent(new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window
+            }));
+          }
+        });
+      }
+
+      // -------------------------
+      // 2. Apply diet type filter
+      // -------------------------
+      if (state.dietType) {
+        var normalizedDiet = state.dietType.toLowerCase();
+
+        var dietButton = document.querySelector(
+          '#cp_weekly_filter_sidebar button[data-recipe-tag="' + normalizedDiet + '"]'
+        );
+
+        console.log('Diet button:', normalizedDiet, dietButton);
+
+        if (dietButton) {
+          dietButton.dispatchEvent(new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+          }));
+        }
+      }
+
+      // -------------------------
+      // 3. Click Apply Filters button
+      // -------------------------
+      setTimeout(function () {
+        var applyBtn = document.querySelector('#cp_weekly_filter_sidebar .cp_weekly_menu_sidebar_apply');
+
+        console.log('Apply button:', applyBtn);
+
+        if (applyBtn) {
+          applyBtn.dispatchEvent(new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+          }));
+        }
+      }, 300);
+
+    }, 500);
+
     // Render lucide icons
     if (window.lucide) {
       window.lucide.createIcons();
