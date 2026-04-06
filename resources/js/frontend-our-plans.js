@@ -185,6 +185,12 @@
     destroyMaps();
     var container = document.getElementById('dev_chefpress_plan_step-content');
     if (!container) return;
+
+    var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
+    if (weeklyMenuContainer) {
+      weeklyMenuContainer.style.display = state.currentStep === 9 ? 'block' : 'none';
+    }
+
     container.innerHTML = '';
     updateProgress();
 
@@ -658,10 +664,9 @@
       return;
     }
 
-    // Move the weekly menu container to the step content (instead of cloning to avoid duplication)
+    // Keep the weekly menu container in its original DOM location and control visibility by CSS
     weeklyMenuContainer.style.display = 'block';
     el.innerHTML = '';
-    el.appendChild(weeklyMenuContainer);
 
     // Initialize weekly menu JS if available
     if (typeof initWeeklyMenu === 'function') {
