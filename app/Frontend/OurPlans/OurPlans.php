@@ -119,7 +119,7 @@ use DevChefPress\Helpers\WeekCalculator;
 
     <!-- Navigation Buttons -->
     <div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_mt-8">
-        <button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>
+        <button onclick="prevStep()" class="dev_chefpress_plan_btn-outline" style="margin: 0 auto 20px auto;">Back</button>
         <!-- <button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Review Order</button> -->
     </div>
 </div>

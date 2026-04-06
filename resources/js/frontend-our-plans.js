@@ -186,6 +186,11 @@
     var container = document.getElementById('dev_chefpress_plan_step-content');
     if (!container) return;
 
+    var wizardContainer = document.getElementById('dev_chefpress_plan_wizard-container');
+    if (wizardContainer) {
+      wizardContainer.style.display = state.currentStep === 9 ? 'none' : 'block';
+    }
+
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
     if (weeklyMenuContainer) {
       weeklyMenuContainer.style.display = state.currentStep === 9 ? 'block' : 'none';
