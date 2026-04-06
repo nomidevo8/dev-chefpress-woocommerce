@@ -48,71 +48,52 @@
             }
         });
 
-        /* Preset chip editors */
-        document.querySelectorAll('.chefpress-preset-editor').forEach(function (box) {
-            var field = box.getAttribute('data-field');
-            if (!field) return;
-            var chips = box.querySelector('.chefpress-preset-chips');
-            var input = box.querySelector('.chefpress-preset-input');
-            var addBtnEl = box.querySelector('.chefpress-preset-add-btn');
+        /* Sidebar Navigation */
+        document.querySelectorAll('.chefpress-nav__link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var sectionId = this.getAttribute('data-section');
+                if (!sectionId) return;
 
-            function addValue(raw) {
-                var val = String(raw || '').trim();
-                if (!val) return;
-                var dup = false;
-                chips.querySelectorAll('input[type="hidden"]').forEach(function (h) {
-                    if (String(h.value).toLowerCase() === val.toLowerCase()) dup = true;
-                });
-                if (dup) return;
-
-                var chip = document.createElement('span');
-                chip.className = 'chefpress-preset-chip';
-                chip.setAttribute('role', 'listitem');
-                chip.appendChild(document.createTextNode(val));
-
-                var x = document.createElement('button');
-                x.type = 'button';
-                x.className = 'chefpress-preset-chip__x';
-                x.setAttribute('aria-label', 'Remove');
-                x.innerHTML = '×';
-
-                var hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = 'chefpress_settings[' + field + '][]';
-                hidden.value = val;
-
-                chip.appendChild(x);
-                chip.appendChild(hidden);
-                chips.appendChild(chip);
-
-                x.addEventListener('click', function () {
-                    chip.remove();
+                // Remove active class from all links
+                document.querySelectorAll('.chefpress-nav__link').forEach(function (l) {
+                    l.classList.remove('chefpress-nav__link--active');
                 });
 
-                if (input) input.value = '';
-            }
+                // Add active class to clicked link
+                this.classList.add('chefpress-nav__link--active');
 
-            if (addBtnEl) {
-                addBtnEl.addEventListener('click', function () {
-                    addValue(input && input.value);
+                // Hide all sections
+                document.querySelectorAll('.chefpress-section').forEach(function (section) {
+                    section.classList.remove('chefpress-section--active');
                 });
-            }
 
-            if (input) {
-                input.addEventListener('keydown', function (ev) {
-                    if (ev.key === 'Enter') {
-                        ev.preventDefault();
-                        addValue(input.value);
-                    }
-                });
-            }
+                // Show target section
+                var targetSection = document.getElementById('chefpress-section-' + sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('chefpress-section--active');
+                }
 
-            box.querySelectorAll('.chefpress-preset-chip__x').forEach(function (bx) {
-                bx.addEventListener('click', function () {
-                    var c = bx.closest('.chefpress-preset-chip');
-                    if (c) c.remove();
-                });
+                // Update URL hash without triggering scroll
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState(null, null, '#' + sectionId);
+                }
             });
         });
+
+        /* Handle initial section based on URL hash */
+        var hash = window.location.hash.substring(1);
+        if (hash) {
+            var initialLink = document.querySelector('.chefpress-nav__link[data-section="' + hash + '"]');
+            if (initialLink) {
+                initialLink.click();
+            }
+        } else {
+            /* Activate first section by default */
+            var firstLink = document.querySelector('.chefpress-nav__link');
+            if (firstLink) {
+                firstLink.click();
+            }
+        }
     });
 })();

@@ -878,6 +878,320 @@
   margin: 20px 20px 20px 0;
 }
 
+/* Sidebar Dashboard Layout */
+.chefpress-settings-dashboard {
+  display: flex;
+  gap: 0;
+  background: var(--cp-bg);
+  border-radius: var(--cp-radius);
+  overflow: hidden;
+  box-shadow: var(--cp-shadow);
+  min-height: 600px;
+}
+
+.chefpress-settings-sidebar {
+  width: 280px;
+  background: var(--cp-surface);
+  border-right: 1px solid var(--cp-border);
+  padding: 24px 20px;
+  flex-shrink: 0;
+}
+
+.chefpress-settings-sidebar__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cp-text);
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--cp-primary);
+}
+
+.chefpress-nav__header {
+  margin-bottom: 20px;
+}
+
+.chefpress-nav__header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cp-text);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chefpress-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chefpress-nav__item {
+  margin: 0;
+}
+
+.chefpress-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--cp-radius-sm);
+  text-decoration: none;
+  color: var(--cp-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all var(--cp-transition);
+  border: 2px solid transparent;
+}
+
+.chefpress-nav__link:hover {
+  background: var(--cp-primary-light);
+  color: var(--cp-primary);
+  border-color: rgba(232,86,42,.2);
+}
+
+.chefpress-nav__link--active,
+.chefpress-nav__link.is-active {
+  background: var(--cp-primary);
+  color: #fff;
+  border-color: var(--cp-primary);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(232,86,42,.3);
+}
+
+.chefpress-nav__icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.chefpress-nav__text {
+  flex: 1;
+}
+
+.chefpress-settings-content {
+  flex: 1;
+  padding: 32px 32px 32px 40px;
+  background: var(--cp-bg);
+  overflow-y: auto;
+}
+
+.chefpress-section {
+  display: none;
+  animation: cpFadeIn .3s ease;
+}
+
+.chefpress-section--active,
+.chefpress-section.is-active {
+  display: block;
+}
+
+.chefpress-section__header {
+  margin-bottom: 24px;
+}
+
+.chefpress-section__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--cp-text);
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chefpress-section__icon {
+  font-size: 28px;
+}
+
+.chefpress-section__description {
+  color: var(--cp-text-muted);
+  font-size: 16px;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.chefpress-section__content {
+  /* Content area styles */
+}
+
+.chefpress-settings-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.chefpress-settings-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--cp-transition);
+}
+
+.chefpress-settings-card:hover {
+  box-shadow: var(--cp-shadow);
+}
+
+.chefpress-settings-card__header {
+  padding: 20px 24px;
+  background: var(--cp-surface);
+  border-bottom: 1px solid var(--cp-border-light);
+}
+
+.chefpress-settings-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cp-text);
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chefpress-settings-card__icon {
+  font-size: 20px;
+}
+
+.chefpress-settings-card__subtitle {
+  font-size: 14px;
+  color: var(--cp-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.chefpress-settings-card__body {
+  padding: 24px;
+}
+
+.chefpress-settings-actions {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--cp-border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ChefPress Card Styles (used in settings sections) */
+.chefpress-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--cp-transition);
+  margin-bottom: 24px;
+}
+
+.chefpress-card:hover {
+  box-shadow: var(--cp-shadow);
+}
+
+.chefpress-card__header {
+  padding: 20px 24px;
+  background: var(--cp-surface);
+  border-bottom: 1px solid var(--cp-border-light);
+}
+
+.chefpress-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cp-text);
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chefpress-card__icon {
+  font-size: 20px;
+}
+
+.chefpress-card__icon--nutr::before { content: '📊'; }
+.chefpress-card__icon--ing::before { content: '🥕'; }
+.chefpress-card__icon--all::before { content: '⚠️'; }
+.chefpress-card__icon--tag::before { content: '🏷️'; }
+
+.chefpress-card__subtitle {
+  font-size: 14px;
+  color: var(--cp-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.chefpress-card__body {
+  padding: 24px;
+}
+
+.chefpress-card__actions {
+  padding: 16px 24px;
+  background: var(--cp-bg);
+  border-top: 1px solid var(--cp-border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .chefpress-settings-dashboard {
+    flex-direction: column;
+  }
+
+  .chefpress-settings-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--cp-border);
+  }
+
+  .chefpress-settings-content {
+    padding: 24px;
+  }
+
+  .chefpress-settings-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .chefpress-settings-wrap {
+    margin: 10px;
+  }
+
+  .chefpress-settings-sidebar {
+    padding: 20px 16px;
+  }
+
+  .chefpress-settings-nav__link {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .chefpress-settings-content {
+    padding: 20px 16px;
+  }
+
+  .chefpress-settings-section__title {
+    font-size: 20px;
+  }
+
+  .chefpress-settings-section__description {
+    font-size: 14px;
+  }
+
+  .chefpress-settings-card__header,
+  .chefpress-settings-card__body {
+    padding: 16px 20px;
+  }
+}
+
 .chefpress-settings-title {
   font-size: 1.65rem;
   font-weight: 700;
