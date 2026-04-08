@@ -1148,25 +1148,37 @@
     if (!container.length) return;
 
     container.empty();
-    var leftArrow = $('<button id="dev_our_plans_slots_left" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_left" aria-label="Scroll slots left"><i data-lucide="chevron-left"></i></button>');
+    var isMobile = window.innerWidth <= 768;
+    
     var inner = $('<div class="dev_our_plans_slots_inner"></div>');
-    var rightArrow = $('<button id="dev_our_plans_slots_right" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_right" aria-label="Scroll slots right"><i data-lucide="chevron-right"></i></button>');
+    
+    // Only create arrow buttons on desktop
+    var leftArrow, rightArrow;
+    if (!isMobile) {
+      leftArrow = $('<button id="dev_our_plans_slots_left" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_left" aria-label="Scroll slots left"><i data-lucide="chevron-left"></i></button>');
+      rightArrow = $('<button id="dev_our_plans_slots_right" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_right" aria-label="Scroll slots right"><i data-lucide="chevron-right"></i></button>');
+      container.append(leftArrow);
+    }
+    
+    container.append(inner);
+    
+    if (!isMobile) {
+      container.append(rightArrow);
 
-    container.append(leftArrow).append(inner).append(rightArrow);
-
-    // Attach click handlers
-    leftArrow.on('click', function() {
-      var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
-      inner.animate({ scrollLeft: inner.scrollLeft() - slotWidth }, 300, function() {
-        updateArrowStates();
+      // Attach click handlers
+      leftArrow.on('click', function() {
+        var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
+        inner.animate({ scrollLeft: inner.scrollLeft() - slotWidth }, 300, function() {
+          updateArrowStates();
+        });
       });
-    });
-    rightArrow.on('click', function() {
-      var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
-      inner.animate({ scrollLeft: inner.scrollLeft() + slotWidth }, 300, function() {
-        updateArrowStates();
+      rightArrow.on('click', function() {
+        var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
+        inner.animate({ scrollLeft: inner.scrollLeft() + slotWidth }, 300, function() {
+          updateArrowStates();
+        });
       });
-    });
+    }
 
     var slots = state.slots || [];
     if (!slots.length) {
@@ -1201,6 +1213,7 @@
     // Show nav bar only when not in success (step 15), but show in step 9 for slots
     if (state.currentStep === 15) {
       navBar.hide();
+      navBar.removeClass('dev_our_plans_slots_step');
     } else {
       navBar.show();
       backBtn.prop('disabled', state.currentStep === 1);
@@ -1210,9 +1223,11 @@
     // Show slots only in step 9
     if (state.currentStep === 9) {
       slotsContainer.show();
+      navBar.addClass('dev_our_plans_slots_step');
       renderSlotsInNav();
     } else {
       slotsContainer.hide();
+      navBar.removeClass('dev_our_plans_slots_step');
     }
   }
 

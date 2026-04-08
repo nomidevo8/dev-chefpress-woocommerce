@@ -676,6 +676,13 @@ margin-left:60px !important;
     -ms-overflow-style: none !important;
 }
 
+@media (max-width: 768px) {
+    .dev_our_plans_slots_inner {
+        scroll-snap-type: x mandatory !important;
+        scroll-padding: 0.5rem !important;
+    }
+}
+
 .dev_our_plans_slots_inner::-webkit-scrollbar {
     display: none !important;
 }
@@ -723,6 +730,12 @@ margin-left:60px !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
     margin-right: 0.5rem !important;
+}
+
+@media (max-width: 768px) {
+    .dev_our_plans_slot_item {
+        scroll-snap-align: center !important;
+    }
 }
 
 .dev_our_plans_slot_item:last-child {
