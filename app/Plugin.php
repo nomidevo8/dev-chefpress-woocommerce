@@ -194,7 +194,7 @@ final class Plugin {
 			__( 'Breakfast', 'dev-chefpress' ),
 			__( 'Lunch', 'dev-chefpress' ),
 			__( 'Dinner', 'dev-chefpress' ),
-			__( 'Snack', 'dev-chefpress' ),
+			__( 'Snacks', 'dev-chefpress' ),
 		];
 
 		foreach ( $meal_types as $meal_type ) {

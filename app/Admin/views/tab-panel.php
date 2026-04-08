@@ -192,7 +192,7 @@ $preset_recipe_l      = PluginSettings::get_preset_recipe_labels();
 					<span class="cp-card__arrow">▼</span>
 				</div>
 				<div class="cp-card__body" id="meal-type-assign-body">
-					<p class="cp-hint"><?php esc_html_e( 'Assign recipes to one or more meal types (e.g., Breakfast, Lunch, Dinner, Snack).', 'dev-chefpress' ); ?></p>
+					<p class="cp-hint"><?php esc_html_e( 'Assign recipes to one or more meal types (e.g., Breakfast, Lunch, Dinner, Snacks).', 'dev-chefpress' ); ?></p>
 					<div class="cp-week-grid">
 						<?php if ( ! empty( $meal_type_terms ) && ! is_wp_error( $meal_type_terms ) ) : ?>
 							<?php foreach ( $meal_type_terms as $meal_type_term ) : ?>

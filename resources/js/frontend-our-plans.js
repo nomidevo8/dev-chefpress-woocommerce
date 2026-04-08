@@ -1225,6 +1225,12 @@
       slotBtn.on('click', function() {
         state.currentSlotIndex = index;
         renderSlotsInNav();
+        // Update meal type dropdown to match the slot's meal
+        var meal = $(this).data('meal').toLowerCase();
+        var $mealOption = $('#cp_weekly_mealtype_dropdown a[data-meal-type="' + meal + '"]');
+        if ($mealOption.length) {
+          $mealOption.click();
+        }
       });
       inner.append(slotBtn);
     });
