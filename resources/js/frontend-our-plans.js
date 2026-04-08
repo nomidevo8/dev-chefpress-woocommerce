@@ -774,6 +774,36 @@
       }
     }
 
+    var mealType = '';
+    if (state.menu && typeof state.menu === 'object') {
+      var firstSlot = Object.keys(state.menu).find(function(key) {
+        return typeof key === 'string' && key.indexOf('-') !== -1;
+      });
+      if (firstSlot) {
+        mealType = firstSlot.split('-')[1] || '';
+      }
+    }
+
+    if (!mealType && state.mealQuantities && typeof state.mealQuantities === 'object') {
+      ['Breakfast', 'Lunch', 'Dinner', 'Snacks'].some(function(meal) {
+        if (state.mealQuantities[meal] > 0) {
+          mealType = meal;
+          return true;
+        }
+        return false;
+      });
+    }
+
+    if (mealType) {
+      mealType = mealType.toString().toLowerCase();
+      if (mealType === 'snacks') {
+        mealType = 'snack';
+      }
+      if (typeof window.cpWeeklySetMealTypeFilter === 'function') {
+        window.cpWeeklySetMealTypeFilter(mealType);
+      }
+    }
+
     var applyBtn = document.querySelector('#cp_weekly_filter_sidebar .cp_weekly_menu_sidebar_apply');
     if (applyBtn) {
       applyBtn.dispatchEvent(new MouseEvent('click', {
