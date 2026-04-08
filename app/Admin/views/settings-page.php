@@ -493,6 +493,48 @@ $promo_codes = $settings['promo_codes'] ?? [];
 										<option value="Katch-McArdle" <?php selected( $settings['bmr_formula'] ?? 'Mifflin-St Jeor', 'Katch-McArdle' ); ?>><?php esc_html_e( 'Katch-McArdle', 'dev-chefpress' ); ?></option>
 									</select>
 									<p class="cp-field__help-small"><?php esc_html_e( 'Katch-McArdle requires body fat percentage input.', 'dev-chefpress' ); ?></p>
+									<div class="chefpress-formula-display" style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+										<?php
+										$current_formula = $settings['bmr_formula'] ?? 'Mifflin-St Jeor';
+										switch ($current_formula) {
+											case 'Mifflin-St Jeor':
+												echo '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Mifflin-St Jeor Equation:</h4>';
+												echo '<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">';
+												echo '<strong>For men:</strong><br>BMR = 10W + 6.25H - 5A + 5<br><br>';
+												echo '<strong>For women:</strong><br>BMR = 10W + 6.25H - 5A - 161<br><br>';
+												echo '<br><strong>where:</strong><br>';
+												echo 'W is body weight in kg<br>';
+												echo 'H is body height in cm<br>';
+												echo 'A is age<br>';
+												echo 'F is body fat in percentage';
+												echo '</div>';
+												break;
+											case 'Revised Harris-Benedict':
+												echo '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Revised Harris-Benedict Equation:</h4>';
+												echo '<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">';
+												echo '<strong>For men:</strong><br>BMR = 13.397W + 4.799H - 5.677A + 88.362<br><br>';
+												echo '<strong>For women:</strong><br>BMR = 9.247W + 3.098H - 4.330A + 447.593<br><br>';
+												echo '<strong>where:</strong><br>';
+												echo 'W is body weight in kg<br>';
+												echo 'H is body height in cm<br>';
+												echo 'A is age<br>';
+												echo 'F is body fat in percentage';
+												echo '</div>';
+												break;
+											case 'Katch-McArdle':
+												echo '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Katch-McArdle Formula:</h4>';
+												echo '<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">';
+												echo 'BMR = 370 + 21.6(1 - F)W<br><br>';
+												echo '<strong>where:</strong><br>';
+												echo 'W is body weight in kg<br>';
+												echo 'H is body height in cm<br>';
+												echo 'A is age<br>';
+												echo 'F is body fat in percentage';
+												echo '</div>';
+												break;
+										}
+										?>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -550,4 +592,53 @@ $promo_codes = $settings['promo_codes'] ?? [];
 			<button type="button" class="cp-btn cp-btn--ghost cp-btn--sm chefpress-remove-promo-row" aria-label="<?php esc_attr_e( 'Remove promo row', 'dev-chefpress' ); ?>">×</button>
 		</td>
 	</tr>
+</script>
+
+<script>
+jQuery(document).ready(function($) {
+	// Handle BMR formula display update
+	$('select[name="chefpress_settings[bmr_formula]"]').on('change', function() {
+		var formula = $(this).val();
+		var displayDiv = $('.chefpress-formula-display');
+		
+		var content = '';
+		switch(formula) {
+			case 'Mifflin-St Jeor':
+				content = '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Mifflin-St Jeor Equation:</h4>' +
+					'<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">' +
+					'<strong>For men:</strong><br>BMR = 10W + 6.25H - 5A + 5<br><br>' +
+					'<strong>For women:</strong><br>BMR = 10W + 6.25H - 5A - 161<br><br>' + '<strong>where:</strong><br>' +
+					'W is body weight in kg<br>' +
+					'H is body height in cm<br>' +
+					'A is age<br>' +
+					'F is body fat in percentage' + 
+					'</div>';
+				break;
+			case 'Revised Harris-Benedict':
+				content = '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Revised Harris-Benedict Equation:</h4>' +
+					'<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">' +
+					'<strong>For men:</strong><br>BMR = 13.397W + 4.799H - 5.677A + 88.362<br><br>' +
+					'<strong>For women:</strong><br>BMR = 9.247W + 3.098H - 4.330A + 447.593<br><br>' + '<strong>where:</strong><br>' +
+					'W is body weight in kg<br>' +
+					'H is body height in cm<br>' +
+					'A is age<br>' +
+					'F is body fat in percentage' + 
+					'</div>';
+				break;
+			case 'Katch-McArdle':
+				content = '<h4 style="margin: 0 0 0.5rem 0; color: #495057; font-weight: 600;">Katch-McArdle Formula:</h4>' +
+					'<div style="font-family: monospace; font-size: 0.9rem; color: #6c757d; line-height: 1.5;">' +
+					'BMR = 370 + 21.6(1 - F)W<br><br>' +
+					'<strong>where:</strong><br>' +
+					'W is body weight in kg<br>' +
+					'H is body height in cm<br>' +
+					'A is age<br>' +
+					'F is body fat in percentage' + 
+					'</div>';
+				break;
+		}
+		
+		displayDiv.html(content);
+	});
+});
 </script>
