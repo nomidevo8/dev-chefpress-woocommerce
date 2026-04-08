@@ -759,14 +759,168 @@
   $(document).on('click', '.cp_weekly_menu_card_add_slot', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      
 
       const recipeId = $(this).data('recipe-id');
       if (!recipeId) {
           return;
       }
-      console.log('Add to slot clicked for recipe ID:', recipeId);
-      console.log('state', state);
+
+      openWeeklyMenuSlotPopup(recipeId);
+  });
+
+  function getActiveMealTypeFromDropdown() {
+    var $active = $('#cp_weekly_mealtype_dropdown a.active');
+    if (!$active.length) {
+      return '';
+    }
+    var mealType = $active.data('meal-type');
+    return mealType ? mealType.toString().trim().toLowerCase() : '';
+  }
+
+  function titleCaseMealType(mealType) {
+    if (!mealType) {
+      return '';
+    }
+    var normalized = mealType.toString().trim().toLowerCase();
+    switch (normalized) {
+      case 'breakfast': return 'Breakfast';
+      case 'lunch': return 'Lunch';
+      case 'dinner': return 'Dinner';
+      case 'snacks': return 'Snacks';
+      default: return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+    }
+  }
+
+  function getSlotOptionsForPopup() {
+    var mealType = getActiveMealTypeFromDropdown();
+    var selectedDays = Array.isArray(state.selectedDays) ? state.selectedDays : [];
+    var mealTypes = [];
+
+    if (mealType) {
+      mealTypes.push(titleCaseMealType(mealType));
+    } else {
+      $.each(state.mealQuantities || {}, function (meal, qty) {
+        if (qty > 0) {
+          mealTypes.push(meal);
+        }
+      });
+    }
+
+    var slotOptions = [];
+    selectedDays.forEach(function (day) {
+      mealTypes.forEach(function (meal) {
+        slotOptions.push({
+          slotId: day + '-' + meal,
+          day: day,
+          meal: meal
+        });
+      });
+    });
+
+    return slotOptions;
+  }
+
+  function openWeeklyMenuSlotPopup(recipeId) {
+    var slotOptions = getSlotOptionsForPopup();
+    var mealType = getActiveMealTypeFromDropdown();
+    var labelMeal = mealType ? titleCaseMealType(mealType) : 'Meal';
+    var titleText = mealType ? 'Assign to ' + labelMeal + ' slots' : 'Choose slots to assign';
+
+    if (!slotOptions.length) {
+      alert('No slots are available for the current selection. Please select days and meal types first.');
+      return;
+    }
+
+    var html = '<div class="cp_weekly_slot_popup_header">' +
+      '<h3 class="cp_weekly_slot_popup_title">' + titleText + '</h3>' +
+      '<button type="button" class="cp_weekly_slot_popup_close_btn" aria-label="Close">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+      '</button>' +
+    '</div>';
+    html += '<div class="cp_weekly_slot_popup_body">';
+    html += '<p class="cp_weekly_slot_popup_description">Select one or more slots to assign this recipe:</p>';
+    html += '<div class="cp_weekly_slot_popup_list">';
+
+    slotOptions.forEach(function (option, index) {
+      var occupied = state.menu && state.menu[option.slotId];
+      var label = option.day + ' — ' + option.meal;
+      html += '<label class="cp_weekly_slot_popup_option' + (occupied ? ' cp_weekly_slot_popup_option_disabled' : '') + '">';
+      html += '<input type="checkbox" name="cp_weekly_slot_option" value="' + option.slotId + '"' + (occupied ? ' disabled' : ' checked') + ' class="cp_weekly_slot_popup_checkbox">';
+      html += '<span class="cp_weekly_slot_popup_label">' + label;
+      if (occupied) {
+        html += ' <span class="cp_weekly_slot_popup_occupied">(already assigned)</span>';
+      }
+      html += '</span></label>';
+    });
+
+    html += '</div></div>';
+    html += '<div class="cp_weekly_slot_popup_actions">';
+    html += '<button type="button" id="cp_weekly_slot_popup_cancel" class="dev_chefpress_plan_btn-outline">Cancel</button>';
+    html += '<button type="button" id="cp_weekly_slot_popup_confirm" class="dev_chefpress_plan_btn-primary">OK</button>';
+    html += '</div>';
+
+    var $popup = $('#cp_weekly_slot_popup');
+    if (!$popup.length) {
+      $popup = $(
+        '<div id="cp_weekly_slot_popup" class="cp_weekly_slot_popup">' +
+          '<div class="cp_weekly_slot_popup_overlay"></div>' +
+          '<div class="cp_weekly_slot_popup_dialog">' +
+            '<div id="cp_weekly_slot_popup_content"></div>' +
+          '</div>' +
+        '</div>'
+      );
+      $('body').append($popup);
+    }
+
+    $popup.find('#cp_weekly_slot_popup_content').html(html);
+    $popup.data('recipe-id', recipeId);
+    $popup.addClass('cp_weekly_slot_popup_active');
+    $('body').css('overflow', 'hidden !important');
+  }
+
+  function closeWeeklyMenuSlotPopup() {
+    var $popup = $('#cp_weekly_slot_popup');
+    if ($popup.length) {
+      $popup.removeClass('cp_weekly_slot_popup_active');
+    }
+    $('body').css('overflow', '');
+  }
+
+  function assignRecipeToSlotIds(recipeId, slotIds) {
+    if (!recipeId || !Array.isArray(slotIds) || !slotIds.length) {
+      return;
+    }
+    slotIds.forEach(function (slotId) {
+      if (slotId && !state.menu[slotId]) {
+        state.menu[slotId] = recipeId;
+      }
+    });
+    renderStep();
+  }
+
+  $(document).on('click', '#cp_weekly_slot_popup_cancel, .cp_weekly_slot_popup_close_btn, .cp_weekly_slot_popup_overlay', function (e) {
+    if ($(e.target).is('#cp_weekly_slot_popup_confirm')) {
+      return;
+    }
+    closeWeeklyMenuSlotPopup();
+  });
+
+  $(document).on('click', '#cp_weekly_slot_popup_confirm', function () {
+    var $popup = $('#cp_weekly_slot_popup');
+    var recipeId = $popup.data('recipe-id');
+    var slotIds = [];
+
+    $popup.find('input[name="cp_weekly_slot_option"]:checked').each(function () {
+      slotIds.push($(this).val());
+    });
+
+    if (!slotIds.length) {
+      alert('Please select at least one slot before continuing.');
+      return;
+    }
+
+    closeWeeklyMenuSlotPopup();
+    assignRecipeToSlotIds(recipeId, slotIds);
   });
 
   function applyWeeklyMenuFilters() {

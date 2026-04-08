@@ -783,3 +783,236 @@ margin-left:60px !important;
         height: 0.75rem !important;
     }
 }
+
+/* ─────────────────────────────────────────────────────────
+   Weekly Menu Slot Popup (Multi-Day Assignment)
+   ───────────────────────────────────────────────────────── */
+
+#cp_weekly_slot_popup {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+#cp_weekly_slot_popup.cp_weekly_slot_popup_active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.cp_weekly_slot_popup_overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: -1 !important;
+}
+
+.cp_weekly_slot_popup_dialog {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    background: #ffffff !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
+    z-index: 1 !important;
+    max-height: 85vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0 !important;
+        transform: translateY(20px) !important;
+    }
+    to {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+}
+
+#cp_weekly_slot_popup_content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    padding: 1.5rem !important;
+    overflow: hidden !important;
+}
+
+.cp_weekly_slot_popup_header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 1px solid var(--gray-100) !important;
+}
+
+.cp_weekly_slot_popup_title {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+    color: var(--gray-900) !important;
+    margin: 0 !important;
+    flex: 1 !important;
+}
+
+.cp_weekly_slot_popup_close_btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    border-radius: 0.5rem !important;
+    background: transparent !important;
+    color: var(--gray-500) !important;
+    cursor: pointer !important;
+    transition: background 0.2s, color 0.2s !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    flex-shrink: 0 !important;
+}
+
+.cp_weekly_slot_popup_close_btn:hover {
+    background: var(--gray-100) !important;
+    color: var(--gray-700) !important;
+}
+
+.cp_weekly_slot_popup_close_btn:active {
+    background: var(--gray-200) !important;
+}
+
+.cp_weekly_slot_popup_close_btn svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    stroke-width: 2.5 !important;
+}
+
+.cp_weekly_slot_popup_body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    margin-bottom: 1rem !important;
+    padding-right: 0.5rem !important;
+}
+
+.cp_weekly_slot_popup_body::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.cp_weekly_slot_popup_body::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.cp_weekly_slot_popup_body::-webkit-scrollbar-thumb {
+    background: var(--gray-300) !important;
+    border-radius: 3px !important;
+}
+
+.cp_weekly_slot_popup_body::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400) !important;
+}
+
+.cp_weekly_slot_popup_description {
+    font-size: 0.95rem !important;
+    color: var(--text-muted) !important;
+    margin: 0 0 1rem !important;
+}
+
+.cp_weekly_slot_popup_list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+}
+
+.cp_weekly_slot_popup_option {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+    border-radius: 0.75rem !important;
+    background: var(--gray-50) !important;
+    cursor: pointer !important;
+    transition: background 0.2s, opacity 0.2s !important;
+    border: 1px solid transparent !important;
+    user-select: none !important;
+}
+
+.cp_weekly_slot_popup_option:hover:not(.cp_weekly_slot_popup_option_disabled) {
+    background: var(--emerald-50) !important;
+    border-color: var(--emerald-200) !important;
+}
+
+.cp_weekly_slot_popup_option_disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+.cp_weekly_slot_popup_checkbox {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    accent-color: var(--emerald-500) !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+}
+
+.cp_weekly_slot_popup_option_disabled .cp_weekly_slot_popup_checkbox {
+    cursor: not-allowed !important;
+}
+
+.cp_weekly_slot_popup_label {
+    font-size: 0.95rem !important;
+    color: var(--gray-900) !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+}
+
+.cp_weekly_slot_popup_occupied {
+    font-size: 0.8rem !important;
+    color: var(--gray-500) !important;
+    font-weight: 400 !important;
+}
+
+.cp_weekly_slot_popup_actions {
+    display: flex !important;
+    gap: 0.75rem !important;
+    justify-content: flex-end !important;
+    padding-top: 1rem !important;
+    border-top: 1px solid var(--gray-100) !important;
+}
+
+/* Ensure buttons in popup inherit theme properly */
+.cp_weekly_slot_popup_actions .dev_chefpress_plan_btn-primary,
+.cp_weekly_slot_popup_actions .dev_chefpress_plan_btn-outline {
+    margin: 0 !important;
+    padding: 0.75rem 1.25rem !important;
+    font-size: 0.95rem !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .cp_weekly_slot_popup_dialog {
+        max-width: calc(100% - 1rem) !important;
+        max-height: 90vh !important;
+    }
+    
+    #cp_weekly_slot_popup_content {
+        padding: 1.25rem !important;
+    }
+    
+    .cp_weekly_slot_popup_actions {
+        flex-direction: column-reverse !important;
+    }
+    
+    .cp_weekly_slot_popup_actions button {
+        width: 100% !important;
+    }
+}
