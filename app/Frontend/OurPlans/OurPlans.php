@@ -36,6 +36,9 @@ use DevChefPress\Helpers\WeekCalculator;
             <i data-lucide="arrow-left"></i>
             <span class="dev_chefpress_plan_nav_text">Back</span>
         </button>
+        <div id="dev_our_plans_slots_container" class="dev_our_plans_slots_container" style="display: none;" aria-label="Selected meal slots">
+            <div class="dev_our_plans_slots_inner"></div>
+        </div>
         <button id="dev_chefpress_plan_next_btn" class="dev_chefpress_plan_nav_btn dev_chefpress_plan_nav_btn_next" onclick="nextStep()" aria-label="Next">
             <span class="dev_chefpress_plan_nav_text">Next</span>
             <i data-lucide="arrow-right"></i>

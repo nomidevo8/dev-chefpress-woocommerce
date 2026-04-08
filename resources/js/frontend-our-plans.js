@@ -785,6 +785,8 @@
   }
 
   function renderMenuSelection(el) {
+    console.log('Rendering menu selection step...');
+    console.log('state', state);
     // Get the pre-rendered weekly menu container
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
     if (!weeklyMenuContainer) {
@@ -1106,19 +1108,111 @@
   // ─────────────────────────────────────────────────────────
   //  NAV BAR MANAGEMENT
   // ─────────────────────────────────────────────────────────
+  function generateSlotsFromState() {
+    var slots = [];
+    if (!Array.isArray(state.selectedDays)) {
+      state.slots = slots;
+      state.currentSlotIndex = 0;
+      return;
+    }
+
+    state.selectedDays.forEach(function(day) {
+      $.each(state.mealQuantities, function(meal, quantity) {
+        quantity = Number(quantity) || 0;
+        for (var i = 0; i < quantity; i++) {
+          var id = day + '-' + meal + (quantity > 1 ? '-' + (i + 1) : '');
+          slots.push({ id: id, day: day, meal: meal });
+        }
+      });
+    });
+
+    state.slots = slots;
+    if (state.currentSlotIndex < 0) state.currentSlotIndex = 0;
+    if (state.currentSlotIndex >= slots.length) state.currentSlotIndex = Math.max(0, slots.length - 1);
+  }
+
+  function updateArrowStates() {
+    var inner = $('.dev_our_plans_slots_inner');
+    if (!inner.length) return;
+    var leftArrow = $('#dev_our_plans_slots_left');
+    var rightArrow = $('#dev_our_plans_slots_right');
+    var scrollLeft = inner.scrollLeft();
+    var scrollWidth = inner[0].scrollWidth;
+    var clientWidth = inner[0].clientWidth;
+    leftArrow.prop('disabled', scrollLeft <= 0);
+    rightArrow.prop('disabled', scrollLeft >= scrollWidth - clientWidth - 1);
+  }
+
+  function renderSlotsInNav() {
+    var container = $('#dev_our_plans_slots_container');
+    if (!container.length) return;
+
+    container.empty();
+    var leftArrow = $('<button id="dev_our_plans_slots_left" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_left" aria-label="Scroll slots left"><i data-lucide="chevron-left"></i></button>');
+    var inner = $('<div class="dev_our_plans_slots_inner"></div>');
+    var rightArrow = $('<button id="dev_our_plans_slots_right" class="dev_our_plans_slots_arrow dev_our_plans_slots_arrow_right" aria-label="Scroll slots right"><i data-lucide="chevron-right"></i></button>');
+
+    container.append(leftArrow).append(inner).append(rightArrow);
+
+    // Attach click handlers
+    leftArrow.on('click', function() {
+      var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
+      inner.animate({ scrollLeft: inner.scrollLeft() - slotWidth }, 300, function() {
+        updateArrowStates();
+      });
+    });
+    rightArrow.on('click', function() {
+      var slotWidth = $('.dev_our_plans_slot_item').outerWidth(true) || 200;
+      inner.animate({ scrollLeft: inner.scrollLeft() + slotWidth }, 300, function() {
+        updateArrowStates();
+      });
+    });
+
+    var slots = state.slots || [];
+    if (!slots.length) {
+      inner.append('<div class="dev_our_plans_slots_empty">No slots selected</div>');
+      return;
+    }
+
+    slots.forEach(function(slot, index) {
+      var label = slot.day + ' ' + slot.meal;
+      var slotBtn = $('<button type="button" class="dev_our_plans_slot_item" data-slot-index="' + index + '" aria-label="' + label + '">' + label + '</button>');
+      if (index === state.currentSlotIndex) {
+        slotBtn.addClass('active');
+      }
+      slotBtn.on('click', function() {
+        state.currentSlotIndex = index;
+        renderSlotsInNav();
+      });
+      inner.append(slotBtn);
+    });
+
+    updateArrowStates();
+  }
+
   function updateNavBar() {
     var navBar = $('#dev_chefpress_plan_nav_bar');
     var backBtn = $('#dev_chefpress_plan_back_btn');
     var nextBtn = $('#dev_chefpress_plan_next_btn');
+    var slotsContainer = $('#dev_our_plans_slots_container');
 
-    // Show nav bar only when not in weekly menu selection (step 9) and not in success (step 15)
-    if (state.currentStep === 9 || state.currentStep === 15) {
+    generateSlotsFromState();
+
+    // Show nav bar only when not in success (step 15), but show in step 9 for slots
+    if (state.currentStep === 15) {
       navBar.hide();
     } else {
       navBar.show();
       backBtn.prop('disabled', state.currentStep === 1);
-      // For next, assume enabled for now; add validation logic if needed
       nextBtn.prop('disabled', false);
+    }
+
+    // Show slots only in step 9
+    if (state.currentStep === 9) {
+      slotsContainer.show();
+      renderSlotsInNav();
+    } else {
+      slotsContainer.hide();
     }
   }
 
