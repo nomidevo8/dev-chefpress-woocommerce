@@ -1218,7 +1218,7 @@
 
     slots.forEach(function(slot, index) {
       var label = slot.day + ' ' + slot.meal;
-      var slotBtn = $('<button type="button" class="dev_our_plans_slot_item" data-slot-index="' + index + '" aria-label="' + label + '">' + label + '</button>');
+      var slotBtn = $('<button type="button" data-meal="' + slot.meal + '" class="dev_our_plans_slot_item" data-slot-index="' + index + '" aria-label="' + label + '">' + label + '</button>');
       if (index === state.currentSlotIndex) {
         slotBtn.addClass('active');
       }
