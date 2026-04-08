@@ -746,6 +746,9 @@
       '</div>';
 
     if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_meal-cards').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+    if (window.innerWidth >= 768) {
+      el.querySelector('#dev_chefpress_plan_box-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+    }
     if (window.innerWidth >= 1024) {
       el.querySelector('#dev_chefpress_plan_box-grid').style.gridTemplateColumns = 'repeat(3,minmax(0,1fr))';
       el.querySelector('#dev_chefpress_plan_box-left').style.gridColumn = 'span 2';

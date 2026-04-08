@@ -213,6 +213,22 @@ main {
     .dev_chefpress_plan_lg-col-span-3 { grid-column: span 3 !important; }
 }
 
+#dev_chefpress_plan_box-grid { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+#dev_chefpress_plan_box-left,
+#dev_chefpress_plan_box-right { min-width: 0 !important; }
+#dev_chefpress_plan_meal-cards { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+#dev_chefpress_plan_meal-cards > div { min-width: 0 !important; }
+@media (min-width: 640px) {
+    #dev_chefpress_plan_meal-cards { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (min-width: 768px) {
+    #dev_chefpress_plan_box-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (min-width: 1024px) {
+    #dev_chefpress_plan_box-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    #dev_chefpress_plan_box-left { grid-column: span 2 !important; }
+}
+
 /* ─── Custom Scrollbar ─── */
 .dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar { width: 6px !important; height: 6px !important; }
 .dev_chefpress_plan_custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1 !important; }
