@@ -755,6 +755,20 @@
     }, 100);
   }
 
+        // Add to slot button handler
+  $(document).on('click', '.cp_weekly_menu_card_add_slot', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+
+      const recipeId = $(this).data('recipe-id');
+      if (!recipeId) {
+          return;
+      }
+      console.log('Add to slot clicked for recipe ID:', recipeId);
+      console.log('state', state);
+  });
+
   function applyWeeklyMenuFilters() {
     if (state.selectedAllergens && state.selectedAllergens.length > 0) {
       state.selectedAllergens.forEach(function (allergen) {

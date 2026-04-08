@@ -660,22 +660,7 @@
         }
     });
 
-    // Add to slot button handler
-    $(document).on('click', '.cp_weekly_menu_card_add_slot', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
 
-        const recipeId = $(this).data('recipe-id');
-        if (!recipeId) {
-            return;
-        }
-
-        if (typeof window.assignRecipe === 'function') {
-            window.assignRecipe(recipeId);
-        } else {
-            console.warn('assignRecipe is not available on this page.');
-        }
-    });
 
     // Open modal function
     function cp_weekly_open_modal(recipeId, productUrl = '') {
