@@ -711,15 +711,17 @@
                   var recs = getCalorieRecommendations();
                   return Object.values(recs).map(function(r, index) {
                     var isMaintain = index === 0;
-                    return '<div class="dev_chefpress_plan_p-3 dev_chefpress_plan_rounded-lg" style="background:' + (isMaintain ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)') + ' !important;border:1px solid rgba(255,255,255,0.1) !important;">' +
-                      '<div class="dev_chefpress_plan_text-center">' +
-                        '<h4 class="dev_chefpress_plan_text-sm dev_chefpress_plan_font-semibold" style="color:#fff !important;margin-bottom:0.25rem !important;">' + r.label + '</h4>' +
-                        (r.weightLoss ? '<p class="dev_chefpress_plan_text-xs" style="color:rgba(110,231,183,0.8) !important;margin-bottom:0.5rem !important;">' + r.weightLoss + '</p>' : '<div style="height:0.5rem !important;"></div>') +
-                        '<p class="dev_chefpress_plan_text-xl dev_chefpress_plan_font-bold" style="color:#fff !important;margin-bottom:0.25rem !important;">' + r.cals.toLocaleString() + '</p>' +
-                        '<p class="dev_chefpress_plan_text-xs" style="color:rgba(110,231,183,0.7) !important;margin-bottom:0.25rem !important;">' + r.percent + '%</p>' +
-                        '<p class="dev_chefpress_plan_text-xs" style="color:rgba(255,255,255,0.6) !important;">Calories/day</p>' +
-                      '</div>' +
-                    '</div>';
+                    return '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center" style="background:' + (isMaintain ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)') + ' !important;border:1px solid rgba(255,255,255,0.12) !important;border-radius:1rem !important;overflow:hidden !important;">' +
+                    '<div style="flex:1;padding:1rem !important;background:rgba(255,255,255,0.04) !important;">' +
+                      '<p style="font-size:0.875rem !important;font-weight:900 !important;color:#fff !important;margin:0 !important;">' + r.label + '</p>' +
+                      (r.weightLoss ? '<p style="font-size:0.75rem !important;color:rgba(255,255,255,0.75) !important;margin:0 !important;">' + r.weightLoss + '</p>' : '<div style="height:0.875rem !important;"></div>') +
+                    '</div>' +
+                    '<div style="min-width:10rem;padding:1rem !important;background:' + (isMaintain ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)') + ' !important;display:flex;flex-direction:column;align-items:flex-end;justify-content:center !important;">' +
+                      '<p style="font-size:1.5rem !important;font-weight:900 !important;color:#fff !important;margin:0 !important;">' + r.cals.toLocaleString() + '</p>' +
+                      '<p style="font-size:0.75rem !important;font-weight:700 !important;color:rgba(255,255,255,0.8) !important;margin:0 !important;">' + r.percent + '%</p>' +
+                      '<p style="font-size:0.75rem !important;color:rgba(255,255,255,0.7) !important;margin:0 !important;">Calories/day</p>' +
+                    '</div>' +
+                  '</div>';
                   }).join('');
                 })() +
               '</div>' +
