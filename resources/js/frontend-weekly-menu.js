@@ -86,7 +86,9 @@
             const timeText = cp_weekly_recipe.cookingTime || cp_weekly_recipe.time || '';
             const caloriesText = cp_weekly_recipe.calories || '';
             const imageUrl = cp_weekly_recipe.image || cp_weekly_recipe.image_url || '';
-
+            const enabledAddToSlot = $('#enabled_add_to_slot').length
+                ? $('#enabled_add_to_slot').val() === 'true'
+                : false;
             const cp_weekly_card_html = `
                         <div class="cp_weekly_menu_card" data-recipe-id="${cp_weekly_recipe.id}" data-product-url="${cp_weekly_recipe.url || ''}">
                             <div class="cp_weekly_menu_card_img_wrapper">
@@ -102,9 +104,11 @@
                                 <div class="cp_weekly_menu_card_tags">
                                     ${cp_weekly_tags_html}
                                 </div>
+                                ${enabledAddToSlot ? `
                                 <div class="cp_weekly_menu_card_actions">
                                     <button type="button" class="cp_weekly_menu_card_add_slot" data-recipe-id="${cp_weekly_recipe.id}">${getAddToSlotButtonLabel(cp_weekly_selected_meal_type)}</button>
                                 </div>
+                                ` : ''}
                                 <div class="cp_weekly_menu_card_footer">
                                     <div class="cp_weekly_menu_footer_item">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> ${timeText}

@@ -134,6 +134,7 @@ use DevChefPress\Helpers\WeekCalculator;
             <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags, $meal_type_terms); ?>
 
             <!-- Recipe Grid -->
+             <input type="hidden" name="enabled_add_to_slot" id="enabled_add_to_slot" value="true">
             <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_recipe_grid(); ?>
         </div>
 
