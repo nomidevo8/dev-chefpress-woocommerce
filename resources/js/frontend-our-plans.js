@@ -1284,6 +1284,7 @@
   window.modifyPlan = modifyPlan;
   window.nextStep = nextStep;
   window.prevStep = prevStep;
+  window.handleBack = handleBack;
 
   $(document).ready(function() {
     if (window.lucide) window.lucide.createIcons();

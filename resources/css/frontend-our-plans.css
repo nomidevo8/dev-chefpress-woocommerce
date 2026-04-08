@@ -650,6 +650,10 @@ main {
     height: 1.25rem !important;
 }
 
+button#dev_chefpress_plan_back_btn{
+margin-left:60px !important;
+}
+
 /* Mobile: Hide text, show only icons */
 @media (max-width: 768px) {
     .dev_chefpress_plan_nav_text {

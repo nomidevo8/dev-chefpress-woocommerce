@@ -772,7 +772,7 @@
   max-width: 450px !important;
   height: 100% !important;
   background-color: var(--cp_product_color-white) !important;
-  z-index: 2001 !important;
+  z-index: 10000 !important;
   transition: right 0.3s ease !important;
   display: flex !important;
   flex-direction: column !important;
