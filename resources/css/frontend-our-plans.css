@@ -748,6 +748,22 @@ margin-left:60px !important;
     color: #fff !important;
 }
 
+.dev_our_plans_slot_item_filled {
+    background: var(--emerald-100) !important;
+    border-color: var(--emerald-300) !important;
+    color: var(--emerald-700) !important;
+}
+
+.dev_our_plans_slot_item_filled:hover {
+    background: var(--emerald-200) !important;
+    border-color: var(--emerald-400) !important;
+}
+
+.dev_our_plans_slot_item.active.dev_our_plans_slot_item_filled {
+    background: var(--emerald-500) !important;
+    border-color: transparent !important;
+}
+
 .dev_our_plans_slots_empty {
     color: var(--gray-400) !important;
     font-size: 0.85rem !important;

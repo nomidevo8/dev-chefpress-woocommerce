@@ -1386,7 +1386,9 @@
 
     slots.forEach(function(slot, index) {
       var label = slot.day + ' ' + slot.meal;
-      var slotBtn = $('<button type="button" data-meal="' + slot.meal + '" class="dev_our_plans_slot_item" data-slot-index="' + index + '" aria-label="' + label + '">' + label + '</button>');
+      var slotId = slot.day + '-' + slot.meal;
+      var isFilled = state.menu && state.menu[slotId];
+      var slotBtn = $('<button type="button" data-meal="' + slot.meal + '" class="dev_our_plans_slot_item' + (isFilled ? ' dev_our_plans_slot_item_filled' : '') + '" data-slot-index="' + index + '" data-slot-id="' + slotId + '" aria-label="' + label + '">' + label + '</button>');
       if (index === state.currentSlotIndex) {
         slotBtn.addClass('active');
       }
