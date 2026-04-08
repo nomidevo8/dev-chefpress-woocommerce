@@ -33,6 +33,30 @@
         }
     }
 
+    function formatMealTypeLabel(mealType) {
+        if (!mealType) {
+            return '';
+        }
+        const normalized = mealType.toString().trim().toLowerCase();
+        if (!normalized || normalized === 'all') {
+            return '';
+        }
+        if (normalized === 'snacks') {
+            return 'Snacks';
+        }
+        return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+    }
+
+    function getAddToSlotButtonLabel(mealType) {
+        const mealLabel = formatMealTypeLabel(mealType);
+        return mealLabel ? `Add to ${mealLabel}` : 'Add to slot';
+    }
+
+    function updateAddToSlotButtonLabels(mealType) {
+        const label = getAddToSlotButtonLabel(mealType);
+        $('.cp_weekly_menu_card_add_slot').text(label);
+    }
+
     const renderRecipes = (recipes) => {
         $cp_weekly_grid.removeClass('loading');
         $cp_weekly_grid.empty();
@@ -79,7 +103,7 @@
                                     ${cp_weekly_tags_html}
                                 </div>
                                 <div class="cp_weekly_menu_card_actions">
-                                    <button type="button" class="cp_weekly_menu_card_add_slot" data-recipe-id="${cp_weekly_recipe.id}">Add to slot</button>
+                                    <button type="button" class="cp_weekly_menu_card_add_slot" data-recipe-id="${cp_weekly_recipe.id}">${getAddToSlotButtonLabel(cp_weekly_selected_meal_type)}</button>
                                 </div>
                                 <div class="cp_weekly_menu_card_footer">
                                     <div class="cp_weekly_menu_footer_item">
@@ -230,10 +254,12 @@
         if ($option.length) {
             $option.addClass('active');
             updateMealTypeButtonText($option.text().trim());
+            updateAddToSlotButtonLabels(normalizedType);
         } else {
             const $default = $('#cp_weekly_mealtype_dropdown a[data-meal-type=""]');
             $default.addClass('active');
             updateMealTypeButtonText('Meal Type');
+            updateAddToSlotButtonLabels('');
         }
     }
 
