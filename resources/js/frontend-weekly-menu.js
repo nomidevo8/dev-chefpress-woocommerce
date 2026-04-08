@@ -19,7 +19,7 @@
 
     function updateBanner(recipeCount) {
         const activeWeekElement = $('.cp_weekly_menu_date_item.active');
-            const weekIndex = parseInt(activeWeekElement.data('week') || $('#active_week_index').val() || 1, 10);
+        const weekIndex = parseInt(activeWeekElement.data('week') || $('#active_week_index').val() || 1, 10);
         const weekLabel = activeWeekElement.find('.cp_weekly_menu_date_range').text() || '';
         const weekMonth = activeWeekElement.find('.cp_weekly_menu_date_month').text() || '';
         const dateRangesEl = $('#week_date_ranges');
@@ -202,7 +202,19 @@
     function collectSidebarFilters() {
         const activeWeekElement = $('.cp_weekly_menu_date_item.active');
         // const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || 1, 10) : 1;
-        const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || $('#active_week_index').val() || 1, 10) : 1;
+        let week = 1;
+
+        if (activeWeekElement.length) {
+        const dataWeek = activeWeekElement.data('week');
+
+        if (dataWeek !== undefined && dataWeek !== null && dataWeek !== '') {
+            week = parseInt(dataWeek, 10);
+        } else {
+            week = parseInt($('#active_week_index').val(), 10) || 1;
+        }
+        } else {
+        week = parseInt($('#active_week_index').val(), 10) || 1;
+        }
 
         return {
             week: isNaN(week) ? 1 : week,
