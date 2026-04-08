@@ -57,6 +57,13 @@ $allergen_tags = get_terms( [
     'orderby' => 'name',
     'order' => 'ASC',
 ] );
+
+$meal_type_terms = get_terms( [
+    'taxonomy' => 'chefpress_meal_type',
+    'hide_empty' => false,
+    'orderby' => 'name',
+    'order' => 'ASC',
+] );
 ?>
 
 <div class="cp_weekly_menu_app">
@@ -101,7 +108,7 @@ $allergen_tags = get_terms( [
     </div>
 
     <div class="cp_weekly_menu_container">
-        <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar( $recipe_tags ); ?>
+        <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar( $recipe_tags, $meal_type_terms ); ?>
         <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_recipe_grid(); ?>
     </div>
 

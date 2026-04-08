@@ -12,6 +12,7 @@
     const cp_weekly_recipes = [];
     let cp_weekly_current_page = 1;
     let cp_weekly_total_pages = 1;
+    let cp_weekly_selected_meal_type = ''; // Client-side meal type filter
 
     const $cp_weekly_grid = $('#cp_weekly_recipe_grid');
     const $cp_weekly_pagination = $('#cp_weekly_pagination');
@@ -135,6 +136,7 @@
     $(document).on('click', function (e) {
         if (!$(e.target).closest('.cp_weekly_menu_dropdown').length) {
             $sortDropdown.removeClass('show');
+            $mealTypeDropdown.removeClass('show');
         }
     });
 
@@ -199,6 +201,50 @@
         return mapping[sort] || sort;
     }
 
+    // Meal Type Dropdown Logic (Client-side filtering)
+    const $mealTypeBtn = $('#cp_weekly_mealtype_btn');
+    const $mealTypeDropdown = $('#cp_weekly_mealtype_dropdown');
+
+    $(document).on('click', '#cp_weekly_mealtype_btn', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $mealTypeDropdown.toggleClass('show');
+    });
+
+    $('#cp_weekly_mealtype_dropdown a').on('click', function (e) {
+        e.preventDefault();
+        const mealType = $(this).data('meal-type');
+        // Update active state
+        $('#cp_weekly_mealtype_dropdown a').removeClass('active');
+        $(this).addClass('active');
+
+        // Store the selected meal type
+        cp_weekly_selected_meal_type = mealType;
+        // Filter recipes by meal type client-side
+        const filteredRecipes = cp_weekly_recipes.filter(recipe => {
+            if (!mealType) {
+                // "All" option - show all recipes
+                return true;
+            }
+            // Check if recipe's mealType array contains the selected meal type
+            const recipeMealTypes = Array.isArray(recipe.mealType) ? recipe.mealType : [];
+            return recipeMealTypes.some(mt => mt.toLowerCase() === mealType.toLowerCase());
+        });
+
+        // Update button text
+        const selectedText = $(this).text();
+        $mealTypeBtn.html(`${selectedText} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`);
+
+        // Close dropdown
+        $mealTypeDropdown.removeClass('show');
+
+        // Reset to first page when filter changes
+        cp_weekly_current_page = 1;
+
+        // Render filtered recipes without making backend call
+        renderRecipes(filteredRecipes);
+    });
+
     function collectSidebarFilters() {
         const activeWeekElement = $('.cp_weekly_menu_date_item.active');
         // const week = activeWeekElement.length ? parseInt(activeWeekElement.data('week') || 1, 10) : 1;
@@ -235,9 +281,13 @@
         $('.cp_weekly_menu_filter_btn[data-recipe-tag]').removeClass('active');
         $('#cp_weekly_sort_dropdown a').removeClass('active');
         $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
+        $('#cp_weekly_mealtype_dropdown a').removeClass('active');
+        $('#cp_weekly_mealtype_dropdown a[data-meal-type=""]').addClass('active');
         $('.cp_weekly_menu_date_item').removeClass('active');
         $('.cp_weekly_menu_date_item').first().addClass('active');
         $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        $mealTypeBtn.html('Meal Type <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        cp_weekly_selected_meal_type = '';
         cp_weekly_current_page = 1;
     }
 
@@ -246,7 +296,11 @@
         $('.cp_weekly_menu_filter_btn[data-recipe-tag]').removeClass('active');
         $('#cp_weekly_sort_dropdown a').removeClass('active');
         $('#cp_weekly_sort_dropdown a[data-sort="default"]').addClass('active');
+        $('#cp_weekly_mealtype_dropdown a').removeClass('active');
+        $('#cp_weekly_mealtype_dropdown a[data-meal-type=""]').addClass('active');
         $sortBtn.html('Sort by <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        $mealTypeBtn.html('Meal Type <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+        cp_weekly_selected_meal_type = '';
         cp_weekly_current_page = 1;
     }
 
@@ -332,6 +386,10 @@
                 }
 
                 if (Array.isArray(response.recipes) && response.recipes.length) {
+                    // Store recipes in the global array for client-side filtering
+                    cp_weekly_recipes.length = 0; // Clear existing array
+                    cp_weekly_recipes.push(...response.recipes);
+                    
                     cp_weekly_current_page = response.current_page || 1;
                     cp_weekly_total_pages = response.total_pages || 1;
                     const recipeCount = response.recipes_count || response.recipes.length;

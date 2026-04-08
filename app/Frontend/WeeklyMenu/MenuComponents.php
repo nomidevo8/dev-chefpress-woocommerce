@@ -5,7 +5,7 @@ namespace DevChefPress\Frontend\WeeklyMenu;
 
 class MenuComponents {
 
-	public static function render_filter_toolbar( array $recipe_tags ): void {
+	public static function render_filter_toolbar( array $recipe_tags, array $meal_type_terms = [] ): void {
 		?>
 		<div class="cp_weekly_menu_filters_row">
 			<button class="cp_weekly_menu_filter_btn" id="cp_weekly_open_sidebar_btn">
@@ -24,6 +24,23 @@ class MenuComponents {
 					<a href="#" data-sort="protein:DESC">Protein: High to Low</a>
 				</div>
 			</div>
+			
+			<?php if ( ! empty( $meal_type_terms ) ) : ?>
+				<div class="cp_weekly_menu_dropdown">
+					<button type="button" class="cp_weekly_menu_filter_btn" id="cp_weekly_mealtype_btn">
+						Meal Type <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+					</button>
+					<div class="cp_weekly_menu_dropdown_content" id="cp_weekly_mealtype_dropdown">
+						<a href="#" data-meal-type="" class="cp_weekly_mealtype_option active">All</a>
+						<?php foreach ( $meal_type_terms as $meal_type ) : ?>
+							<a href="#" data-meal-type="<?php echo esc_attr( $meal_type->slug ); ?>" class="cp_weekly_mealtype_option">
+								<?php echo esc_html( $meal_type->name ); ?>
+							</a>
+						<?php endforeach; ?>
+					</div>
+				</div>
+			<?php endif; ?>
+			
 			<?php $top_recipe_tags = array_slice( $recipe_tags, 0, 5 ); ?>
 			<?php foreach ( $top_recipe_tags as $tag ) : ?>
 				<button class="cp_weekly_menu_filter_btn" data-recipe-tag="<?php echo esc_attr( $tag->slug ); ?>">
