@@ -5,7 +5,7 @@ namespace DevChefPress\Frontend\WeeklyMenu;
 
 class MenuComponents {
 
-	public static function render_filter_toolbar( array $recipe_tags, array $meal_type_terms = [], $isButton = false ): void {
+	public static function render_filter_toolbar( array $recipe_tags, array $meal_type_terms = []): void {
 		?>
 		<div class="cp_weekly_menu_filters_row">
 			<button class="cp_weekly_menu_filter_btn" id="cp_weekly_open_sidebar_btn">

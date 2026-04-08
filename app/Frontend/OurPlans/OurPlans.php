@@ -131,7 +131,7 @@ use DevChefPress\Helpers\WeekCalculator;
             <!-- Filter Toolbar -->
              <input type="hidden" name="active_week_index" id="active_week_index" value="<?php echo esc_attr($active_week_index); ?>">
              <input type="hidden" name="week_date_ranges" id="week_date_ranges" value='<?php echo esc_attr(json_encode($date_ranges)); ?>'>
-            <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags, $meal_type_terms, true); ?>
+            <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_filter_toolbar($recipe_tags, $meal_type_terms); ?>
 
             <!-- Recipe Grid -->
             <?php \DevChefPress\Frontend\WeeklyMenu\MenuComponents::render_recipe_grid(); ?>
