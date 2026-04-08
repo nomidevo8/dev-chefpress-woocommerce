@@ -68,6 +68,7 @@
     weight: 70,
     height: 175,
     age: 25,
+    gender: 'male',
     targetWeight: 68,
     activityLevel: null,
     hasAllergies: null,
@@ -92,7 +93,8 @@
   //  CALCULATIONS
   // ─────────────────────────────────────────────────────────
   function calculateBMR() {
-    return (10 * state.weight) + (6.25 * state.height) - (5 * state.age) + 5;
+    var base = (10 * state.weight) + (6.25 * state.height) - (5 * state.age);
+    return base + (state.gender === 'female' ? -161 : 5);
   }
   function calculateTDEE() {
     var mult = state.activityLevel ? ACTIVITY_MULTIPLIERS[state.activityLevel] : 1.2;
@@ -328,6 +330,27 @@
             '<button onclick="updateHeight(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem!important;height:1rem!important;"></i></button>' +
           '</div>' +
         '</div>' +
+        '<div>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Age</label>' +
+          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-4">' +
+            '<button onclick="updateAge(-1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="minus" style="width:1rem!important;height:1rem!important;"></i></button>' +
+            '<input type="number" id="dev_chefpress_plan_age-input" value="' + state.age + '" class="dev_chefpress_plan_input-field dev_chefpress_plan_profile-number-input" min="10" max="120">' +
+            '<button onclick="updateAge(1)" class="dev_chefpress_plan_spinBtn"><i data-lucide="plus" style="width:1rem!important;height:1rem!important;"></i></button>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Gender</label>' +
+          '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-6">' +
+            '<label class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2">' +
+              '<input type="radio" name="gender" value="male" ' + (state.gender === 'male' ? 'checked' : '') + ' class="dev_chefpress_plan_radio-input">' +
+              '<span>Male</span>' +
+            '</label>' +
+            '<label class="dev_chefpress_plan_flex dev_chefpress_plan_items-center dev_chefpress_plan_gap-2">' +
+              '<input type="radio" name="gender" value="female" ' + (state.gender === 'female' ? 'checked' : '') + ' class="dev_chefpress_plan_radio-input">' +
+              '<span>Female</span>' +
+            '</label>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
@@ -345,6 +368,8 @@
 
     $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); });
     $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); });
+    $('#dev_chefpress_plan_age-input').on('change', function() { state.age = Math.max(10, Math.min(120, Number($(this).val()))); });
+    $('input[name="gender"]').on('change', function() { state.gender = $(this).val(); });
   }
 
   // Step 3 – Target Weight
@@ -1057,6 +1082,7 @@
   function setGoal(goal)         { state.goal = goal; renderStep(); }
   function updateWeight(val)     { state.weight = Math.max(30, state.weight + val); var i = document.getElementById('dev_chefpress_plan_weight-input'); if(i) i.value = state.weight; }
   function updateHeight(val)     { state.height = Math.max(100, state.height + val); var i = document.getElementById('dev_chefpress_plan_height-input'); if(i) i.value = state.height; }
+  function updateAge(val)        { state.age = Math.max(10, Math.min(120, state.age + val)); var i = document.getElementById('dev_chefpress_plan_age-input'); if(i) i.value = state.age; }
   function setActivity(level)    { state.activityLevel = level; renderStep(); }
 
   function setHasAllergies(val) {
