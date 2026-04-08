@@ -246,12 +246,12 @@
       case 7:  renderPlanCommitment(container); break;
       case 8:  renderBoxConfig(container); break;
       case 9:  renderMenuSelection(container); break;
-      case 10: renderSummary(container); break;
-      case 11: renderCalendar(container); break;
-      case 12: renderDeliverySlot(container); break;
-      case 13: renderAddress(container); break;
-      case 14: renderPayment(container); break;
-      case 15: renderSuccess(container); break;
+      // case 10: renderSummary(container); break;
+      // case 11: renderCalendar(container); break;
+      // case 12: renderDeliverySlot(container); break;
+      // case 13: renderAddress(container); break;
+      // case 14: renderPayment(container); break;
+      // case 15: renderSuccess(container); break;
     }
 
     updateNavBar();
@@ -991,8 +991,6 @@
   }
 
   function renderMenuSelection(el) {
-    console.log('Rendering menu selection step...');
-    console.log('state', state);
     // Get the pre-rendered weekly menu container
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
     if (!weeklyMenuContainer) {
