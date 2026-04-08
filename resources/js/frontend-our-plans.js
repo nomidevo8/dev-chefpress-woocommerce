@@ -921,6 +921,14 @@
 
     closeWeeklyMenuSlotPopup();
     assignRecipeToSlotIds(recipeId, slotIds);
+
+    // After a brief delay for rendering, click the first empty slot
+    setTimeout(function () {
+      var $firstEmptySlot = $('.dev_our_plans_slot_item').not('.dev_our_plans_slot_item_filled').first();
+      if ($firstEmptySlot.length) {
+        $firstEmptySlot.click();
+      }
+    }, 100);
   });
 
   function applyWeeklyMenuFilters() {
