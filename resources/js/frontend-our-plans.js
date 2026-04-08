@@ -132,10 +132,10 @@
     var tdee = calculateTDEE();
     var maintenance = Math.round(tdee);
     return {
-      maintenance: { cals: maintenance, percent: 100, label: 'Maintain weight' },
-      mildLoss: { cals: Math.round(tdee - 250), percent: Math.round((tdee - 250) / tdee * 100), label: 'Mild weight loss\n0.25 kg/week' },
-      loss: { cals: Math.round(tdee - 500), percent: Math.round((tdee - 500) / tdee * 100), label: 'Weight loss\n0.5 kg/week' },
-      extremeLoss: { cals: Math.round(tdee - 1000), percent: Math.round((tdee - 1000) / tdee * 100), label: 'Extreme weight loss\n1 kg/week' }
+      maintenance: { cals: maintenance, percent: 100, label: 'Maintain weight', weightLoss: '' },
+      mildLoss: { cals: Math.round(tdee - 250), percent: 91, label: 'Mild weight loss', weightLoss: '0.25 kg/week' },
+      loss: { cals: Math.round(tdee - 500), percent: 83, label: 'Weight loss', weightLoss: '0.5 kg/week' },
+      extremeLoss: { cals: Math.round(tdee - 1000), percent: 66, label: 'Extreme weight loss', weightLoss: '1 kg/week' }
     };
   }
   function calculatePricing() {
@@ -705,9 +705,24 @@
         '<div id="dev_chefpress_plan_box-right">' +
           '<div style="background:var(--emerald-900) !important;padding:1.5rem !important;border-radius:2rem !important;color:#fff !important;box-shadow:0 20px 25px -5px rgba(6,78,59,0.1) !important;" class="dev_chefpress_plan_mb-4">' +
             '<div class="dev_chefpress_plan_mb-6">' +
-              '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-300) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.25rem !important;">Daily Target</p>' +
-              '<p style="font-size:2.25rem !important;font-weight:900 !important;">' + target + ' <span style="font-size:1.125rem !important;font-weight:500 !important;opacity:0.6 !important;">kcal</span></p>' +
-              '<p style="font-size:0.625rem !important;color:rgba(110,231,183,0.6) !important;margin-top:0.5rem !important;">Estimated ~' + kcalPerMeal + ' kcal per meal</p>' +
+              '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-300) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Calorie Calculator</p>' +
+              '<div class="dev_chefpress_plan_space-y-3">' +
+                (function() {
+                  var recs = getCalorieRecommendations();
+                  return Object.values(recs).map(function(r, index) {
+                    var isMaintain = index === 0;
+                    return '<div class="dev_chefpress_plan_p-3 dev_chefpress_plan_rounded-lg" style="background:' + (isMaintain ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)') + ' !important;border:1px solid rgba(255,255,255,0.1) !important;">' +
+                      '<div class="dev_chefpress_plan_text-center">' +
+                        '<h4 class="dev_chefpress_plan_text-sm dev_chefpress_plan_font-semibold" style="color:#fff !important;margin-bottom:0.25rem !important;">' + r.label + '</h4>' +
+                        (r.weightLoss ? '<p class="dev_chefpress_plan_text-xs" style="color:rgba(110,231,183,0.8) !important;margin-bottom:0.5rem !important;">' + r.weightLoss + '</p>' : '<div style="height:0.5rem !important;"></div>') +
+                        '<p class="dev_chefpress_plan_text-xl dev_chefpress_plan_font-bold" style="color:#fff !important;margin-bottom:0.25rem !important;">' + r.cals.toLocaleString() + '</p>' +
+                        '<p class="dev_chefpress_plan_text-xs" style="color:rgba(110,231,183,0.7) !important;margin-bottom:0.25rem !important;">' + r.percent + '%</p>' +
+                        '<p class="dev_chefpress_plan_text-xs" style="color:rgba(255,255,255,0.6) !important;">Calories/day</p>' +
+                      '</div>' +
+                    '</div>';
+                  }).join('');
+                })() +
+              '</div>' +
             '</div>' +
             '<div style="padding-top:1.5rem !important;border-top:1px solid rgba(255,255,255,0.1) !important;">' +
               '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--emerald-300) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:0.25rem !important;">Weekly Total</p>' +
