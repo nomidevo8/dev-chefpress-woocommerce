@@ -92,6 +92,7 @@ final class PluginSettings {
 			'meal_prices'           => self::default_meal_prices(),
 			'plan_discounts'        => self::default_plan_discounts(),
 			'promo_codes'           => self::default_promo_codes(),
+			'bmr_formula'           => 'Mifflin-St Jeor',
 		];
 	}
 
@@ -120,6 +121,7 @@ final class PluginSettings {
 			'meal_prices'          => self::sanitize_meal_prices( $saved['meal_prices'] ?? [] ),
 			'plan_discounts'       => self::sanitize_plan_discounts( $saved['plan_discounts'] ?? [], true ),
 			'promo_codes'          => self::sanitize_promo_codes( $saved['promo_codes'] ?? [], true ),
+			'bmr_formula'          => self::sanitize_bmr_formula( $saved['bmr_formula'] ?? $defaults['bmr_formula'] ),
 		];
 	}
 
@@ -177,6 +179,13 @@ final class PluginSettings {
 	 */
 	public static function get_promo_codes(): array {
 		return self::all()['promo_codes'];
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_bmr_formula(): string {
+		return self::all()['bmr_formula'];
 	}
 
 	/**
@@ -387,9 +396,22 @@ final class PluginSettings {
 			'meal_prices'          => self::sanitize_meal_prices( $post['meal_prices'] ?? [] ),
 			'plan_discounts'       => self::sanitize_plan_discounts( $post['plan_discounts'] ?? [], false ),
 			'promo_codes'          => self::sanitize_promo_codes( $post['promo_codes'] ?? [], false ),
+			'bmr_formula'          => self::sanitize_bmr_formula( $post['bmr_formula'] ?? '' ),
 		];
 
 		update_option( self::OPTION_KEY, $data, false );
+	}
+
+	/**
+	 * Sanitize BMR formula selection.
+	 *
+	 * @param mixed $raw
+	 * @return string
+	 */
+	public static function sanitize_bmr_formula( $raw ): string {
+		$valid = [ 'Mifflin-St Jeor', 'Revised Harris-Benedict', 'Katch-McArdle' ];
+		$value = sanitize_text_field( (string) $raw );
+		return in_array( $value, $valid, true ) ? $value : 'Mifflin-St Jeor';
 	}
 
 	/**
@@ -406,6 +428,7 @@ final class PluginSettings {
 			'mealPrices'    => $a['meal_prices'],
 			'planDiscounts' => $a['plan_discounts'],
 			'promoCodes'    => $a['promo_codes'],
+			'bmrFormula'    => $a['bmr_formula'],
 		];
 	}
 }

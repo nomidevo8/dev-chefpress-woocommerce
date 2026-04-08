@@ -638,6 +638,8 @@
 
   var MEAL_PRICES = { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
 
+  var BMR_FORMULA = 'Mifflin-St Jeor';
+
   var RECIPES = [
     { id: 'r1', name: 'Grilled Salmon w/ Asparagus', calories: 450, protein: 35, carbs: 10, fats: 25, category: 'Fish', tags: ['Low Carb', 'Express'], image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80' },
     { id: 'r2', name: 'Lean Beef Stir-fry', calories: 520, protein: 40, carbs: 45, fats: 15, category: 'Meat', tags: ['High Protein'], image: 'https://images.unsplash.com/photo-1512058560366-cd2427ffaa61?auto=format&fit=crop&w=400&q=80' },
@@ -679,6 +681,7 @@
     height: 175,
     age: 25,
     gender: 'male',
+    bodyFat: 0,
     targetWeight: 68,
     activityLevel: null,
     hasAllergies: null,
@@ -702,8 +705,29 @@
   //  CALCULATIONS
   // ─────────────────────────────────────────────────────────
   function calculateBMR() {
-    var base = (10 * state.weight) + (6.25 * state.height) - (5 * state.age);
-    return base + (state.gender === 'female' ? -161 : 5);
+    var w = state.weight;
+    var h = state.height;
+    var a = state.age;
+    var g = state.gender;
+    var f = state.bodyFat / 100; // convert to decimal
+
+    if (BMR_FORMULA === 'Mifflin-St Jeor') {
+      var base = 10 * w + 6.25 * h - 5 * a;
+      return base + (g === 'female' ? -161 : 5);
+    } else if (BMR_FORMULA === 'Revised Harris-Benedict') {
+      if (g === 'male') {
+        return 13.397 * w + 4.799 * h - 5.677 * a + 88.362;
+      } else {
+        return 9.247 * w + 3.098 * h - 4.330 * a + 447.593;
+      }
+    } else if (BMR_FORMULA === 'Katch-McArdle') {
+      if (f <= 0) {
+        alert('Body fat percentage is required for Katch-McArdle formula.');
+        return 0;
+      }
+      return 370 + 21.6 * (1 - f) * w;
+    }
+    return 0;
   }
   function calculateTDEE() {
     var mult = state.activityLevel ? ACTIVITY_MULTIPLIERS[state.activityLevel] : 1.2;
@@ -712,6 +736,16 @@
   function calculateDailyTarget() {
     var offset = state.goal ? GOAL_OFFSETS[state.goal] : 0;
     return Math.round(calculateTDEE() + offset);
+  }
+  function getCalorieRecommendations() {
+    var tdee = calculateTDEE();
+    var maintenance = Math.round(tdee);
+    return {
+      maintenance: { cals: maintenance, percent: 100, label: 'Maintain weight' },
+      mildLoss: { cals: Math.round(tdee - 250), percent: Math.round((tdee - 250) / tdee * 100), label: 'Mild weight loss\n0.25 kg/week' },
+      loss: { cals: Math.round(tdee - 500), percent: Math.round((tdee - 500) / tdee * 100), label: 'Weight loss\n0.5 kg/week' },
+      extremeLoss: { cals: Math.round(tdee - 1000), percent: Math.round((tdee - 1000) / tdee * 100), label: 'Extreme weight loss\n1 kg/week' }
+    };
   }
   function calculatePricing() {
     var dailyBase = 0;
@@ -937,6 +971,10 @@
             '</label>' +
           '</div>' +
         '</div>' +
+        '<div>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block;font-size:0.875rem;margin-bottom:0.75rem;">Body Fat % (optional)</label>' +
+          '<input type="number" id="dev_chefpress_plan_bodyfat-input" value="' + state.bodyFat + '" class="dev_chefpress_plan_input-field" min="0" max="50" step="0.1" placeholder="e.g. 15.5">' +
+        '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
@@ -956,6 +994,7 @@
     $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); });
     $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); });
     $('#dev_chefpress_plan_age-input').on('change', function() { state.age = Math.max(10, Math.min(120, Number($(this).val()))); });
+    $('#dev_chefpress_plan_bodyfat-input').on('change', function() { state.bodyFat = Math.max(0, Math.min(50, Number($(this).val()) || 0)); });
     $('input[name="gender"]').on('change', function() { state.gender = $(this).val(); });
   }
 
@@ -1674,6 +1713,7 @@
   function setGoal(goal)         { state.goal = goal; renderStep(); }
   function updateWeight(val)     { state.weight = Math.max(30, state.weight + val); var i = document.getElementById('dev_chefpress_plan_weight-input'); if(i) i.value = state.weight; }
   function updateHeight(val)     { state.height = Math.max(100, state.height + val); var i = document.getElementById('dev_chefpress_plan_height-input'); if(i) i.value = state.height; }
+  function updateAge(val)        { state.age = Math.max(10, Math.min(120, state.age + val)); var i = document.getElementById('dev_chefpress_plan_age-input'); if(i) i.value = state.age; }
   function updateAge(val)        { state.age = Math.max(10, Math.min(120, state.age + val)); var i = document.getElementById('dev_chefpress_plan_age-input'); if(i) i.value = state.age; }
   function setActivity(level)    { state.activityLevel = level; renderStep(); }
 

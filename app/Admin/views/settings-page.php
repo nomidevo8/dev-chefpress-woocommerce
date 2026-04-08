@@ -475,6 +475,27 @@ $promo_codes = $settings['promo_codes'] ?? [];
 								</div>
 							</div>
 						</div>
+						<div class="chefpress-card">
+							<div class="chefpress-card__header">
+								<h3 class="chefpress-card__title">
+									<span class="chefpress-card__icon">🧮</span>
+									<?php esc_html_e( 'Calorie Calculator', 'dev-chefpress' ); ?>
+								</h3>
+								<p class="chefpress-card__subtitle"><?php esc_html_e( 'Select the BMR formula for calorie calculations.', 'dev-chefpress' ); ?></p>
+							</div>
+							<div class="chefpress-card__body">
+								<div class="cp-field">
+									<label class="cp-label"><?php esc_html_e( 'BMR Formula', 'dev-chefpress' ); ?></label>
+									<p class="cp-field__help"><?php esc_html_e( 'Choose the formula used to calculate Basal Metabolic Rate.', 'dev-chefpress' ); ?></p>
+									<select name="chefpress_settings[bmr_formula]" class="cp-input">
+										<option value="Mifflin-St Jeor" <?php selected( $settings['bmr_formula'] ?? 'Mifflin-St Jeor', 'Mifflin-St Jeor' ); ?>><?php esc_html_e( 'Mifflin-St Jeor', 'dev-chefpress' ); ?></option>
+										<option value="Revised Harris-Benedict" <?php selected( $settings['bmr_formula'] ?? 'Mifflin-St Jeor', 'Revised Harris-Benedict' ); ?>><?php esc_html_e( 'Revised Harris-Benedict', 'dev-chefpress' ); ?></option>
+										<option value="Katch-McArdle" <?php selected( $settings['bmr_formula'] ?? 'Mifflin-St Jeor', 'Katch-McArdle' ); ?>><?php esc_html_e( 'Katch-McArdle', 'dev-chefpress' ); ?></option>
+									</select>
+									<p class="cp-field__help-small"><?php esc_html_e( 'Katch-McArdle requires body fat percentage input.', 'dev-chefpress' ); ?></p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 

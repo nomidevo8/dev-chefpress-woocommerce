@@ -17,7 +17,7 @@
 
   var GOAL_OFFSETS = {
     'Eat healthy': 0, 'Lose Weight': -500,
-    'Gain Weight': 500, 'Build Muscle': 300, 'Maintain Weight': 0
+    'Gain Weight': 400, 'Build Muscle': 300, 'Maintain Weight': 0
   };
 
   var PLAN_DISCOUNTS = window.ChefPressOurPlans && window.ChefPressOurPlans.planDiscounts ? window.ChefPressOurPlans.planDiscounts : {
@@ -27,6 +27,8 @@
   var PROMO_CODES = window.ChefPressOurPlans && window.ChefPressOurPlans.promoCodes ? window.ChefPressOurPlans.promoCodes : { 'FRESH10': 10 };
 
   var MEAL_PRICES = window.ChefPressOurPlans && window.ChefPressOurPlans.mealPrices ? window.ChefPressOurPlans.mealPrices : { 'Breakfast': 5, 'Lunch': 12, 'Dinner': 15, 'Snacks': 4 };
+
+  var BMR_FORMULA = window.ChefPressOurPlans && window.ChefPressOurPlans.bmrFormula ? window.ChefPressOurPlans.bmrFormula : 'Mifflin-St Jeor';
 
   var RECIPES = [
     { id: 'r1', name: 'Grilled Salmon w/ Asparagus', calories: 450, protein: 35, carbs: 10, fats: 25, category: 'Fish', tags: ['Low Carb', 'Express'], image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80' },
@@ -69,6 +71,7 @@
     height: 175,
     age: 25,
     gender: 'male',
+    bodyFat: 0,
     targetWeight: 68,
     activityLevel: null,
     hasAllergies: null,
@@ -93,8 +96,29 @@
   //  CALCULATIONS
   // ─────────────────────────────────────────────────────────
   function calculateBMR() {
-    var base = (10 * state.weight) + (6.25 * state.height) - (5 * state.age);
-    return base + (state.gender === 'female' ? -161 : 5);
+    var w = state.weight;
+    var h = state.height;
+    var a = state.age;
+    var g = state.gender;
+    var f = state.bodyFat / 100; // convert to decimal
+
+    if (BMR_FORMULA === 'Mifflin-St Jeor') {
+      var base = 10 * w + 6.25 * h - 5 * a;
+      return base + (g === 'female' ? -161 : 5);
+    } else if (BMR_FORMULA === 'Revised Harris-Benedict') {
+      if (g === 'male') {
+        return 13.397 * w + 4.799 * h - 5.677 * a + 88.362;
+      } else {
+        return 9.247 * w + 3.098 * h - 4.330 * a + 447.593;
+      }
+    } else if (BMR_FORMULA === 'Katch-McArdle') {
+      if (f <= 0) {
+        alert('Body fat percentage is required for Katch-McArdle formula.');
+        return 0;
+      }
+      return 370 + 21.6 * (1 - f) * w;
+    }
+    return 0;
   }
   function calculateTDEE() {
     var mult = state.activityLevel ? ACTIVITY_MULTIPLIERS[state.activityLevel] : 1.2;
@@ -103,6 +127,16 @@
   function calculateDailyTarget() {
     var offset = state.goal ? GOAL_OFFSETS[state.goal] : 0;
     return Math.round(calculateTDEE() + offset);
+  }
+  function getCalorieRecommendations() {
+    var tdee = calculateTDEE();
+    var maintenance = Math.round(tdee);
+    return {
+      maintenance: { cals: maintenance, percent: 100, label: 'Maintain weight' },
+      mildLoss: { cals: Math.round(tdee - 250), percent: Math.round((tdee - 250) / tdee * 100), label: 'Mild weight loss\n0.25 kg/week' },
+      loss: { cals: Math.round(tdee - 500), percent: Math.round((tdee - 500) / tdee * 100), label: 'Weight loss\n0.5 kg/week' },
+      extremeLoss: { cals: Math.round(tdee - 1000), percent: Math.round((tdee - 1000) / tdee * 100), label: 'Extreme weight loss\n1 kg/week' }
+    };
   }
   function calculatePricing() {
     var dailyBase = 0;
@@ -351,6 +385,10 @@
             '</label>' +
           '</div>' +
         '</div>' +
+        '<div>' +
+          '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Body Fat % (optional)</label>' +
+          '<input type="number" id="dev_chefpress_plan_bodyfat-input" value="' + state.bodyFat + '" class="dev_chefpress_plan_input-field" min="0" max="50" step="0.1" placeholder="e.g. 15.5">' +
+        '</div>' +
       '</div>' +
       '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
         '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
@@ -369,6 +407,7 @@
     $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); });
     $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); });
     $('#dev_chefpress_plan_age-input').on('change', function() { state.age = Math.max(10, Math.min(120, Number($(this).val()))); });
+    $('#dev_chefpress_plan_bodyfat-input').on('change', function() { state.bodyFat = Math.max(0, Math.min(50, Number($(this).val()) || 0)); });
     $('input[name="gender"]').on('change', function() { state.gender = $(this).val(); });
   }
 
@@ -817,6 +856,20 @@
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Diet</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.dietType + '</span></div>' +
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Duration</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.planDuration + '</span></div>' +
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Delivery</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.selectedDays.length + ' Days / Week</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1.5rem !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
+            '<h3 style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Calorie Calculator</h3>' +
+            '<div class="dev_chefpress_plan_space-y-3">' +
+              (function() {
+                var recs = getCalorieRecommendations();
+                return Object.values(recs).map(function(r) {
+                  return '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
+                    '<div><p style="font-size:0.75rem !important;color:var(--gray-600) !important;white-space:pre-line !important;">' + r.label + '</p></div>' +
+                    '<div class="dev_chefpress_plan_text-right"><p style="font-size:1rem !important;font-weight:700 !important;color:var(--emerald-900) !important;">' + r.cals.toLocaleString() + '</p><p style="font-size:0.625rem !important;color:var(--gray-400) !important;">' + r.percent + '%</p></div>' +
+                  '</div>';
+                }).join('');
+              })() +
             '</div>' +
           '</div>' +
         '</div>' +
