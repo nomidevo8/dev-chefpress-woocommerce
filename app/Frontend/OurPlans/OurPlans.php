@@ -30,6 +30,18 @@ use DevChefPress\Helpers\WeekCalculator;
         <div id="dev_chefpress_plan_step-content" class="dev_chefpress_plan_step-transition"></div>
     </div>
 
+    <!-- Sticky Bottom Navigation -->
+    <div id="dev_chefpress_plan_nav_bar" class="dev_chefpress_plan_nav_bar">
+        <button id="dev_chefpress_plan_back_btn" class="dev_chefpress_plan_nav_btn dev_chefpress_plan_nav_btn_back" onclick="handleBack()" aria-label="Back">
+            <i data-lucide="arrow-left"></i>
+            <span class="dev_chefpress_plan_nav_text">Back</span>
+        </button>
+        <button id="dev_chefpress_plan_next_btn" class="dev_chefpress_plan_nav_btn dev_chefpress_plan_nav_btn_next" onclick="nextStep()" aria-label="Next">
+            <span class="dev_chefpress_plan_nav_text">Next</span>
+            <i data-lucide="arrow-right"></i>
+        </button>
+    </div>
+
     <!-- Hidden Weekly Menu Component (for Step 9) -->
 
 </main>

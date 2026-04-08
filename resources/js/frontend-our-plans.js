@@ -254,6 +254,8 @@
       case 15: renderSuccess(container); break;
     }
 
+    updateNavBar();
+
     if (window.lucide) window.lucide.createIcons();
 
     // Flatpickr
@@ -329,10 +331,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">What\'s your primary goal?</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500" style="max-width:28rem!important;margin:0 auto!important;">We\'ll tailor your nutrition plan based on your objective.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-end">' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.goal ? 'disabled' : '') + '>Continue <i data-lucide="arrow-right" style="width:1rem!important;height:1rem!important;"></i></button>' +
-      '</div>';
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>';
 
     // responsive
     if (window.innerWidth >= 640) {
@@ -389,10 +388,6 @@
           '<label class="dev_chefpress_plan_font-bold dev_chefpress_plan_text-gray-700" style="display:block!important;font-size:0.875rem!important;margin-bottom:0.75rem!important;">Body Fat % (optional)</label>' +
           '<input type="number" id="dev_chefpress_plan_bodyfat-input" value="' + state.bodyFat + '" class="dev_chefpress_plan_input-field" min="0" max="50" step="0.1" placeholder="e.g. 15.5">' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Next Step</button>' +
       '</div>';
 
     // spin-button style
@@ -430,10 +425,6 @@
           '<span>Current: ' + state.weight + 'kg</span>' +
           '<span style="color:var(--emerald-600)!important;font-weight:700!important;" id="dev_chefpress_plan_diff-label">Difference: ' + Math.abs(state.targetWeight - state.weight) + 'kg</span>' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Continue</button>' +
       '</div>';
 
     $('#dev_chefpress_plan_target-range').on('input', function() {
@@ -473,11 +464,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Activity Level</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">How active is your daily lifestyle?</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.activityLevel ? 'disabled' : '') + '>Next</button>' +
-      '</div>';
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>';
     if (window.innerWidth >= 768) el.querySelector('.dev_chefpress_plan_grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
   }
 
@@ -509,11 +496,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Any Allergies?</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">We\'ll exclude these from your menu options.</p>' +
       '</div>' +
-      inner +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="handleAllergyBack()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (state.hasAllergies === null ? 'disabled' : '') + '>Continue</button>' +
-      '</div>';
+      inner;
   }
 
   // Step 6 – Diet Type
@@ -554,11 +537,7 @@
         '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4">Diet Preference</h2>' +
         '<p class="dev_chefpress_plan_text-gray-500">Choose a macro distribution that fits your lifestyle.</p>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.dietType ? 'disabled' : '') + '>Next</button>' +
-      '</div>';
+      '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-6 dev_chefpress_plan_mb-8" style="grid-template-columns:repeat(1,minmax(0,1fr))!important;">' + cards + '</div>';
     if (window.innerWidth >= 768) el.querySelector('.dev_chefpress_plan_grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
   }
 
@@ -739,10 +718,6 @@
             '<p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-500) !important;line-height:1.4 !important;">Free delivery included in your plan</p>' +
           '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (totalMealsPerDay === 0 || state.selectedDays.length === 0 ? 'disabled' : '') + '>Select Menu</button>' +
       '</div>';
 
     if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_meal-cards').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
@@ -907,10 +882,6 @@
             '<p style="font-size:0.625rem !important;color:var(--gray-400) !important;margin-top:1rem !important;line-height:1.625 !important;">Your subscription will renew automatically every ' + state.planDuration + '. You can cancel or modify anytime before your next billing cycle.</p>' +
           '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Choose Start Date</button>' +
       '</div>';
 
     if (window.innerWidth >= 768) el.querySelector('#dev_chefpress_plan_summary-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
@@ -927,10 +898,6 @@
         '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;border-radius:2rem !important;padding:1.5rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;display:flex !important;justify-content:center !important;">' +
           '<div id="dev_chefpress_plan_start-date-picker" style="width:100% !important;"></div>' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.startDate ? 'disabled' : '') + '>Delivery Slot</button>' +
       '</div>';
   }
 
@@ -969,13 +936,7 @@
       '<div class="dev_chefpress_plan_space-y-4 dev_chefpress_plan_mb-8">' +
         '<p style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-700) !important;">Delivery Instructions</p>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-3">' + instrBtns + '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary" ' + (!state.deliverySlot ? 'disabled' : '') + '>Address Details</button>' +
       '</div>';
-
-    if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_slot-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
   }
 
   // Step 13 – Address
@@ -1060,10 +1021,6 @@
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
-        '<button onclick="nextStep()" class="dev_chefpress_plan_btn-primary">Payment</button>' +
-      '</div>' +
       fullscreenOverlay;
 
     if (window.innerWidth >= 640) {
@@ -1123,9 +1080,6 @@
             '<img src="https://tamara.co/assets/images/tamara-logo.svg" style="height:0.75rem !important;opacity:0.4 !important;" alt="Tamara">' +
           '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-start">' +
-        '<button onclick="prevStep()" class="dev_chefpress_plan_btn-outline">Back</button>' +
       '</div>';
 
     if (window.innerWidth >= 1024) el.querySelector('#dev_chefpress_plan_pay-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
@@ -1147,6 +1101,33 @@
       '</div>';
 
     if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_success-btns').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr)) !important';
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  NAV BAR MANAGEMENT
+  // ─────────────────────────────────────────────────────────
+  function updateNavBar() {
+    var navBar = $('#dev_chefpress_plan_nav_bar');
+    var backBtn = $('#dev_chefpress_plan_back_btn');
+    var nextBtn = $('#dev_chefpress_plan_next_btn');
+
+    // Show nav bar only when not in weekly menu selection (step 9) and not in success (step 15)
+    if (state.currentStep === 9 || state.currentStep === 15) {
+      navBar.hide();
+    } else {
+      navBar.show();
+      backBtn.prop('disabled', state.currentStep === 1);
+      // For next, assume enabled for now; add validation logic if needed
+      nextBtn.prop('disabled', false);
+    }
+  }
+
+  function handleBack() {
+    if (state.currentStep === 5 && state.hasAllergies === true) {
+      handleAllergyBack();
+    } else {
+      prevStep();
+    }
   }
 
   // ─────────────────────────────────────────────────────────
