@@ -35,6 +35,7 @@ class FilterService {
 		$category  = isset( $filters['category'] ) ? sanitize_text_field( $filters['category'] ) : '';
 		$tags      = isset( $filters['tags'] ) ? (array) $filters['tags'] : [];
 		$allergens = isset( $filters['allergens'] ) ? (array) $filters['allergens'] : [];
+		$meal_type = isset( $filters['meal_type'] ) ? sanitize_text_field( $filters['meal_type'] ) : '';
 		$sort      = isset( $filters['sort'] ) ? sanitize_text_field( $filters['sort'] ) : '';
 		$page      = absint( $filters['page'] ?? 1 );
 		if ( $page < 1 ) {
@@ -90,6 +91,16 @@ class FilterService {
 					'operator' => 'NOT IN',
 				];
 			}
+		}
+
+		// Optional meal_type.
+		if ( ! empty( $meal_type ) ) {
+			$tax_query[] = [
+				'taxonomy' => 'chefpress_meal_type',
+				'field'    => 'slug',
+				'terms'    => $meal_type,
+				'operator' => 'IN',
+			];
 		}
 
 		// Build meta_query if needed for sorting.
@@ -189,6 +200,7 @@ class FilterService {
 				'protein'       => $nutrition['protein'] ?: '',
 				'carbs'         => $nutrition['carbs'] ?: '',
 				'fat'           => $nutrition['fat'] ?: '',
+				'mealType'      => self::get_meal_type($product_id) ?: '',
 				'categories'    => self::get_recipe_categories( $product_id ),
 				'tags'          => self::get_recipe_tags( $product_id ),
 				'allergens'     => self::get_recipe_allergens( $product_id ),
@@ -199,6 +211,26 @@ class FilterService {
 
 		return $recipes;
 	}
+
+	/**
+	 * Get meal type for a product.
+	 *
+	 * @param int $product_id
+	 * @return string
+	 */
+	private static function get_meal_type( int $product_id ): array {
+		$terms = get_the_terms( $product_id, 'chefpress_meal_type' );
+		if ( ! is_array( $terms ) || is_wp_error( $terms ) ) {
+			return [];
+		}
+		return array_map(
+			static function( $term ) {
+				return ucwords( str_replace( '-', ' ', $term->name ) );
+			},
+			$terms
+		);
+	}
+
 
 	/**
 	 * Get recipe categories.
@@ -271,6 +303,7 @@ class FilterService {
 			'category'    => sanitize_text_field( $_POST['category'] ?? '' ),
 			'tags'        => isset( $_POST['tags'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['tags'] ) ) : [],
 			'allergens'   => isset( $_POST['allergens'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['allergens'] ) ) : [],
+			'meal_type'   => sanitize_text_field( $_POST['meal_type'] ?? '' ),
 			'sort'        => sanitize_text_field( $_POST['sort'] ?? '' ),
 			'page'        => absint( $_POST['page'] ?? 1 ),
 		];
