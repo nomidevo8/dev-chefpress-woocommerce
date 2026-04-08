@@ -1414,6 +1414,11 @@
     });
 
     updateArrowStates();
+
+    // Render lucide icons for the arrow buttons
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
   }
 
   function updateNavBar() {
