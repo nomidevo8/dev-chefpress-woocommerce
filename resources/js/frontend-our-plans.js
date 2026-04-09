@@ -246,11 +246,11 @@
       case 7:  renderPlanCommitment(container); break;
       case 8:  renderBoxConfig(container); break;
       case 9:  renderMenuSelection(container); break;
-      // case 10: renderSummary(container); break;
-      // case 11: renderCalendar(container); break;
-      // case 12: renderDeliverySlot(container); break;
-      // case 13: renderAddress(container); break;
-      // case 14: renderPayment(container); break;
+      case 10: renderSummary(container); break;
+      case 11: renderCalendar(container); break;
+      case 12: renderDeliverySlot(container); break;
+      case 13: renderAddress(container); break;
+      case 14: renderPayment(container); break;
       // case 15: renderSuccess(container); break;
     }
 
