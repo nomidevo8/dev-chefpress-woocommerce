@@ -885,15 +885,28 @@
     $('body').css('overflow', '');
   }
 
-  function assignRecipeToSlotIds(recipeId, slotIds) {
+  function assignRecipeToSlotIds(recipeId, slotIds, recipeData) {
+    console.log('Assigning recipe ID', recipeId, 'to slot IDs:', slotIds, 'with recipe data:', recipeData);
     if (!recipeId || !Array.isArray(slotIds) || !slotIds.length) {
       return;
     }
     slotIds.forEach(function (slotId) {
-      if (slotId && !state.menu[slotId]) {
+      if (slotId) {
         state.menu[slotId] = recipeId;
+        
+        // Find the corresponding slot in state.slots and add recipe data
+        if (Array.isArray(state.slots)) {
+          var slotIndex = state.slots.findIndex(function (slot) {
+            return slot.id === slotId;
+          });
+          if (slotIndex !== -1) {
+            state.slots[slotIndex].recipeSelected = recipeData;
+            console.log('Updated slot at index', slotIndex, ':', state.slots[slotIndex]);
+          }
+        }
       }
     });
+    console.log('Final state.slots:', state.slots);
     renderStep();
   }
 
@@ -908,6 +921,7 @@
     var $popup = $('#cp_weekly_slot_popup');
     var recipeId = $popup.data('recipe-id');
     var recipeData = $popup.data('recipe-data');
+    var slotIds = [];
     console.log('Assigning recipe ID', recipeId, 'to selected slots. Recipe data:', recipeData);
     $popup.find('input[name="cp_weekly_slot_option"]:checked').each(function () {
       slotIds.push($(this).val());
@@ -919,9 +933,8 @@
     }
 
     closeWeeklyMenuSlotPopup();
-    assignRecipeToSlotIds(recipeId, slotIds);
+    assignRecipeToSlotIds(recipeId, slotIds, recipeData);
 
-    console.log('state', state);
     // After a brief delay for rendering, click the first empty slot
     setTimeout(function () {
       var $firstEmptySlot = $('.dev_our_plans_slot_item').not('.dev_our_plans_slot_item_filled').first();
@@ -1022,6 +1035,7 @@
   function renderSummary(el) {
     var pricing = calculatePricing();
     var totalCals = 0, totalProtein = 0, totalCarbs = 0;
+    console.log('Calculating summary for menu:', state);
     $.each(state.menu, function(_, rid) {
       var r = RECIPES.find(function(x){ return x.id === rid; });
       if (r) { totalCals += r.calories; totalProtein += r.protein; totalCarbs += r.carbs; }
@@ -1320,12 +1334,27 @@
       return;
     }
 
+    // Preserve recipe data from existing slots
+    var oldSlotsMap = {};
+    if (Array.isArray(state.slots)) {
+      state.slots.forEach(function(slot) {
+        oldSlotsMap[slot.id] = slot;
+      });
+    }
+
     state.selectedDays.forEach(function(day) {
       $.each(state.mealQuantities, function(meal, quantity) {
         quantity = Number(quantity) || 0;
         for (var i = 0; i < quantity; i++) {
           var id = day + '-' + meal + (quantity > 1 ? '-' + (i + 1) : '');
-          slots.push({ id: id, day: day, meal: meal });
+          var newSlot = { id: id, day: day, meal: meal };
+          
+          // Restore recipe data if it exists from previous slots
+          if (oldSlotsMap[id] && oldSlotsMap[id].recipeSelected) {
+            newSlot.recipeSelected = oldSlotsMap[id].recipeSelected;
+          }
+          
+          slots.push(newSlot);
         }
       });
     });
