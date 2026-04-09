@@ -1032,3 +1032,11 @@ margin-left:60px !important;
         width: 100% !important;
     }
 }
+
+.flatpickr-current-month {
+    display: flex !important;
+    gap: 20px !important;
+}
+.numInput.cur-year{
+    border: none !important;
+}

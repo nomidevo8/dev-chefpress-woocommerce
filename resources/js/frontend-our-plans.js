@@ -250,7 +250,7 @@
       case 11: renderCalendar(container); break;
       case 12: renderDeliverySlot(container); break;
       case 13: renderAddress(container); break;
-      case 14: renderPayment(container); break;
+      // case 14: renderPayment(container); break;
       // case 15: renderSuccess(container); break;
     }
 
@@ -1159,6 +1159,13 @@
         '<p style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-700) !important;">Delivery Instructions</p>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_flex-wrap dev_chefpress_plan_gap-3">' + instrBtns + '</div>' +
       '</div>';
+
+    if (window.innerWidth >= 768) {
+      var slotGrid = el.querySelector('#dev_chefpress_plan_slot-grid');
+      if (slotGrid) {
+        slotGrid.style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+      }
+    }
   }
 
   // Step 13 – Address
