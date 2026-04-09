@@ -1073,20 +1073,6 @@
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Delivery</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">' + state.selectedDays.length + ' Days / Week</span></div>' +
             '</div>' +
           '</div>' +
-          '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1.5rem !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
-            '<h3 style="font-size:0.875rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Calorie Calculator</h3>' +
-            '<div class="dev_chefpress_plan_space-y-3">' +
-              (function() {
-                var recs = getCalorieRecommendations();
-                return Object.values(recs).map(function(r) {
-                  return '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
-                    '<div><p style="font-size:0.75rem !important;color:var(--gray-600) !important;white-space:pre-line !important;">' + r.label + '</p></div>' +
-                    '<div class="dev_chefpress_plan_text-right"><p style="font-size:1rem !important;font-weight:700 !important;color:var(--emerald-900) !important;">' + r.cals.toLocaleString() + '</p><p style="font-size:0.625rem !important;color:var(--gray-400) !important;">' + r.percent + '%</p></div>' +
-                  '</div>';
-                }).join('');
-              })() +
-            '</div>' +
-          '</div>' +
         '</div>' +
         '<div class="dev_chefpress_plan_space-y-6">' +
           '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:1.5rem !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
