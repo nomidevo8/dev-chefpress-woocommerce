@@ -964,12 +964,13 @@
     }
 
     var mealType = '';
-    if (state.menu && typeof state.menu === 'object') {
-      var firstSlot = Object.keys(state.menu).find(function(key) {
-        return typeof key === 'string' && key.indexOf('-') !== -1;
+    if (Array.isArray(state.slots)) {
+      // Find the first empty slot (one without recipeSelected)
+      var firstEmptySlot = state.slots.find(function(slot) {
+        return !slot.recipeSelected;
       });
-      if (firstSlot) {
-        mealType = firstSlot.split('-')[1] || '';
+      if (firstEmptySlot) {
+        mealType = firstEmptySlot.meal || '';
       }
     }
 
