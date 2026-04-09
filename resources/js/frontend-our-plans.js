@@ -1036,10 +1036,26 @@
     var pricing = calculatePricing();
     var totalCals = 0, totalProtein = 0, totalCarbs = 0;
     console.log('Calculating summary for menu:', state);
-    $.each(state.menu, function(_, rid) {
-      var r = RECIPES.find(function(x){ return x.id === rid; });
-      if (r) { totalCals += r.calories; totalProtein += r.protein; totalCarbs += r.carbs; }
-    });
+
+    if (Array.isArray(state.slots)) {
+      state.slots.forEach(function(slot) {
+        var recipe = slot.recipeSelected;
+        if (!recipe && slot.id && state.menu && state.menu[slot.id]) {
+          var rid = state.menu[slot.id];
+          recipe = RECIPES.find(function(x) { return x.id === rid; });
+        }
+
+        if (recipe) {
+          var cal = parseFloat(recipe.calories);
+          var prot = parseFloat(recipe.protein);
+          var carbs = parseFloat(recipe.carbs);
+
+          if (!isNaN(cal)) totalCals += cal;
+          if (!isNaN(prot)) totalProtein += prot;
+          if (!isNaN(carbs)) totalCarbs += carbs;
+        }
+      });
+    }
 
     el.innerHTML =
       '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_mb-8">' +
