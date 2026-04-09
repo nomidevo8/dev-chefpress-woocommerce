@@ -106,7 +106,7 @@
                                 </div>
                                 ${enabledAddToSlot ? `
                                 <div class="cp_weekly_menu_card_actions">
-                                    <button type="button" class="cp_weekly_menu_card_add_slot" data-recipe-id="${cp_weekly_recipe.id}">${getAddToSlotButtonLabel(cp_weekly_selected_meal_type)}</button>
+                                    <button type="button" class="cp_weekly_menu_card_add_slot" data-full-recipe-data='${JSON.stringify(cp_weekly_recipe)}' data-recipe-id="${cp_weekly_recipe.id}">${getAddToSlotButtonLabel(cp_weekly_selected_meal_type)}</button>
                                 </div>
                                 ` : ''}
                                 <div class="cp_weekly_menu_card_footer">

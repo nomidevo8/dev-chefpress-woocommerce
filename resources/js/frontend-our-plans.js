@@ -761,11 +761,11 @@
       e.stopPropagation();
 
       const recipeId = $(this).data('recipe-id');
+      const recipeData = $(this).data('full-recipe-data');
       if (!recipeId) {
           return;
       }
-
-      openWeeklyMenuSlotPopup(recipeId);
+      openWeeklyMenuSlotPopup(recipeId, recipeData);
   });
 
   function getActiveMealTypeFromDropdown() {
@@ -820,7 +820,7 @@
     return slotOptions;
   }
 
-  function openWeeklyMenuSlotPopup(recipeId) {
+  function openWeeklyMenuSlotPopup(recipeId, recipeData) {
     var slotOptions = getSlotOptionsForPopup();
     var mealType = getActiveMealTypeFromDropdown();
     var labelMeal = mealType ? titleCaseMealType(mealType) : 'Meal';
@@ -858,11 +858,10 @@
     html += '<button type="button" id="cp_weekly_slot_popup_cancel" class="dev_chefpress_plan_btn-outline">Cancel</button>';
     html += '<button type="button" id="cp_weekly_slot_popup_confirm" class="dev_chefpress_plan_btn-primary">OK</button>';
     html += '</div>';
-
     var $popup = $('#cp_weekly_slot_popup');
     if (!$popup.length) {
       $popup = $(
-        '<div id="cp_weekly_slot_popup" class="cp_weekly_slot_popup">' +
+        '<div id="cp_weekly_slot_popup" data-recipe-data=\'' + JSON.stringify(recipeData) + '\' class="cp_weekly_slot_popup">' +
           '<div class="cp_weekly_slot_popup_overlay"></div>' +
           '<div class="cp_weekly_slot_popup_dialog">' +
             '<div id="cp_weekly_slot_popup_content"></div>' +
@@ -908,8 +907,8 @@
   $(document).on('click', '#cp_weekly_slot_popup_confirm', function () {
     var $popup = $('#cp_weekly_slot_popup');
     var recipeId = $popup.data('recipe-id');
-    var slotIds = [];
-
+    var recipeData = $popup.data('recipe-data');
+    console.log('Assigning recipe ID', recipeId, 'to selected slots. Recipe data:', recipeData);
     $popup.find('input[name="cp_weekly_slot_option"]:checked').each(function () {
       slotIds.push($(this).val());
     });
@@ -922,6 +921,7 @@
     closeWeeklyMenuSlotPopup();
     assignRecipeToSlotIds(recipeId, slotIds);
 
+    console.log('state', state);
     // After a brief delay for rendering, click the first empty slot
     setTimeout(function () {
       var $firstEmptySlot = $('.dev_our_plans_slot_item').not('.dev_our_plans_slot_item_filled').first();
