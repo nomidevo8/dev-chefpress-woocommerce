@@ -1016,6 +1016,10 @@
     weeklyMenuContainer.style.display = 'block';
     el.innerHTML = '';
 
+    // Initialize Step 9 popup (button and modal)
+    injectStep9PopupStyles();
+    initStep9Popup();
+
     // Initialize weekly menu JS if available
     if (typeof initWeeklyMenu === 'function') {
       initWeeklyMenu();
@@ -1621,6 +1625,271 @@
   }
 
   // ─────────────────────────────────────────────────────────
+  //  STEP 9 – POPUP BUTTON
+  // ─────────────────────────────────────────────────────────
+
+  function initStep9Popup() {
+    // Create and inject popup modal
+    var popupHTML = `
+      <div id="dev_chefpress_step9_popup" class="dev_chefpress_step9_popup_overlay">
+        <div class="dev_chefpress_step9_popup_modal">
+          <div class="dev_chefpress_step9_popup_header">
+            <h3 class="dev_chefpress_step9_popup_title">Weekly Menu Guide</h3>
+            <button class="dev_chefpress_step9_popup_close" aria-label="Close popup">&times;</button>
+          </div>
+          <div class="dev_chefpress_step9_popup_content">
+            <p><strong>How to customize your weekly menu:</strong></p>
+            <ul style="margin-left: 1.5rem; margin-top: 1rem;">
+              <li>Select your preferred meal types using the filters</li>
+              <li>Sort recipes by calories, protein, or cooking time</li>
+              <li>Browse through different dates to see weekly rotations</li>
+              <li>Click on any recipe card to view full details</li>
+              <li>Add recipes to your preferred meal slots</li>
+            </ul>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+              ℹ️ <em>Tip: Customize your meals to match your dietary goals and preferences.</em>
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Remove existing popup if any
+    $('#dev_chefpress_step9_popup').remove();
+    
+    // Append popup to body
+    $('body').append(popupHTML);
+
+    // Remove old event handlers to prevent duplicates
+    $(document).off('click', '.dev_chefpress_step9_popup_close');
+    $(document).off('click', '#dev_chefpress_step9_popup');
+    $(document).off('keydown.step9popup');
+
+    // Close button handler
+    $(document).on('click', '.dev_chefpress_step9_popup_close', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeStep9Popup();
+    });
+
+    // Overlay click handler - only close if clicking on overlay itself
+    $(document).on('click', '#dev_chefpress_step9_popup', function(e) {
+      if (e.target === this) {
+        closeStep9Popup();
+      }
+    });
+
+    // Escape key handler
+    $(document).on('keydown.step9popup', function(e) {
+      if (e.key === 'Escape' && $('#dev_chefpress_step9_popup:visible').length) {
+        closeStep9Popup();
+      }
+    });
+
+    // Add button to weekly menu header
+    addStep9PopupButton();
+  }
+
+  function addStep9PopupButton() {
+    // Only add if button doesn't exist and we're in step 9
+    if ($('#dev_chefpress_step9_popup_btn').length) return;
+
+    // Find the recipe grid and insert button before it
+    var recipeGrid = $('#cp_weekly_recipe_grid');
+    if (!recipeGrid.length) return;
+
+    var buttonHTML = `
+      <div class="dev_chefpress_step9_popup_button_container" style="padding: 1.5rem 1rem; text-align: end; border-bottom: 1px solid #f0f0f0;">
+        <button id="dev_chefpress_step9_popup_btn" class="dev_chefpress_step9_popup_button" type="button" title="Click for menu tips" aria-label="Menu tips">
+          Menu Tips
+        </button>
+      </div>
+    `;
+    
+    // Insert button before the recipe grid
+    recipeGrid.before(buttonHTML);
+
+    // Remove old handler first
+    $(document).off('click', '#dev_chefpress_step9_popup_btn');
+
+    // Add click handler - use event delegation
+    $(document).on('click', '#dev_chefpress_step9_popup_btn', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openStep9Popup();
+    });
+  }
+
+  function openStep9Popup() {
+    var popup = $('#dev_chefpress_step9_popup');
+    if (popup.length) {
+      popup.css('display', 'flex').fadeIn(300);
+      // Add scroll lock to body
+      $('body').css('overflow', 'hidden');
+    }
+  }
+
+  function closeStep9Popup() {
+    var popup = $('#dev_chefpress_step9_popup');
+    if (popup.length) {
+      popup.fadeOut(300, function() {
+        $(this).css('display', 'none');
+      });
+      // Remove scroll lock
+      $('body').css('overflow', '');
+    }
+  }
+
+  // Add styles for the popup
+  function injectStep9PopupStyles() {
+    if ($('#dev_chefpress_step9_popup_styles').length) return;
+
+    var styles = `
+      <style id="dev_chefpress_step9_popup_styles">
+        .dev_chefpress_step9_popup_overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 99999;
+        }
+
+        .dev_chefpress_step9_popup_modal {
+          background: #fff;
+          border-radius: 1rem;
+          box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+          max-width: 500px;
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+          animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .dev_chefpress_step9_popup_header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dev_chefpress_step9_popup_title {
+          margin: 0;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #1f2937;
+        }
+
+        .dev_chefpress_step9_popup_close {
+          background: none;
+          border: none;
+          font-size: 1.75rem;
+          cursor: pointer;
+          color: #6b7280;
+          padding: 0;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.375rem;
+          transition: all 0.2s ease;
+        }
+
+        .dev_chefpress_step9_popup_close:hover {
+          background-color: #f3f4f6;
+          color: #1f2937;
+        }
+
+        .dev_chefpress_step9_popup_content {
+          padding: 1.5rem;
+          line-height: 1.6;
+          color: #374151;
+        }
+
+        .dev_chefpress_step9_popup_content p {
+          margin: 0.75rem 0;
+        }
+
+        .dev_chefpress_step9_popup_content li {
+          margin: 0.5rem 0;
+          color: #4b5563;
+        }
+
+        .dev_chefpress_step9_popup_button_container {
+          padding: 1rem;
+          text-align: center;
+        }
+
+        .dev_chefpress_step9_popup_button {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.625rem 1rem;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: #fff;
+          border: none;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .dev_chefpress_step9_popup_button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .dev_chefpress_step9_popup_button:active {
+          transform: translateY(0);
+        }
+
+        .dev_chefpress_step9_popup_button span {
+          font-size: 1rem;
+        }
+
+        @media (max-width: 640px) {
+          .dev_chefpress_step9_popup_modal {
+            width: 95%;
+          }
+
+          .dev_chefpress_step9_popup_header {
+            padding: 1rem;
+          }
+
+          .dev_chefpress_step9_popup_content {
+            padding: 1rem;
+          }
+
+          .dev_chefpress_step9_popup_title {
+            font-size: 1.1rem;
+          }
+        }
+      </style>
+    `;
+
+    $('head').append(styles);
+  }
+
+  // ─────────────────────────────────────────────────────────
   //  INIT
   // ─────────────────────────────────────────────────────────
   
@@ -1650,6 +1919,8 @@
   window.nextStep = nextStep;
   window.prevStep = prevStep;
   window.handleBack = handleBack;
+  window.openStep9Popup = openStep9Popup;
+  window.closeStep9Popup = closeStep9Popup;
 
   $(document).ready(function() {
     if (window.lucide) window.lucide.createIcons();

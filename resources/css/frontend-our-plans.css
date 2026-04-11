@@ -1040,3 +1040,10 @@ margin-left:60px !important;
 .numInput.cur-year{
     border: none !important;
 }
+
+button#dev_chefpress_step9_popup_btn {
+    color: black;
+    padding: 0;
+    box-shadow: none;
+    text-decoration: underline;
+}
