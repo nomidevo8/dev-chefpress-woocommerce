@@ -271,6 +271,7 @@
           if (selectedDates.length > 0 && state.startDate !== dateStr) {
             state.startDate = dateStr;
             updateProgress();
+            updateNavBar();
             $('#dev_chefpress_plan_step-number').text(state.currentStep + '/15');
           }
         }
@@ -285,6 +286,117 @@
           setTimeout(function() { initMap('dev_chefpress_plan_fullscreen-delivery-map', true); }, 150);
         }
       }, 100);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  VALIDATION SYSTEM
+  // ─────────────────────────────────────────────────────────
+  function validateCurrentStep() {
+    switch(state.currentStep) {
+      case 1: // Goal Selection
+        return state.goal !== null && state.goal !== '';
+      case 2: // Profile Input
+        return state.weight > 0 && state.height > 0 && state.age > 0;
+      case 3: // Target Weight
+        return state.targetWeight > 0;
+      case 4: // Activity Level
+        return state.activityLevel !== null && state.activityLevel !== '';
+      case 5: // Allergy Check
+        if (state.hasAllergies === null) return false;
+        if (state.hasAllergies === false) return true;
+        return Array.isArray(state.selectedAllergens) && state.selectedAllergens.length > 0;
+      case 6: // Diet Type
+        return state.dietType !== null && state.dietType !== '';
+      case 7: // Plan Commitment
+        return state.planDuration !== null && state.planDuration !== '';
+      case 8: // Box Config
+        return Array.isArray(state.selectedDays) && state.selectedDays.length > 0;
+      case 9: // Menu Selection
+        return Array.isArray(state.slots) && state.slots.length > 0;
+      case 10: // Summary
+        return true; // Summary step doesn't need validation
+      case 11: // Calendar
+        return state.startDate !== null && state.startDate !== '';
+      case 12: // Delivery Slot
+        return state.deliverySlot !== null && state.deliverySlot !== '';
+      case 13: // Address
+        return state.address.building && state.address.building.trim() !== '';
+      default:
+        return true;
+    }
+  }
+
+  function attachValidationListeners() {
+    var step = state.currentStep;
+    
+    // Step 1: Goal cards
+    if (step === 1) {
+      $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
+    }
+    
+    // Step 2: Profile inputs - on blur/change
+    if (step === 2) {
+      $('#dev_chefpress_plan_weight-input, #dev_chefpress_plan_height-input, #dev_chefpress_plan_age-input').off('change blur input').on('change blur input', function() {
+        updateNavBar();
+      });
+    }
+    
+    // Step 3: Target weight input
+    if (step === 3) {
+      $('#dev_chefpress_plan_target-weight-input').off('change blur input').on('change blur input', function() {
+        state.targetWeight = parseInt($(this).val()) || 0;
+        updateNavBar();
+      });
+    }
+    
+    // Step 4: Activity level cards
+    if (step === 4) {
+      $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
+    }
+    
+    // Step 5: Allergen toggles
+    if (step === 5) {
+      $('.dev_chefpress_plan_allergen-badge').off('click').on('click', function() {
+        setTimeout(updateNavBar, 50);
+      });
+    }
+    
+    // Step 6: Diet type cards
+    if (step === 6) {
+      $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
+    }
+    
+    // Step 7: Plan cards
+    if (step === 7) {
+      $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
+    }
+    
+    // Step 8: Day/meal selection buttons
+    if (step === 8) {
+      $('.dev_chefpress_plan_day-btn, .dev_chefpress_plan_meal-qty-btn').off('click').on('click', function() {
+        setTimeout(updateNavBar, 50);
+      });
+    }
+    
+    // Step 10: Calendar picker - handled by flatpickr onChange
+    if (step === 10) {
+      // Validation will be triggered by flatpickr onChange event
+    }
+    
+    // Step 11: Delivery slot cards
+    if (step === 11) {
+      $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
+    }
+    
+    // Step 12: Address inputs
+    if (step === 12) {
+      $('#dev_chefpress_plan_addr-building-input, #dev_chefpress_plan_addr-floor, #dev_chefpress_plan_addr-flat, #dev_chefpress_plan_addr-details').off('change blur input').on('change blur input', function() {
+        if ($(this).attr('id') === 'dev_chefpress_plan_addr-building-input') {
+          state.address.building = $(this).val();
+        }
+        updateNavBar();
+      });
     }
   }
 
@@ -401,9 +513,9 @@
     }).hover(function(){ $(this).css('background','var(--emerald-50) !important'); },
               function(){ $(this).css('background','transparent !important'); });
 
-    $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); });
-    $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); });
-    $('#dev_chefpress_plan_age-input').on('change', function() { state.age = Math.max(10, Math.min(120, Number($(this).val()))); });
+    $('#dev_chefpress_plan_weight-input').on('change', function() { state.weight = Math.max(30, Number($(this).val())); updateNavBar(); });
+    $('#dev_chefpress_plan_height-input').on('change', function() { state.height = Math.max(100, Number($(this).val())); updateNavBar(); });
+    $('#dev_chefpress_plan_age-input').on('change', function() { state.age = Math.max(10, Math.min(120, Number($(this).val()))); updateNavBar(); });
     $('#dev_chefpress_plan_bodyfat-input').on('change', function() { state.bodyFat = Math.max(0, Math.min(50, Number($(this).val()) || 0)); });
     $('input[name="gender"]').on('change', function() { state.gender = $(this).val(); });
   }
@@ -434,6 +546,7 @@
       state.targetWeight = Number($(this).val());
       $('#dev_chefpress_plan_target-display').html(state.targetWeight + '<span style="font-size:' + (isMobile ? '1rem' : '1.5rem') + '!important;font-weight:500!important;color:var(--emerald-500)!important;margin-left:0.25rem!important;">kg</span>');
       $('#dev_chefpress_plan_diff-label').text('Diff: ' + Math.abs(state.targetWeight - state.weight) + 'kg');
+      updateNavBar();
     });
   }
 
@@ -1492,7 +1605,7 @@
     } else {
       navBar.show();
       backBtn.prop('disabled', state.currentStep === 1);
-      nextBtn.prop('disabled', false);
+      nextBtn.prop('disabled', !validateCurrentStep());
     }
 
     // Show slots only in step 9
@@ -1504,6 +1617,9 @@
       slotsContainer.hide();
       navBar.removeClass('dev_our_plans_slots_step');
     }
+
+    // Attach validation listeners after rendering
+    setTimeout(attachValidationListeners, 50);
   }
 
   function handleBack() {
@@ -1518,9 +1634,9 @@
   //  GLOBAL EVENT HANDLERS
   // ─────────────────────────────────────────────────────────
   function setGoal(goal)         { state.goal = goal; renderStep(); }
-  function updateWeight(val)     { state.weight = Math.max(30, state.weight + val); var i = document.getElementById('dev_chefpress_plan_weight-input'); if(i) i.value = state.weight; }
-  function updateHeight(val)     { state.height = Math.max(100, state.height + val); var i = document.getElementById('dev_chefpress_plan_height-input'); if(i) i.value = state.height; }
-  function updateAge(val)        { state.age = Math.max(10, Math.min(120, state.age + val)); var i = document.getElementById('dev_chefpress_plan_age-input'); if(i) i.value = state.age; }
+  function updateWeight(val)     { state.weight = Math.max(30, state.weight + val); var i = document.getElementById('dev_chefpress_plan_weight-input'); if(i) i.value = state.weight; updateNavBar(); }
+  function updateHeight(val)     { state.height = Math.max(100, state.height + val); var i = document.getElementById('dev_chefpress_plan_height-input'); if(i) i.value = state.height; updateNavBar(); }
+  function updateAge(val)        { state.age = Math.max(10, Math.min(120, state.age + val)); var i = document.getElementById('dev_chefpress_plan_age-input'); if(i) i.value = state.age; updateNavBar(); }
   function setActivity(level)    { state.activityLevel = level; renderStep(); }
 
   function setHasAllergies(val) {
