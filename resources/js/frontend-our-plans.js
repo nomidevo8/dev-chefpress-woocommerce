@@ -1202,14 +1202,14 @@
             '<div class="dev_chefpress_plan_space-y-4">' +
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-center">' +
                 '<span style="color:var(--gray-600) !important;font-weight:500 !important;font-size:' + (isMobile ? '0.875rem' : '0.9375rem') + '!important;">Total Calories</span>' +
-                '<span style="color:var(--emerald-900) !important;font-weight:900 !important;font-size:' + (isMobile ? '1rem' : '1.125rem') + '!important;">' + totalCals + ' kcal</span>' +
+                '<span style="color:var(--emerald-900) !important;font-weight:900 !important;font-size:' + (isMobile ? '1rem' : '1.125rem') + '!important;">' + totalCals.toFixed(2) + ' kcal</span>' +
               '</div>' +
               '<div style="width:100% !important;height:0.5rem !important;background:var(--emerald-100) !important;border-radius:9999px !important;overflow:hidden !important;">' +
                 '<div style="height:100% !important;background:var(--emerald-500) !important;width:85% !important;"></div>' +
               '</div>' +
               '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4 dev_chefpress_plan_pt-4" style="grid-template-columns:repeat(2,minmax(0,1fr)) !important;">' +
-                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin:0!important;">Protein</p><p style="font-size:' + (isMobile ? '1rem' : '1.25rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin:0.25rem 0 0 0!important;">' + totalProtein + 'g</p></div>' +
-                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin:0!important;">Carbs</p><p style="font-size:' + (isMobile ? '1rem' : '1.25rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin:0.25rem 0 0 0!important;">' + totalCarbs + 'g</p></div>' +
+                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin:0!important;">Protein</p><p style="font-size:' + (isMobile ? '1rem' : '1.25rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin:0.25rem 0 0 0!important;">' + totalProtein.toFixed(2) + 'g</p></div>' +
+                '<div><p style="font-size:0.625rem !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin:0!important;">Carbs</p><p style="font-size:' + (isMobile ? '1rem' : '1.25rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin:0.25rem 0 0 0!important;">' + totalCarbs.toFixed(2) + 'g</p></div>' +
               '</div>' +
             '</div>' +
           '</div>' +
