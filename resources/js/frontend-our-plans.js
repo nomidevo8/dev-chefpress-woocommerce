@@ -1640,7 +1640,12 @@
         <div class="dev_chefpress_step9_popup_modal">
           <div class="dev_chefpress_step9_popup_header">
             <h3 class="dev_chefpress_step9_popup_title">Your Meal Plan</h3>
-            <button class="dev_chefpress_step9_popup_close" aria-label="Close popup">&times;</button>
+            <button class="dev_chefpress_step9_popup_close" aria-label="Close popup">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
           <div class="dev_chefpress_step9_popup_content">
             ${generateAssignedRecipesContent()}
@@ -1728,6 +1733,7 @@
   function openStep9Popup() {
     var popup = $('#dev_chefpress_step9_popup');
     if (popup.length) {
+      updatePopupContent();
       popup.css('display', 'flex').fadeIn(300);
       // Add scroll lock to body
       $('body').css('overflow', 'hidden');
@@ -1754,7 +1760,7 @@
         if (slot.recipeSelected && slot.recipeSelected.title) {
           assignedRecipes.push({
             slotId: slot.id,
-            slotName: slot.name || slot.id,
+            slotName: slot.name || (slot.day && slot.meal ? slot.day + ' • ' + titleCaseMealType(slot.meal) : slot.id),
             recipeName: slot.recipeSelected.title,
             recipeId: slot.recipeSelected.id
           });
@@ -1765,7 +1771,7 @@
     if (assignedRecipes.length === 0) {
       return `
         <div class="dev_chefpress_assigned_recipes_empty">
-          <p style="text-align: center; color: #666; font-style: italic; margin: 2rem 0;">
+          <p class="dev_chefpress_assigned_recipes_empty_text">
             No recipes assigned yet. Start adding recipes to your meal slots!
           </p>
         </div>
@@ -1774,18 +1780,15 @@
 
     var recipesHTML = assignedRecipes.map(function(assignment) {
       return `
-        <div class="dev_chefpress_assigned_recipe_item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.75rem; background: #f9fafb;">
-          <div style="flex: 1;">
-            <div style="font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;">${assignment.recipeName}</div>
-            <div style="font-size: 0.875rem; color: #6b7280;">Slot: ${assignment.slotName}</div>
+        <div class="dev_chefpress_assigned_recipe_item">
+          <div class="dev_chefpress_assigned_recipe_info">
+            <div class="dev_chefpress_assigned_recipe_title">${assignment.recipeName}</div>
+            <div class="dev_chefpress_assigned_recipe_slot">${assignment.slotName}</div>
           </div>
           <button class="dev_chefpress_remove_recipe_btn"
                   data-slot-id="${assignment.slotId}"
-                  data-recipe-id="${assignment.recipeId}"
-                  style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: background-color 0.2s;"
-                  onmouseover="this.style.background='#dc2626'"
-                  onmouseout="this.style.background='#ef4444'">
-            Remove
+                  data-recipe-id="${assignment.recipeId}">
+            Clear slot
           </button>
         </div>
       `;
@@ -1793,7 +1796,10 @@
 
     return `
       <div class="dev_chefpress_assigned_recipes_section">
-        <h4 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Your Selected Recipes</h4>
+        <div class="dev_chefpress_assigned_recipes_header">
+          <h4>Your Selected Recipes</h4>
+          <p>Remove any assigned meal to empty the slot and choose a new recipe.</p>
+        </div>
         <div class="dev_chefpress_assigned_recipes_list">
           ${recipesHTML}
         </div>
@@ -1805,7 +1811,7 @@
     console.log('Removing recipe', recipeId, 'from slot', slotId);
 
     // Remove from state.menu
-    if (state.menu && state.menu[slotId]) {
+    if (state.menu && Object.prototype.hasOwnProperty.call(state.menu, slotId)) {
       delete state.menu[slotId];
     }
 
@@ -1820,10 +1826,15 @@
       }
     }
 
-    // Update the UI
-    renderStep();
+    // Refresh only the Step 9 slot nav and popup when on step 9.
+    if (state.currentStep === 9) {
+      renderSlotsInNav();
+      updatePopupContent();
+      return;
+    }
 
-    // Refresh the popup content
+    // Otherwise rerender the current step.
+    renderStep();
     updatePopupContent();
   }
 
@@ -1856,12 +1867,12 @@
 
         .dev_chefpress_step9_popup_modal {
           background: #fff;
-          border-radius: 1rem;
-          box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
-          max-width: 500px;
-          width: 90%;
-          max-height: 80vh;
-          overflow-y: auto;
+          border-radius: 1.25rem;
+          box-shadow: 0 30px 45px rgba(15, 23, 42, 0.18);
+          max-width: 960px;
+          width: 88%;
+          max-height: 88vh;
+          overflow: hidden;
           animation: slideUp 0.3s ease-out;
         }
 
@@ -1880,8 +1891,122 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 1.5rem;
+          padding: 1.5rem 1.75rem;
           border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dev_chefpress_step9_popup_title {
+          font-size: 1.375rem;
+        }
+
+        .dev_chefpress_assigned_recipes_header {
+          display: grid;
+          gap: 0.35rem;
+          margin-bottom: 1rem;
+        }
+
+        .dev_chefpress_assigned_recipes_header h4 {
+          margin: 0;
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: #111827;
+        }
+
+        .dev_chefpress_assigned_recipes_header p {
+          margin: 0;
+          color: #4b5563;
+          font-size: 0.95rem;
+        }
+
+        .dev_chefpress_assigned_recipes_section {
+          padding: 1.5rem 1.75rem 2rem;
+        }
+
+        .dev_chefpress_assigned_recipes_empty {
+          padding: 2rem 1rem;
+          border-radius: 1rem;
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          text-align: center;
+        }
+
+        .dev_chefpress_assigned_recipes_empty_text {
+          margin: 0;
+          color: #6b7280;
+          font-style: italic;
+          line-height: 1.75;
+        }
+
+        .dev_chefpress_assigned_recipes_list {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1rem;
+        }
+
+        .dev_chefpress_assigned_recipe_item {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 1rem;
+          border: 1px solid #e5e7eb;
+          border-radius: 1rem;
+          background: #f9fafb;
+          min-height: 130px;
+          gap: 1rem;
+        }
+
+        .dev_chefpress_assigned_recipe_info {
+          display: grid;
+          gap: 0.35rem;
+        }
+
+        .dev_chefpress_assigned_recipe_title {
+          font-weight: 700;
+          color: #111827;
+          line-height: 1.3;
+        }
+
+        .dev_chefpress_assigned_recipe_slot {
+          font-size: 0.9rem;
+          color: #4b5563;
+        }
+
+        .dev_chefpress_remove_recipe_btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 130px;
+          border: none !important;
+          outline: none !important;
+          cursor: pointer;
+          background: #ef4444 !important;
+          color: #fff !important;
+          padding: 0.85rem 1rem;
+          border-radius: 0.75rem;
+          font-weight: 700;
+          font-size: 0.95rem;
+          letter-spacing: 0.01em;
+          transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .dev_chefpress_remove_recipe_btn {
+          padding: 0 !important;
+          background: none !important;
+          color: black !important;
+        }
+
+        .dev_chefpress_remove_recipe_btn:hover {
+          background: #dc2626 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 12px 22px rgba(220, 38, 38, 0.18);
+        }
+
+        .dev_chefpress_step9_popup_content {
+          padding: 1.5rem 1.75rem 2rem;
+          line-height: 1.6;
+          color: #374151;
+          max-height: 74vh;
+          overflow-y: auto;
         }
 
         .dev_chefpress_step9_popup_title {
@@ -1894,22 +2019,29 @@
         .dev_chefpress_step9_popup_close {
           background: none;
           border: none;
-          font-size: 1.75rem;
           cursor: pointer;
           color: #6b7280;
           padding: 0;
-          width: 32px;
-          height: 32px;
+          width: 36px;
+          height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 0.375rem;
-          transition: all 0.2s ease;
+          border-radius: 0.5rem;
+              padding: 0px;
+          color: black;
+          transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
         }
 
         .dev_chefpress_step9_popup_close:hover {
           background-color: #f3f4f6;
-          color: #1f2937;
+          color: #111827;
+          transform: translateY(-1px);
+        }
+
+        .dev_chefpress_step9_popup_close svg {
+          width: 1rem;
+          height: 1rem;
         }
 
         .dev_chefpress_step9_popup_content {
