@@ -313,7 +313,13 @@
       case 8: // Box Config
         return Array.isArray(state.selectedDays) && state.selectedDays.length > 0;
       case 9: // Menu Selection
-        return Array.isArray(state.slots) && state.slots.length > 0;
+        if (!Array.isArray(state.slots) || state.slots.length === 0) {
+          return false;
+        }
+        // Check if all slots have recipeSelected
+        return state.slots.every(function(slot) {
+          return slot.recipeSelected && Object.keys(slot.recipeSelected).length > 0;
+        });
       case 10: // Summary
         return true; // Summary step doesn't need validation
       case 11: // Calendar
@@ -382,6 +388,12 @@
       $('.dev_chefpress_plan_day-btn, .dev_chefpress_plan_meal-qty-btn').off('click').on('click', function() {
         setTimeout(updateNavBar, 50);
       });
+    }
+    
+    // Step 9: Menu Selection - listen for recipe assignments
+    if (step === 9) {
+      // We'll check validation via a MutationObserver or by hooking into slot updates
+      // The updateNavBar will be called from assignRecipeToSlotIds
     }
     
     // Step 10: Calendar picker - handled by flatpickr onChange
@@ -1035,6 +1047,11 @@
     if ($('#dev_chefpress_step9_popup:visible').length) {
       updatePopupContent();
     }
+
+    // Update validation state for next button
+    if (state.currentStep === 9) {
+      updateNavBar();
+    }
   }
 
   $(document).on('click', '#cp_weekly_slot_popup_cancel, .cp_weekly_slot_popup_close_btn, .cp_weekly_slot_popup_overlay', function (e) {
@@ -1132,6 +1149,7 @@
   }
 
   function renderMenuSelection(el) {
+    var isMobile = window.innerWidth < 640;
     // Get the pre-rendered weekly menu container
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
     if (!weeklyMenuContainer) {
@@ -1141,7 +1159,25 @@
 
     // Keep the weekly menu container in its original DOM location and control visibility by CSS
     weeklyMenuContainer.style.display = 'block';
-    el.innerHTML = '';
+    
+    // Count total slots and filled slots
+    var totalSlots = Array.isArray(state.slots) ? state.slots.length : 0;
+    var filledSlots = Array.isArray(state.slots) ? state.slots.filter(function(slot) {
+      return slot.recipeSelected && Object.keys(slot.recipeSelected).length > 0;
+    }).length : 0;
+    var allFilled = totalSlots > 0 && filledSlots === totalSlots;
+    
+    el.innerHTML = 
+      '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_mb-6">' +
+        '<h2 class="dev_chefpress_plan_text-3xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-2" style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + '!important;">Select Your Weekly Menu</h2>' +
+        '<p class="dev_chefpress_plan_text-gray-500" style="font-size:' + (isMobile ? '0.875rem' : '1rem') + '!important;margin:0.5rem 0 0 0 !important;">Fill all ' + totalSlots + ' meal slots to continue</p>' +
+        '<div style="margin-top:1rem !important;padding:0.75rem 1rem !important;background:' + (allFilled ? '#d1fae5' : '#fef3c7') + ' !important;border-radius:0.75rem !important;border:1px solid ' + (allFilled ? '#a7f3d0' : '#fde68a') + ' !important;">' +
+          '<p style="margin:0 !important;font-weight:600 !important;color:' + (allFilled ? '#047857' : '#92400e') + ' !important;font-size:0.875rem !important;">' +
+            '<span style="font-size:1.25rem !important;font-weight:900 !important;">' + filledSlots + '</span>/<span style="font-size:1.25rem !important;font-weight:900 !important;">' + totalSlots + '</span> ' +
+            (allFilled ? '✓ All meals selected! Ready to continue.' : 'meals selected') +
+          '</p>' +
+        '</div>' +
+      '</div>';
 
     // Initialize Step 9 popup (button and modal)
     injectStep9PopupStyles();
