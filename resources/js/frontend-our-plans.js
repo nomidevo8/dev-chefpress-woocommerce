@@ -893,7 +893,7 @@
     slotIds.forEach(function (slotId) {
       if (slotId) {
         state.menu[slotId] = recipeId;
-        
+
         // Find the corresponding slot in state.slots and add recipe data
         if (Array.isArray(state.slots)) {
           var slotIndex = state.slots.findIndex(function (slot) {
@@ -908,6 +908,11 @@
     });
     console.log('Final state.slots:', state.slots);
     renderStep();
+
+    // Update popup content if it's currently open
+    if ($('#dev_chefpress_step9_popup:visible').length) {
+      updatePopupContent();
+    }
   }
 
   $(document).on('click', '#cp_weekly_slot_popup_cancel, .cp_weekly_slot_popup_close_btn, .cp_weekly_slot_popup_overlay', function (e) {
@@ -1634,21 +1639,11 @@
       <div id="dev_chefpress_step9_popup" class="dev_chefpress_step9_popup_overlay">
         <div class="dev_chefpress_step9_popup_modal">
           <div class="dev_chefpress_step9_popup_header">
-            <h3 class="dev_chefpress_step9_popup_title">Weekly Menu Guide</h3>
+            <h3 class="dev_chefpress_step9_popup_title">Your Meal Plan</h3>
             <button class="dev_chefpress_step9_popup_close" aria-label="Close popup">&times;</button>
           </div>
           <div class="dev_chefpress_step9_popup_content">
-            <p><strong>How to customize your weekly menu:</strong></p>
-            <ul style="margin-left: 1.5rem; margin-top: 1rem;">
-              <li>Select your preferred meal types using the filters</li>
-              <li>Sort recipes by calories, protein, or cooking time</li>
-              <li>Browse through different dates to see weekly rotations</li>
-              <li>Click on any recipe card to view full details</li>
-              <li>Add recipes to your preferred meal slots</li>
-            </ul>
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-              ℹ️ <em>Tip: Customize your meals to match your dietary goals and preferences.</em>
-            </p>
+            ${generateAssignedRecipesContent()}
           </div>
         </div>
       </div>
@@ -1656,7 +1651,7 @@
 
     // Remove existing popup if any
     $('#dev_chefpress_step9_popup').remove();
-    
+
     // Append popup to body
     $('body').append(popupHTML);
 
@@ -1664,6 +1659,7 @@
     $(document).off('click', '.dev_chefpress_step9_popup_close');
     $(document).off('click', '#dev_chefpress_step9_popup');
     $(document).off('keydown.step9popup');
+    $(document).off('click', '.dev_chefpress_remove_recipe_btn');
 
     // Close button handler
     $(document).on('click', '.dev_chefpress_step9_popup_close', function(e) {
@@ -1686,6 +1682,15 @@
       }
     });
 
+    // Remove recipe button handler
+    $(document).on('click', '.dev_chefpress_remove_recipe_btn', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var slotId = $(this).data('slot-id');
+      var recipeId = $(this).data('recipe-id');
+      removeRecipeFromSlot(slotId, recipeId);
+    });
+
     // Add button to weekly menu header
     addStep9PopupButton();
   }
@@ -1699,9 +1704,9 @@
     if (!recipeGrid.length) return;
 
     var buttonHTML = `
-      <div class="dev_chefpress_step9_popup_button_container" style="padding: 1.5rem 1rem; text-align: end; border-bottom: 1px solid #f0f0f0;">
-        <button id="dev_chefpress_step9_popup_btn" class="dev_chefpress_step9_popup_button" type="button" title="Click for menu tips" aria-label="Menu tips">
-          Menu Tips
+      <div class="dev_chefpress_step9_popup_button_container" style="padding: 1.5rem 1rem; text-align: center; border-bottom: 1px solid #f0f0f0;">
+        <button id="dev_chefpress_step9_popup_btn" class="dev_chefpress_step9_popup_button" type="button" title="View your selected recipes" aria-label="View meal plan">
+          <span>📋</span> View Meal Plan
         </button>
       </div>
     `;
@@ -1737,6 +1742,96 @@
       });
       // Remove scroll lock
       $('body').css('overflow', '');
+    }
+  }
+
+  function generateAssignedRecipesContent() {
+    var assignedRecipes = [];
+
+    // Collect assigned recipes from state.slots
+    if (Array.isArray(state.slots)) {
+      state.slots.forEach(function(slot) {
+        if (slot.recipeSelected && slot.recipeSelected.title) {
+          assignedRecipes.push({
+            slotId: slot.id,
+            slotName: slot.name || slot.id,
+            recipeName: slot.recipeSelected.title,
+            recipeId: slot.recipeSelected.id
+          });
+        }
+      });
+    }
+
+    if (assignedRecipes.length === 0) {
+      return `
+        <div class="dev_chefpress_assigned_recipes_empty">
+          <p style="text-align: center; color: #666; font-style: italic; margin: 2rem 0;">
+            No recipes assigned yet. Start adding recipes to your meal slots!
+          </p>
+        </div>
+      `;
+    }
+
+    var recipesHTML = assignedRecipes.map(function(assignment) {
+      return `
+        <div class="dev_chefpress_assigned_recipe_item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.75rem; background: #f9fafb;">
+          <div style="flex: 1;">
+            <div style="font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;">${assignment.recipeName}</div>
+            <div style="font-size: 0.875rem; color: #6b7280;">Slot: ${assignment.slotName}</div>
+          </div>
+          <button class="dev_chefpress_remove_recipe_btn"
+                  data-slot-id="${assignment.slotId}"
+                  data-recipe-id="${assignment.recipeId}"
+                  style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: background-color 0.2s;"
+                  onmouseover="this.style.background='#dc2626'"
+                  onmouseout="this.style.background='#ef4444'">
+            Remove
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="dev_chefpress_assigned_recipes_section">
+        <h4 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Your Selected Recipes</h4>
+        <div class="dev_chefpress_assigned_recipes_list">
+          ${recipesHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  function removeRecipeFromSlot(slotId, recipeId) {
+    console.log('Removing recipe', recipeId, 'from slot', slotId);
+
+    // Remove from state.menu
+    if (state.menu && state.menu[slotId]) {
+      delete state.menu[slotId];
+    }
+
+    // Remove from state.slots
+    if (Array.isArray(state.slots)) {
+      var slotIndex = state.slots.findIndex(function(slot) {
+        return slot.id === slotId;
+      });
+      if (slotIndex !== -1) {
+        state.slots[slotIndex].recipeSelected = null;
+        console.log('Removed recipe from slot at index', slotIndex);
+      }
+    }
+
+    // Update the UI
+    renderStep();
+
+    // Refresh the popup content
+    updatePopupContent();
+  }
+
+  function updatePopupContent() {
+    var contentElement = $('.dev_chefpress_step9_popup_content');
+    if (contentElement.length) {
+      var newContent = generateAssignedRecipesContent();
+      contentElement.html(newContent);
     }
   }
 
@@ -1821,6 +1916,8 @@
           padding: 1.5rem;
           line-height: 1.6;
           color: #374151;
+          max-height: 70vh;
+          overflow-y: auto;
         }
 
         .dev_chefpress_step9_popup_content p {
