@@ -317,7 +317,12 @@
       case 10: // Summary
         return true; // Summary step doesn't need validation
       case 11: // Calendar
-        return state.startDate !== null && state.startDate !== '';
+        // Require user to actually select a date (not just use the default)
+        var d = new Date(new Date().getTime() + (48 * 60 * 60 * 1000));
+        var defaultStartDate = d.getFullYear() + '-' +
+          String(d.getMonth() + 1).padStart(2, '0') + '-' +
+          String(d.getDate()).padStart(2, '0');
+        return state.startDate !== null && state.startDate !== '' && state.startDate !== defaultStartDate;
       case 12: // Delivery Slot
         return state.deliverySlot !== null && state.deliverySlot !== '';
       case 13: // Address
