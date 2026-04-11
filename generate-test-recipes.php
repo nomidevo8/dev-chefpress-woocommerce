@@ -41,7 +41,7 @@ function generate_test_recipes() {
 			'protein_range'  => [ 35, 45 ],
 			'carbs_range'    => [ 5, 20 ],
 			'fat_range'      => [ 8, 16 ],
-			'tags'           => [ 'protein-rich', 'low-carb', 'healthy' ],
+			'tags'           => [ 'high-protein', 'low-carb', 'healthy' ],
 		],
 		[
 			'title_base'     => 'Salad',
@@ -127,8 +127,9 @@ function generate_test_recipes() {
 
 	// Common taxonomy values
 	$weeks = [ 'week-1', 'week-2', 'week-3', 'week-4', 'week-5', 'week-6' ];
+	$menu_types = [ 'breakfast', 'lunch', 'snacks', 'dinner' ];
 	$categories = [ 'appetizers', 'mains', 'sides', 'desserts', 'breakfast' ];
-	$recipe_tags = [ 'quick', 'healthy', 'vegan', 'vegetarian', 'family-friendly', 'low-carb', 'protein-rich', 'comfort-food', 'italian', 'asian' ];
+	$recipe_tags = [ 'quick', 'healthy', 'vegan', 'vegetarian', 'family-friendly', 'low-carb', 'high-protein', 'comfort-food', 'italian', 'asian', 'balanced' ];
 	$allergens = [ 'peanuts', 'tree-nuts', 'shellfish', 'fish', 'soy', 'gluten', 'dairy', 'eggs' ];
 
 	// Cooking steps templates
@@ -260,6 +261,15 @@ function generate_test_recipes() {
 			$category = $categories[ array_rand( $categories ) ];
 			wp_set_object_terms( $product_id, $category, 'product_cat', false );
 
+			$selected_menu_types = array_rand( $menu_types, rand(1, 2) );
+			$selected_menu_types = is_array($selected_menu_types) ? $selected_menu_types : [ $selected_menu_types ];
+
+			$menu_terms = [];
+			foreach ( $selected_menu_types as $idx ) {
+				$menu_terms[] = $menu_types[$idx];
+			}
+
+			wp_set_object_terms( $product_id, $menu_terms, 'chefpress_meal_type', false );
 			// Add recipe tags taxonomy
 			foreach ( $tags_to_save as $tag ) {
 				wp_set_object_terms( $product_id, $tag, 'chefpress_recipe_tag', true );
@@ -316,7 +326,7 @@ function generate_test_recipes() {
 	echo "\nProducts are assigned to:\n";
 	echo "  - Weeks: week-1, week-2, week-3, week-4\n";
 	echo "  - Categories: appetizers, mains, sides, desserts, breakfast\n";
-	echo "  - Tags: quick, healthy, vegan, vegetarian, family-friendly, low-carb, protein-rich, comfort-food, italian, asian\n";
+	echo "  - Tags: quick, healthy, vegan, vegetarian, family-friendly, low-carb, high-protein, comfort-food, italian, asian\n";
 	echo "  - 50% have allergen data\n";
 	echo "\nYou can now test your APIs!\n";
 }
