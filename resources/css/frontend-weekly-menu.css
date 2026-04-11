@@ -432,6 +432,22 @@
   flex-shrink: 0 !important;
 }
 
+.cp_weekly_menu_filters_row{
+    overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+
+  /* Smooth scrolling on touch devices */
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding-bottom: 0.25rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  /* Optional: hide scrollbar (clean UI) */
+  scrollbar-width: none; /* Firefox */
+}
 /* Responsive Hiding of Filter Buttons */
 @media (max-width: 1150px) {
   .cp_weekly_menu_filter_btn:nth-child(7) {
@@ -466,6 +482,7 @@
 }
 
 @media (max-width: 550px) {
+  
   .cp_weekly_menu_filter_btn:nth-child(3) {
     display: none !important;
   }
@@ -476,6 +493,12 @@
   }
 
   /* Hide View All on very small screens */
+  
+.cp_weekly_menu_filters_row button {
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+    border: 2px !important;
+}
 }
 
 /* Removed the 400px query to keep 'Sort by' visible on mobile */
