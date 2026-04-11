@@ -250,8 +250,9 @@
       case 11: renderCalendar(container); break;
       case 12: renderDeliverySlot(container); break;
       case 13: renderAddress(container); break;
-      // case 14: renderPayment(container); break;
-      // case 15: renderSuccess(container); break;
+      case 14: renderOrderSubmission(container); break;
+      // case 15: renderPayment(container); break;
+      // case 16: renderSuccess(container); break;
     }
 
     updateNavBar();
@@ -418,7 +419,7 @@
   }
 
   function nextStep() {
-    if (state.currentStep < 15) { state.currentStep++; renderStep(); }
+    if (state.currentStep < 14) { state.currentStep++; renderStep(); }
   }
   function prevStep() {
     if (state.currentStep === 9) {
@@ -1341,6 +1342,7 @@
 
   // Step 13 – Address
   function renderAddress(el) {
+    console.log('state in renderAddress:', state);  
     var isMobile = window.innerWidth < 640;
     var typeBtns = ['Apartment', 'Home', 'Office'].map(function(type) {
       var sel = state.address.type === type;
@@ -1436,6 +1438,22 @@
     $('#dev_chefpress_plan_addr-floor').on('change', function() { state.address.floor = $(this).val(); });
     $('#dev_chefpress_plan_addr-flat').on('change', function() { state.address.flat = $(this).val(); });
     $('#dev_chefpress_plan_addr-details').on('change', function() { state.address.details = $(this).val(); });
+  }
+
+  // Step 14 – Order Submission
+  function renderOrderSubmission(el) {
+    var isMobile = window.innerWidth < 640;
+    el.innerHTML =
+      '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_mb-8">' +
+        '<h2 class="dev_chefpress_plan_text-4xl dev_chefpress_plan_font-bold dev_chefpress_plan_text-emerald-900 dev_chefpress_plan_mb-4" style="font-size:' + (isMobile ? '1.875rem' : '2.25rem') + '!important;">Processing Your Order</h2>' +
+        '<p class="dev_chefpress_plan_text-gray-500" style="font-size:' + (isMobile ? '0.875rem' : '1rem') + '!important;">Please wait while we create your meal plan order...</p>' +
+      '</div>' +
+      '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-center dev_chefpress_plan_items-center" style="min-height:200px !important;">' +
+        '<div class="dev_chefpress_plan_animate-spin" style="width:' + (isMobile ? '3rem' : '4rem') + ' !important;height:' + (isMobile ? '3rem' : '4rem') + ' !important;border:4px solid var(--emerald-100) !important;border-top:4px solid var(--emerald-500) !important;border-radius:9999px !important;"></div>' +
+      '</div>';
+
+    // Send the state data to backend
+    submitOrder();
   }
 
   // Step 14 – Payment
@@ -1639,8 +1657,8 @@
 
     generateSlotsFromState();
 
-    // Show nav bar only when not in success (step 15), but show in step 9 for slots
-    if (state.currentStep === 15) {
+    // Show nav bar only when not in success (step 15) or submission (step 14), but show in step 9 for slots
+    if (state.currentStep === 14 || state.currentStep === 15) {
       navBar.hide();
       navBar.removeClass('dev_our_plans_slots_step');
     } else {
@@ -2287,6 +2305,33 @@
   // ─────────────────────────────────────────────────────────
   //  INIT
   // ─────────────────────────────────────────────────────────
+  
+  // Submit order to backend
+  function submitOrder() {
+    $.ajax({
+      url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
+      type: 'POST',
+      data: {
+        action: 'create_meal_plan_order',
+        state: JSON.stringify(state)
+      },
+      success: function(response) {
+        if (response.success) {
+          // Redirect to checkout page
+          window.location.href = response.data.checkout_url;
+        } else {
+          alert('Error creating order: ' + (response.data || 'Unknown error'));
+          // Go back to previous step
+          prevStep();
+        }
+      },
+      error: function(xhr, status, error) {
+        alert('Error submitting order: ' + error);
+        // Go back to previous step
+        prevStep();
+      }
+    });
+  }
   
   // Expose all functions to global scope for HTML onclick handlers
   window.setGoal = setGoal;

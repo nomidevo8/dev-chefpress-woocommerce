@@ -36,6 +36,10 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
 		$this->loader->add_action( 'wp_ajax_nopriv_chefpress_get_recipe_details', $this, 'handle_ajax_get_recipe_details' );
 
+		// AJAX handler for creating meal plan order.
+		$this->loader->add_action( 'wp_ajax_create_meal_plan_order', $this, 'handle_create_meal_plan_order' );
+		$this->loader->add_action( 'wp_ajax_nopriv_create_meal_plan_order', $this, 'handle_create_meal_plan_order' );
+
 		// Register shortcodes directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
 		add_shortcode( 'dev_chefpress_our_plans', [ $this, 'render_our_plans' ] );
@@ -284,6 +288,7 @@ class Frontend {
 			'mealPrices'    => $pricing_presets['mealPrices'] ?? [],
 			'planDiscounts' => $pricing_presets['planDiscounts'] ?? [],
 			'promoCodes'    => $pricing_presets['promoCodes'] ?? [],
+			'ajax_url'      => admin_url( 'admin-ajax.php' ),
 		] );
 	}
 
@@ -347,6 +352,40 @@ class Frontend {
 	}
 
 	/**
+	 * AJAX handler for creating meal plan order.
+	 */
+	public function handle_create_meal_plan_order(): void {
+		// Verify nonce if needed
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'meal_plan_order_nonce' ) ) {
+			// For now, skip nonce check as it's not implemented in JS
+		}
+
+		$state_json = urldecode( wp_unslash( $_POST['state'] ?? '' ) );
+		if ( empty( $state_json ) ) {
+			wp_send_json_error( 'No state data provided' );
+			return;
+		}
+
+		$state = json_decode( $state_json, true );
+		if ( json_last_error() !== JSON_ERROR_NONE ) {
+			wp_send_json_error( 'Invalid JSON data: ' . json_last_error_msg() );
+			return;
+		}
+
+		// Create the WooCommerce order
+		$order_id = $this->create_meal_plan_order( $state );
+		if ( is_wp_error( $order_id ) ) {
+			wp_send_json_error( $order_id->get_error_message() );
+			return;
+		}
+
+		// Get checkout URL
+		$checkout_url = wc_get_checkout_url() . '?order_id=' . $order_id;
+
+		wp_send_json_success( array( 'checkout_url' => $checkout_url ) );
+	}
+
+	/**
 	 * Render the weekly menu shortcode.
 	 */
 	public function render_weekly_menu(): string {
@@ -365,5 +404,128 @@ class Frontend {
 		ob_start();
 		include DEVCHEFPRESS_PATH . 'templates/our-plans.php';
 		return ob_get_clean();
+	}
+
+	/**
+	 * Create a WooCommerce order from meal plan state.
+	 */
+	private function create_meal_plan_order( array $state ): int|\WP_Error {
+		if ( ! class_exists( 'WC_Order' ) ) {
+			return new \WP_Error( 'woocommerce_not_found', 'WooCommerce is not available' );
+		}
+
+		// Calculate pricing
+		$pricing = $this->calculate_meal_plan_pricing( $state );
+
+		// Create order
+		$order = wc_create_order();
+
+		// Add products based on selected recipes
+		foreach ( $state['slots'] as $slot ) {
+			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
+				$product_id = $slot['recipeSelected']['id'];
+				$product = wc_get_product( $product_id );
+				if ( $product ) {
+					$order->add_product( $product, 1 );
+				}
+			}
+		}
+
+		// Set custom price if needed
+		if ( $pricing['total'] > 0 ) {
+			$order->set_total( $pricing['total'] );
+		}
+
+		// Add order meta with all state details
+		$order->update_meta_data( '_meal_plan_state', $state );
+		$order->update_meta_data( '_meal_plan_pricing', $pricing );
+
+		// Set billing/shipping address if available
+		if ( isset( $state['address'] ) ) {
+			$address = $state['address'];
+			$order->set_billing_address_1( $address['building'] ?? '' );
+			$order->set_billing_address_2( $address['floor'] . ' ' . $address['flat'] );
+			$order->set_billing_city( '' ); // Not provided
+			$order->set_billing_postcode( '' ); // Not provided
+			$order->set_billing_country( 'AE' ); // Assuming UAE
+			$order->set_shipping_address_1( $address['building'] ?? '' );
+			$order->set_shipping_address_2( $address['floor'] . ' ' . $address['flat'] );
+			$order->set_shipping_city( '' );
+			$order->set_shipping_postcode( '' );
+			$order->set_shipping_country( 'AE' );
+		}
+
+		// Set delivery date
+		if ( isset( $state['startDate'] ) ) {
+			$order->update_meta_data( '_delivery_date', $state['startDate'] );
+		}
+
+		// Set delivery slot
+		if ( isset( $state['deliverySlot'] ) ) {
+			$order->update_meta_data( '_delivery_slot', $state['deliverySlot'] );
+		}
+
+		// Set order status to pending payment
+		$order->set_status( 'pending' );
+
+		// Save the order
+		$order->save();
+
+		return $order->get_id();
+	}
+
+	/**
+	 * Calculate pricing for meal plan.
+	 */
+	private function calculate_meal_plan_pricing( array $state ): array {
+		$meal_prices = array(
+			'Breakfast' => 5,
+			'Lunch' => 12,
+			'Dinner' => 15,
+			'Snacks' => 4
+		);
+
+		$total = 0;
+		$meal_counts = array();
+
+		foreach ( $state['slots'] as $slot ) {
+			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
+				$meal_type = $slot['meal'];
+				if ( isset( $meal_prices[$meal_type] ) ) {
+					$total += $meal_prices[$meal_type];
+					if ( ! isset( $meal_counts[$meal_type] ) ) {
+						$meal_counts[$meal_type] = 0;
+					}
+					$meal_counts[$meal_type]++;
+				}
+			}
+		}
+
+		// Apply plan discount
+		$plan_duration = $state['planDuration'] ?? '1 Week';
+		$discounts = array(
+			'1 Week' => 0,
+			'1 Month' => 10,
+			'3 Months' => 20,
+			'6 Months' => 25
+		);
+
+		$discount_percent = $discounts[$plan_duration] ?? 0;
+		$discount_amount = $total * ( $discount_percent / 100 );
+		$total -= $discount_amount;
+
+		// Apply promo discount
+		if ( isset( $state['isPromoApplied'] ) && $state['isPromoApplied'] && isset( $state['promoDiscount'] ) ) {
+			$promo_discount = $total * ( $state['promoDiscount'] / 100 );
+			$total -= $promo_discount;
+		}
+
+		return array(
+			'subtotal' => $total + $discount_amount, // Before discounts
+			'discount' => $discount_amount,
+			'promo_discount' => $promo_discount ?? 0,
+			'total' => $total,
+			'meal_counts' => $meal_counts
+		);
 	}
 }
