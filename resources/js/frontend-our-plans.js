@@ -2020,16 +2020,15 @@
           background: none;
           border: none;
           cursor: pointer;
-          color: #6b7280;
-          padding: 0;
+          color: #6b7280 !important;
           width: 36px;
           height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 0.5rem;
-              padding: 0px;
-          color: black;
+          padding: 0px !important;
+          color: black !important;
           transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
         }
 
