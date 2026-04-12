@@ -379,8 +379,15 @@ class Frontend {
 			return;
 		}
 
-		// Get checkout URL
-		$checkout_url = wc_get_checkout_url() . '?order_id=' . $order_id;
+		// Get the order and redirect to its payment page
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			wp_send_json_error( 'Failed to retrieve created order' );
+			return;
+		}
+
+		// Redirect to the order payment page (pay for pending order)
+		$checkout_url = $order->get_checkout_payment_url();
 
 		wp_send_json_success( array( 'checkout_url' => $checkout_url ) );
 	}
