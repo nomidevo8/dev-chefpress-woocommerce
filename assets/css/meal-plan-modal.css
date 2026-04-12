@@ -1,0 +1,482 @@
+/* =============================================================================
+   Dev ChefPress — Meal Plan Modal UI
+   Professional Admin Modal for Displaying Meal Plan Order Details
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   Modal Overlay & Container
+   -------------------------------------------------------------------------- */
+.devchefpress-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.devchefpress-modal-container {
+    background: var(--cp_product_color-white);
+    width: 95%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Close Button
+   -------------------------------------------------------------------------- */
+.devchefpress-modal-close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--cp_product_color-text-muted);
+    z-index: 10;
+    transition: color 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.devchefpress-modal-close:hover {
+    color: var(--cp_product_color-brand);
+}
+
+/* --------------------------------------------------------------------------
+   Modal Content Container
+   -------------------------------------------------------------------------- */
+.devchefpress-modal-content {
+    padding: 40px;
+}
+
+@media (max-width: 768px) {
+    .devchefpress-modal-content {
+        padding: 25px 20px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Modal Header
+   -------------------------------------------------------------------------- */
+.devchefpress-modal-header {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--cp_product_color-border);
+}
+
+.devchefpress-modal-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cp_product_color-text-main);
+    line-height: 1.2;
+}
+
+.devchefpress-header-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--cp_product_color-text-muted);
+    font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   Main Details Container
+   -------------------------------------------------------------------------- */
+.devchefpress-meal-plan-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* --------------------------------------------------------------------------
+   Section Styling
+   -------------------------------------------------------------------------- */
+.devchefpress-section {
+    border: 1px solid var(--cp_product_color-border);
+    border-radius: 8px;
+    padding: 24px;
+    background: var(--cp_product_color-bg-light);
+    transition: all 0.2s ease;
+}
+
+.devchefpress-section:hover {
+    border-color: var(--cp_product_color-brand);
+    box-shadow: 0 2px 8px rgba(255, 107, 74, 0.08);
+}
+
+.devchefpress-section-title {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cp_product_color-brand);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   Info Grid (Personal Information Section)
+   -------------------------------------------------------------------------- */
+.devchefpress-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .devchefpress-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.devchefpress-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.devchefpress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cp_product_color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.devchefpress-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--cp_product_color-text-main);
+    line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   Address Card
+   -------------------------------------------------------------------------- */
+.devchefpress-address-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.devchefpress-address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cp_product_color-border);
+}
+
+.devchefpress-address-item:last-child {
+    border-bottom: none;
+}
+
+.devchefpress-address-item .devchefpress-label {
+    min-width: 140px;
+}
+
+.devchefpress-address-item .devchefpress-value {
+    text-align: right;
+    flex: 1;
+    margin-left: 20px;
+}
+
+.devchefpress-coords {
+    flex-direction: row;
+}
+
+.devchefpress-muted {
+    color: var(--cp_product_color-text-muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   Meal Plan Section - Days and Meals
+   -------------------------------------------------------------------------- */
+.devchefpress-day-block {
+    margin-bottom: 24px;
+    background: var(--cp_product_color-white);
+    border: 1px solid var(--cp_product_color-border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow: hidden;
+}
+
+.devchefpress-day-block:last-child {
+    margin-bottom: 0;
+}
+
+.devchefpress-day-title {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cp_product_color-brand);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--cp_product_color-border);
+}
+
+.devchefpress-meal-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cp_product_color-border);
+}
+
+.devchefpress-meal-item:last-child {
+    border-bottom: none;
+}
+
+.devchefpress-meal-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 6px 12px;
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+}
+
+.devchefpress-recipe-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cp_product_color-text-main);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   Pricing Section
+   -------------------------------------------------------------------------- */
+.devchefpress-pricing-card {
+    background: var(--cp_product_color-white);
+    border: 1px solid var(--cp_product_color-border);
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.devchefpress-pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cp_product_color-border);
+    font-size: 14px;
+}
+
+.devchefpress-pricing-row:last-child {
+    border-bottom: none;
+}
+
+.devchefpress-pricing-label {
+    font-weight: 500;
+    color: var(--cp_product_color-text-main);
+}
+
+.devchefpress-pricing-value {
+    font-weight: 600;
+    color: var(--cp_product_color-text-main);
+    font-size: 15px;
+}
+
+.devchefpress-pricing-value.devchefpress-discount {
+    color: var(--cp_product_color-brand);
+}
+
+.devchefpress-package-discount-row {
+    background: linear-gradient(135deg, rgba(255, 107, 74, 0.08) 0%, rgba(255, 107, 74, 0.04) 100%);
+    padding: 14px 12px !important;
+    border-radius: 6px;
+    border: 1px solid var(--cp_product_color-brand) !important;
+    margin-bottom: 4px;
+}
+
+.devchefpress-package-badge {
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.devchefpress-pricing-value.devchefpress-promo-code {
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.devchefpress-pricing-total {
+    background: var(--cp_product_color-bg-light);
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--cp_product_color-border);
+    border-bottom: none;
+    font-size: 16px;
+}
+
+.devchefpress-pricing-total .devchefpress-pricing-label {
+    font-weight: 700;
+    color: var(--cp_product_color-brand);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.devchefpress-pricing-total .devchefpress-pricing-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cp_product_color-brand);
+}
+
+/* --------------------------------------------------------------------------
+   Empty & Error States
+   -------------------------------------------------------------------------- */
+.devchefpress-empty-state,
+.devchefpress-error-state,
+.devchefpress-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    font-size: 16px;
+    color: var(--cp_product_color-text-muted);
+    background: var(--cp_product_color-bg-light);
+    border: 1px dashed var(--cp_product_color-border);
+    border-radius: 8px;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.devchefpress-error-state {
+    color: var(--cp_product_color-brand);
+    background: rgba(255, 107, 74, 0.05);
+    border-color: var(--cp_product_color-brand);
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar Styling
+   -------------------------------------------------------------------------- */
+.devchefpress-modal-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.devchefpress-modal-container::-webkit-scrollbar-track {
+    background: var(--cp_product_color-bg-light);
+}
+
+.devchefpress-modal-container::-webkit-scrollbar-thumb {
+    background: var(--cp_product_color-border);
+    border-radius: 4px;
+}
+
+.devchefpress-modal-container::-webkit-scrollbar-thumb:hover {
+    background: var(--cp_product_color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Order Actions Button
+   -------------------------------------------------------------------------- */
+.devchefpress-order-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.devchefpress-order-actions .dev-chefpress-view-meal-plan {
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(232, 86, 42, 0.15);
+}
+
+.devchefpress-order-actions .dev-chefpress-view-meal-plan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(232, 86, 42, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+    .devchefpress-modal-container {
+        width: 98%;
+        max-height: 95vh;
+        border-radius: 8px;
+    }
+
+    .devchefpress-modal-content {
+        padding: 20px 15px;
+    }
+
+    .devchefpress-modal-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+    }
+
+    .devchefpress-modal-header h2 {
+        font-size: 22px;
+    }
+
+    .devchefpress-section {
+        padding: 16px;
+    }
+
+    .devchefpress-info-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .devchefpress-address-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .devchefpress-address-item .devchefpress-value {
+        text-align: left;
+        margin-left: 0;
+    }
+
+    .devchefpress-meal-item {
+        flex-wrap: wrap;
+    }
+
+    .devchefpress-recipe-name {
+        width: 100%;
+    }
+}
