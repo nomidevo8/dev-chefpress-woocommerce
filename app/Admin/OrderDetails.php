@@ -86,6 +86,8 @@ class OrderDetails {
         </div>
 
         <link rel="stylesheet" href="<?php echo esc_url(plugins_url('assets/css/meal-plan-modal.css', dirname(dirname(__FILE__)))); ?>">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
         <script>
         (function($){
@@ -270,6 +272,7 @@ class OrderDetails {
                         html += '<span class="devchefpress-label">Coordinates</span>';
                         html += '<span class="devchefpress-value devchefpress-muted">' + data.address.lat.toFixed(4) + ', ' + data.address.lng.toFixed(4) + '</span>';
                         html += '</div>';
+                        html += '<div id="devchefpress-delivery-map" class="devchefpress-map-container" data-lat="' + data.address.lat + '" data-lng="' + data.address.lng + '"></div>';
                     }
 
                     html += '</div>';
@@ -420,6 +423,75 @@ class OrderDetails {
                             $('#devChefpressMealPlanContent').html(
                                 buildHTML(res.data)
                             );
+                            
+                            // Initialize map if coordinates exist with longer delay for proper rendering
+                            setTimeout(function() {
+                                const mapContainer = document.getElementById('devchefpress-delivery-map');
+                                console.log('Map container found:', mapContainer ? 'Yes' : 'No');
+                                
+                                if (mapContainer && mapContainer.dataset.lat && mapContainer.dataset.lng) {
+                                    try {
+                                        // Check if Leaflet is loaded
+                                        if (typeof L === 'undefined') {
+                                            console.error('Leaflet library not loaded');
+                                            return;
+                                        }
+                                        
+                                        const lat = parseFloat(mapContainer.dataset.lat);
+                                        const lng = parseFloat(mapContainer.dataset.lng);
+                                        console.log('Initializing map with coordinates:', lat, lng);
+                                        
+                                        // Ensure container is visible and properly sized
+                                        mapContainer.style.width = '100%';
+                                        mapContainer.style.height = '350px';
+                                        mapContainer.style.display = 'block';
+                                        mapContainer.style.position = 'relative';
+                                        mapContainer.style.zIndex = '1';
+                                        
+                                        console.log('Map container styles applied');
+                                        
+                                        // Initialize Leaflet map
+                                        const map = L.map('devchefpress-delivery-map', {
+                                            scrollWheelZoom: true,
+                                            zoomControl: true
+                                        }).setView([lat, lng], 15);
+                                        
+                                        console.log('Leaflet map initialized');
+                                        
+                                        // Add tile layer
+                                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                            maxZoom: 19,
+                                            maxNativeZoom: 18
+                                        }).addTo(map);
+                                        
+                                        console.log('Tile layer added');
+                                        
+                                        // Add marker at delivery location
+                                        const marker = L.marker([lat, lng], {
+                                            icon: L.icon({
+                                                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                                                iconSize: [25, 41],
+                                                iconAnchor: [12, 41],
+                                                popupAnchor: [1, -34],
+                                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                                                shadowSize: [41, 41]
+                                            })
+                                        }).addTo(map);
+                                        
+                                        console.log('Marker added');
+                                        
+                                        marker.bindPopup('<div style="font-weight: 600; color: var(--cp_product_color-brand); margin: 5px 0;">📍 Delivery Location</div>').openPopup();
+                                        
+                                        console.log('Map initialization complete');
+                                        
+                                        // Fit map bounds
+                                        map.invalidateSize();
+                                    } catch(e) {
+                                        console.error('Map initialization error:', e);
+                                    }
+                                }
+                            }, 300);
                         } else {
                             $('#devChefpressMealPlanContent').html(
                                 '<div class="devchefpress-error-state">No meal plan data available for this order</div>'

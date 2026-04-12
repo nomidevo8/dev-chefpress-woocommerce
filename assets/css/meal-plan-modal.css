@@ -480,3 +480,77 @@
         width: 100%;
     }
 }
+
+/* --------------------------------------------------------------------------
+   Map Container
+   -------------------------------------------------------------------------- */
+.devchefpress-map-container,
+#devchefpress-delivery-map {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 350px !important;
+    border-radius: 8px;
+    border: 1px solid var(--cp_product_color-border);
+    margin-top: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Leaflet map adjustments */
+#devchefpress-delivery-map .leaflet-container,
+.devchefpress-map-container .leaflet-container {
+    background: var(--cp_product_color-white);
+    border-radius: 8px;
+    height: 100%;
+    width: 100%;
+    z-index: 1 !important;
+}
+
+#devchefpress-delivery-map .leaflet-popup-content,
+.devchefpress-map-container .leaflet-popup-content {
+    font-family: inherit;
+    margin: 0;
+    padding: 8px 12px;
+}
+
+#devchefpress-delivery-map .leaflet-popup-content-wrapper,
+.devchefpress-map-container .leaflet-popup-content-wrapper {
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(255, 107, 74, 0.15);
+    background: var(--cp_product_color-white);
+}
+
+#devchefpress-delivery-map .leaflet-popup-tip,
+.devchefpress-map-container .leaflet-popup-tip {
+    background: var(--cp_product_color-white);
+    border: none;
+}
+
+/* Leaflet controls and UI elements */
+#devchefpress-delivery-map .leaflet-control,
+.devchefpress-map-container .leaflet-control {
+    background: var(--cp_product_color-white);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#devchefpress-delivery-map .leaflet-control-zoom,
+.devchefpress-map-container .leaflet-control-zoom {
+    border-radius: 4px;
+}
+
+#devchefpress-delivery-map .leaflet-control-attribution,
+.devchefpress-map-container .leaflet-control-attribution {
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+}
+
+/* Mobile adjustment for map */
+@media (max-width: 600px) {
+    .devchefpress-map-container,
+    #devchefpress-delivery-map {
+        height: 250px !important;
+    }
+}
