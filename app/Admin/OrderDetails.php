@@ -303,6 +303,7 @@ class OrderDetails {
                 if (data.slots && data.slots.length > 0) {
                     html += '<div class="devchefpress-section">';
                     html += '<h3 class="devchefpress-section-title">🍽️ Meal Plan Schedule</h3>';
+                    html += '<div class="devchefpress-meal-plan-tabs">';
                     
                     // Group meals by day
                     let mealsByDay = {};
@@ -313,23 +314,38 @@ class OrderDetails {
                         mealsByDay[slot.day].push(slot);
                     });
 
-                    // Display meals grouped by day
-                    Object.keys(mealsByDay).forEach(dayCode => {
-                        const dayMeals = mealsByDay[dayCode];
-                        html += '<div class="devchefpress-day-block">';
-                        html += '<h4 class="devchefpress-day-title">' + getDayLabel(dayCode) + '</h4>';
+                    const days = Object.keys(mealsByDay);
+                    if (days.length > 0) {
+                        // Sidebar
+                        html += '<div class="devchefpress-tabs-sidebar">';
+                        days.forEach((dayCode, index) => {
+                            const isActive = index === 0 ? ' active' : '';
+                            html += '<div class="devchefpress-tab-item' + isActive + '" data-day="' + dayCode + '">' + getDayLabel(dayCode) + '</div>';
+                        });
+                        html += '</div>';
                         
-                        dayMeals.forEach(slot => {
-                            const recipeName = slot.recipeSelected ? slot.recipeSelected.title.replace(/\+/g, ' ') : 'Not selected';
-                            html += '<div class="devchefpress-meal-item">';
-                            html += '<span class="devchefpress-meal-type">' + slot.meal + '</span>';
-                            html += '<span class="devchefpress-recipe-name">' + recipeName + '</span>';
+                        // Content
+                        html += '<div class="devchefpress-tabs-content">';
+                        days.forEach((dayCode, index) => {
+                            const isActive = index === 0 ? ' active' : '';
+                            const dayMeals = mealsByDay[dayCode];
+                            html += '<div class="devchefpress-tab-content' + isActive + '" data-day="' + dayCode + '">';
+                            html += '<h4 class="devchefpress-day-title">' + getDayLabel(dayCode) + '</h4>';
+                            
+                            dayMeals.forEach(slot => {
+                                const recipeName = slot.recipeSelected ? slot.recipeSelected.title.replace(/\+/g, ' ') : 'Not selected';
+                                html += '<div class="devchefpress-meal-item">';
+                                html += '<span class="devchefpress-meal-type">' + slot.meal + '</span>';
+                                html += '<span class="devchefpress-recipe-name">' + recipeName + '</span>';
+                                html += '</div>';
+                            });
+                            
                             html += '</div>';
                         });
-
                         html += '</div>';
-                    });
-
+                    }
+                    
+                    html += '</div>';
                     html += '</div>';
                 }
 
@@ -676,6 +692,15 @@ class OrderDetails {
 
                 doc.save('meal-plan-order-' + orderId + '.pdf');
             }
+
+            // Tab switching for meal plan schedule
+            $(document).on('click', '.devchefpress-tab-item', function(){
+                const day = $(this).data('day');
+                $('.devchefpress-tab-item').removeClass('active');
+                $(this).addClass('active');
+                $('.devchefpress-tab-content').removeClass('active');
+                $('.devchefpress-tab-content[data-day="' + day + '"]').addClass('active');
+            });
 
             // Close modal on outside click
             $(document).on('click', '#devChefpressMealPlanModal', function(e){

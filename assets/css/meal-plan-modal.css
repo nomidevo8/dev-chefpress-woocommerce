@@ -357,6 +357,61 @@
 }
 
 /* --------------------------------------------------------------------------
+   Meal Plan Tabs
+   -------------------------------------------------------------------------- */
+.devchefpress-meal-plan-tabs {
+    display: flex;
+    gap: 24px;
+    background: var(--cp_product_color-white);
+    border: 1px solid var(--cp_product_color-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.devchefpress-tabs-sidebar {
+    width: 200px;
+    background: var(--cp_product_color-bg-light);
+    border-right: 1px solid var(--cp_product_color-border);
+    padding: 16px 0;
+}
+
+.devchefpress-tab-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cp_product_color-text-main);
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.devchefpress-tab-item:hover {
+    background: rgba(255, 107, 74, 0.05);
+    color: var(--cp_product_color-brand);
+}
+
+.devchefpress-tab-item.active {
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+    border-left-color: var(--cp_product_color-brand);
+    font-weight: 600;
+}
+
+.devchefpress-tabs-content {
+    flex: 1;
+    padding: 20px;
+    min-height: 300px;
+}
+
+.devchefpress-tab-content {
+    display: none;
+}
+
+.devchefpress-tab-content.active {
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
    Pricing Section
    -------------------------------------------------------------------------- */
 .devchefpress-pricing-card {
@@ -568,6 +623,42 @@
 
     .devchefpress-recipe-name {
         width: 100%;
+    }
+}
+
+/* Mobile tabs adjustment */
+@media (max-width: 768px) {
+    .devchefpress-meal-plan-tabs {
+        flex-direction: column;
+    }
+    
+    .devchefpress-tabs-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--cp_product_color-border);
+        padding: 0;
+        display: flex;
+        overflow-x: auto;
+        background: var(--cp_product_color-white);
+    }
+    
+    .devchefpress-tab-item {
+        flex-shrink: 0;
+        padding: 12px 16px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+    
+    .devchefpress-tab-item.active {
+        border-left: none;
+        border-bottom-color: var(--cp_product_color-brand);
+        background: rgba(255, 107, 74, 0.05);
+        color: var(--cp_product_color-brand);
+    }
+    
+    .devchefpress-tabs-content {
+        padding: 16px;
     }
 }
 
