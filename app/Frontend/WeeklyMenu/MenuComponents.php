@@ -27,7 +27,7 @@ class MenuComponents {
 			
 			<?php if ( ! empty( $meal_type_terms ) ) : ?>
 				<div class="cp_weekly_menu_dropdown">
-					<button type="button" class="cp_weekly_menu_filter_btn" id="cp_weekly_mealtype_btn">
+					<button type="button" class="cp_weekly_menu_filter_btn " id="cp_weekly_mealtype_btn">
 						Meal Type <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 					</button>
 					<div class="cp_weekly_menu_dropdown_content" id="cp_weekly_mealtype_dropdown">
@@ -43,7 +43,7 @@ class MenuComponents {
 			
 			<?php $top_recipe_tags = array_slice( $recipe_tags, 0, 5 ); ?>
 			<?php foreach ( $top_recipe_tags as $tag ) : ?>
-				<button class="cp_weekly_menu_filter_btn" data-recipe-tag="<?php echo esc_attr( $tag->slug ); ?>">
+				<button class="cp_weekly_menu_filter_btn cp_weekly_terms" data-recipe-tag="<?php echo esc_attr( $tag->slug ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f97316;"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
 					<?php echo esc_html( $tag->name ); ?>
 				</button>

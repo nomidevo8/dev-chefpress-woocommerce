@@ -126,7 +126,7 @@ function generate_test_recipes() {
 	];
 
 	// Common taxonomy values
-	$weeks = [ 'week-1', 'week-2', 'week-3', 'week-4', 'week-5', 'week-6' ];
+	$weeks = [ 'week-1', 'week-2', 'week-3', 'week-4', 'week-5', 'week-6', 'week-7' ];
 	$menu_types = [ 'breakfast', 'lunch', 'snacks', 'dinner' ];
 	$categories = [ 'appetizers', 'mains', 'sides', 'desserts', 'breakfast' ];
 	$recipe_tags = [ 'quick', 'healthy', 'vegan', 'vegetarian', 'family-friendly', 'low-carb', 'high-protein', 'comfort-food', 'italian', 'asian', 'balanced' ];
@@ -193,8 +193,8 @@ function generate_test_recipes() {
 			$product->set_name( $product_title );
 			$product->set_status( 'publish' );
 			$product->set_catalog_visibility( 'visible' );
-			$product->set_price( rand( 8, 25 ) );
-			$product->set_regular_price( rand( 8, 25 ) );
+			$product->set_price(0);
+			$product->set_regular_price( 0 );
 			$product->set_manage_stock( false );
 			$product->set_stock_status( 'instock' );
 
