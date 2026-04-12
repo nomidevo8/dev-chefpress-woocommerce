@@ -17,6 +17,7 @@ class Admin {
 	private MetaBoxes $meta_boxes;
 	private SaveHandler $save_handler;
 	private SettingsPage $settings_page;
+	private OrderDetails $order_details;
 
 	public function __construct( Loader $loader ) {
 		$this->loader         = $loader;
@@ -24,6 +25,7 @@ class Admin {
 		$this->meta_boxes     = new MetaBoxes( $loader );
 		$this->save_handler   = new SaveHandler( $loader );
 		$this->settings_page  = new SettingsPage( $loader );
+		$this->order_details  = new OrderDetails( $loader );
 
 		$this->register_hooks();
 	}
