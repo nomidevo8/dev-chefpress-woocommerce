@@ -2350,7 +2350,7 @@
       success: function(response) {
         if (response.success) {
           // Redirect to checkout page
-          // window.location.href = response.data.checkout_url;
+          window.location.href = response.data.checkout_url;
           console.log('Order created successfully. Checkout URL:', response);
         } else {
           alert('Error creating order: ' + (response.data || 'Unknown error'));
