@@ -32,6 +32,12 @@ class OrderDetails {
             $this,
             'ajax_get_meal_plan'
         );
+
+        $this->loader->add_action(
+            'wp_ajax_devchefpress_export_meal_plan',
+            $this,
+            'ajax_export_meal_plan'
+        );
     }
 
     /**
@@ -88,6 +94,7 @@ class OrderDetails {
         <link rel="stylesheet" href="<?php echo esc_url(plugins_url('assets/css/meal-plan-modal.css', dirname(dirname(__FILE__)))); ?>">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
         <script>
         (function($){
@@ -128,8 +135,18 @@ class OrderDetails {
 
                 // HEADER
                 html += '<div class="devchefpress-modal-header">';
+                html += '<div class="devchefpress-header-content">';
                 html += '<h2>Meal Plan Order Details</h2>';
                 html += '<p class="devchefpress-header-subtitle">Complete overview of customer\'s meal plan subscription</p>';
+                html += '</div>';
+                html += '<div class="devchefpress-header-actions">';
+                html += '<button class="devchefpress-pdf-btn" onclick="downloadMealPlanPDF(' + data.order_id + ')" title="Download PDF">';
+                html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 19h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                html += ' PDF</button>';
+                html += '<button class="devchefpress-export-btn" onclick="exportMealPlan(' + data.order_id + ')" title="Export as JSON">';
+                html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                html += ' JSON</button>';
+                html += '</div>';
                 html += '</div>';
 
                 // SECTION 1: BASIC USER INFO
@@ -271,6 +288,9 @@ class OrderDetails {
                         html += '<div class="devchefpress-address-item devchefpress-coords">';
                         html += '<span class="devchefpress-label">Coordinates</span>';
                         html += '<span class="devchefpress-value devchefpress-muted">' + data.address.lat.toFixed(4) + ', ' + data.address.lng.toFixed(4) + '</span>';
+                        html += '<button class="devchefpress-gmaps-btn" onclick="window.open(\'https://www.google.com/maps?q=' + data.address.lat + ',' + data.address.lng + '\', \'_blank\')" title="Open in Google Maps">';
+                        html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>';
+                        html += ' View in Maps</button>';
                         html += '</div>';
                         html += '<div id="devchefpress-delivery-map" class="devchefpress-map-container" data-lat="' + data.address.lat + '" data-lng="' + data.address.lng + '"></div>';
                     }
@@ -420,6 +440,7 @@ class OrderDetails {
                     success: function(res){
 
                         if(res.success){
+                            window.devChefpressCurrentMealPlan = res.data;
                             $('#devChefpressMealPlanContent').html(
                                 buildHTML(res.data)
                             );
@@ -506,6 +527,156 @@ class OrderDetails {
                 });
             });
 
+            // Export meal plan function
+            window.exportMealPlan = function(orderId) {
+                if (!orderId || isNaN(orderId)) {
+                    console.error('Export failed: missing order ID');
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = ajaxurl;
+                form.target = '_blank';
+                
+                const fields = {
+                    action: 'devchefpress_export_meal_plan',
+                    nonce: '<?php echo wp_create_nonce('devchefpress_meal_plan_nonce'); ?>',
+                    order_id: orderId
+                };
+                
+                for (const key in fields) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = fields[key];
+                    form.appendChild(input);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            }
+
+            window.downloadMealPlanPDF = function(orderId) {
+                if (!orderId || isNaN(orderId)) {
+                    console.error('PDF export failed: missing order ID');
+                    return;
+                }
+
+                const mealPlan = window.devChefpressCurrentMealPlan;
+                if (!mealPlan || parseInt(mealPlan.order_id, 10) !== parseInt(orderId, 10)) {
+                    console.error('PDF export failed: meal plan data not available');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+                const margin = 40;
+                let y = margin;
+
+                doc.setFontSize(18);
+                doc.text('Meal Plan Order Details', margin, y);
+                y += 30;
+
+                const addLine = (label, value) => {
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(label + ':', margin, y);
+                    doc.setFont(undefined, 'normal');
+                    doc.text(String(value), margin + 120, y, { maxWidth: 420 });
+                    y += 18;
+                };
+
+                addLine('Order ID', orderId);
+                addLine('Order Number', mealPlan.order_number || 'N/A');
+                addLine('Customer', mealPlan.customer_name || 'N/A');
+                y += 10;
+
+                if (mealPlan.goal) addLine('Goal', mealPlan.goal.replace(/\+/g, ' '));
+                if (mealPlan.age) addLine('Age', mealPlan.age + ' years');
+                if (mealPlan.gender) addLine('Gender', mealPlan.gender);
+                if (mealPlan.weight) addLine('Weight', mealPlan.weight + ' kg');
+                if (mealPlan.height) addLine('Height', mealPlan.height + ' cm');
+                if (mealPlan.activityLevel) addLine('Activity Level', mealPlan.activityLevel.replace(/\+/g, ' '));
+                if (mealPlan.dietType) addLine('Diet Type', mealPlan.dietType.replace(/\+/g, ' '));
+                if (mealPlan.planDuration) addLine('Plan Duration', mealPlan.planDuration.replace(/\+/g, ' '));
+                if (mealPlan.startDate) addLine('Start Date', new Date(mealPlan.startDate).toLocaleDateString('en-US'));
+                if (mealPlan.deliverySlot) addLine('Delivery Slot', mealPlan.deliverySlot);
+                y += 20;
+
+                if (mealPlan.address) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Delivery Address', margin, y);
+                    y += 20;
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'normal');
+                    if (mealPlan.address.name) addLine('Location Name', mealPlan.address.name);
+                    if (mealPlan.address.type) addLine('Type', mealPlan.address.type);
+                    if (mealPlan.address.building) addLine('Building/House', mealPlan.address.building);
+                    if (mealPlan.address.floor) addLine('Floor', mealPlan.address.floor);
+                    if (mealPlan.address.flat) addLine('Flat/Unit', mealPlan.address.flat);
+                    if (mealPlan.address.details) addLine('Instructions', mealPlan.address.details);
+                    if (mealPlan.address.lat && mealPlan.address.lng) addLine('Coordinates', mealPlan.address.lat.toFixed(4) + ', ' + mealPlan.address.lng.toFixed(4));
+                    y += 20;
+                }
+
+                if (mealPlan.slots && mealPlan.slots.length > 0) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Meal Plan Schedule', margin, y);
+                    y += 20;
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'normal');
+
+                    const mealsByDay = {};
+                    mealPlan.slots.forEach(slot => {
+                        if (!mealsByDay[slot.day]) mealsByDay[slot.day] = [];
+                        mealsByDay[slot.day].push(slot);
+                    });
+
+                    Object.keys(mealsByDay).forEach(dayCode => {
+                        const dayLabel = getDayLabel(dayCode);
+                        doc.setFont(undefined, 'bold');
+                        doc.text(dayLabel, margin, y);
+                        y += 16;
+                        doc.setFont(undefined, 'normal');
+                        mealsByDay[dayCode].forEach(slot => {
+                            const recipeName = slot.recipeSelected ? slot.recipeSelected.title.replace(/\+/g, ' ') : 'Not selected';
+                            doc.text(slot.meal + ': ' + recipeName, margin + 10, y, { maxWidth: 500 });
+                            y += 14;
+                            if (y > 740) {
+                                doc.addPage();
+                                y = margin;
+                            }
+                        });
+                        y += 10;
+                    });
+                }
+
+                if (mealPlan.pricing || mealPlan.subtotal || mealPlan.promoCode !== undefined) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Pricing Summary', margin, y);
+                    y += 20;
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'normal');
+
+                    if (mealPlan.pricing && mealPlan.pricing.subtotal !== undefined) addLine('Subtotal', '$' + parseFloat(mealPlan.pricing.subtotal).toFixed(2));
+                    else if (mealPlan.subtotal !== undefined) addLine('Subtotal', '$' + parseFloat(mealPlan.subtotal).toFixed(2));
+
+                    if (mealPlan.promoCode) addLine('Promo Code', mealPlan.promoCode);
+                    const promoDiscount = mealPlan.promoDiscount !== undefined ? mealPlan.promoDiscount : (mealPlan.pricing ? mealPlan.pricing.promoDiscount : 0);
+                    if (promoDiscount) addLine('Promo Discount', '-' + parseFloat(promoDiscount).toFixed(2));
+                    if (mealPlan.couponTotal) addLine('Coupon Discount', '-$' + parseFloat(mealPlan.couponTotal).toFixed(2));
+                    if (mealPlan.pricing && mealPlan.pricing.total !== undefined) addLine('Total', '$' + parseFloat(mealPlan.pricing.total).toFixed(2));
+                    else if (mealPlan.total !== undefined) addLine('Total', '$' + parseFloat(mealPlan.total).toFixed(2));
+                }
+
+                doc.save('meal-plan-order-' + orderId + '.pdf');
+            }
+
             // Close modal on outside click
             $(document).on('click', '#devChefpressMealPlanModal', function(e){
                 if(e.target.id === 'devChefpressMealPlanModal'){
@@ -577,6 +748,63 @@ class OrderDetails {
             }
         }
 
+        // Keep the order ID available for export and UI actions
+        $response_data['order_id'] = $order_id;
+
         wp_send_json_success($response_data);
+    }
+
+    /**
+     * Export meal plan data as JSON
+     */
+    public function ajax_export_meal_plan(): void {
+        // Verify nonce and permissions
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'devchefpress_meal_plan_nonce') ||
+            !current_user_can('manage_woocommerce')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+
+        $order_id = intval($_POST['order_id'] ?? 0);
+        if (!$order_id) {
+            wp_send_json_error(['message' => 'Invalid order ID']);
+        }
+
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            wp_send_json_error(['message' => 'Order not found']);
+        }
+
+        // Get meal plan data
+        $state = $order->get_meta('_meal_plan_state');
+        $pricing = $order->get_meta('_meal_plan_pricing');
+
+        if (empty($state)) {
+            wp_send_json_error(['message' => 'No meal plan data found']);
+        }
+
+        // Prepare export data
+        $export_data = [
+            'order_id' => $order_id,
+            'order_number' => $order->get_order_number(),
+            'customer_name' => $order->get_formatted_billing_full_name(),
+            'export_date' => current_time('Y-m-d H:i:s'),
+            'meal_plan' => $state,
+            'pricing' => $pricing ?: [
+                'subtotal' => (float) $order->get_subtotal(),
+                'total' => (float) $order->get_total(),
+                'discounts' => $order->get_total_discount()
+            ]
+        ];
+
+        // Set headers for JSON download
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="meal-plan-order-' . $order_id . '.json"');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        // Output JSON
+        echo wp_json_encode($export_data, JSON_PRETTY_PRINT);
+        exit;
     }
 }

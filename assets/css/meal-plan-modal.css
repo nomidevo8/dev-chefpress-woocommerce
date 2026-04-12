@@ -82,6 +82,19 @@
     margin-bottom: 35px;
     padding-bottom: 25px;
     border-bottom: 1px solid var(--cp_product_color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.devchefpress-header-content {
+    flex: 1;
+}
+
+.devchefpress-header-actions {
+    display: flex;
+    gap: 12px;
+    margin-left: 20px;
 }
 
 .devchefpress-modal-header h2 {
@@ -97,6 +110,42 @@
     font-size: 14px;
     color: var(--cp_product_color-text-muted);
     font-weight: 400;
+}
+
+/* Export Button */
+.devchefpress-export-btn,
+.devchefpress-pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--cp_product_color-success, #22c55e);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.devchefpress-export-btn:hover,
+.devchefpress-pdf-btn:hover {
+    background: var(--cp_product_color-success-dark, #16a34a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.devchefpress-export-btn svg,
+.devchefpress-pdf-btn svg {
+    flex-shrink: 0;
+}
+
+.devchefpress-export-btn:active,
+.devchefpress-pdf-btn:active {
+    transform: translateY(0);
 }
 
 /* --------------------------------------------------------------------------
@@ -198,6 +247,39 @@
     text-align: right;
     flex: 1;
     margin-left: 20px;
+}
+
+/* Google Maps Button */
+.devchefpress-gmaps-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--cp_product_color-brand);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    margin-left: 12px;
+    white-space: nowrap;
+}
+
+.devchefpress-gmaps-btn:hover {
+    background: var(--cp_product_color-brand-dark, #c73e15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3);
+}
+
+.devchefpress-gmaps-btn svg {
+    flex-shrink: 0;
+}
+
+.devchefpress-gmaps-btn:active {
+    transform: translateY(0);
 }
 
 .devchefpress-coords {
@@ -446,6 +528,14 @@
     .devchefpress-modal-header {
         margin-bottom: 25px;
         padding-bottom: 15px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .devchefpress-header-actions {
+        margin-left: 0;
+        justify-content: flex-end;
     }
 
     .devchefpress-modal-header h2 {
