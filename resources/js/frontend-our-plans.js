@@ -996,7 +996,7 @@
     var $popup = $('#cp_weekly_slot_popup');
     if (!$popup.length) {
       $popup = $(
-        '<div id="cp_weekly_slot_popup" data-recipe-data=\'' + JSON.stringify(recipeData) + '\' class="cp_weekly_slot_popup">' +
+        '<div id="cp_weekly_slot_popup" class="cp_weekly_slot_popup">' +
           '<div class="cp_weekly_slot_popup_overlay"></div>' +
           '<div class="cp_weekly_slot_popup_dialog">' +
             '<div id="cp_weekly_slot_popup_content"></div>' +
@@ -1008,6 +1008,7 @@
 
     $popup.find('#cp_weekly_slot_popup_content').html(html);
     $popup.data('recipe-id', recipeId);
+    $popup.data('recipe-data', recipeData);
     $popup.addClass('cp_weekly_slot_popup_active');
     $('body').css('overflow', 'hidden !important');
   }
