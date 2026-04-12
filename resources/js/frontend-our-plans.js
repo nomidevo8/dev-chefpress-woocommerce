@@ -88,6 +88,7 @@
     deliverySlot: null,
     deliveryInstructions: [],
     address: { type: 'Apartment', building: '', floor: '', flat: '', details: '', lat: null, lng: null },
+    selectedAddressType: null,
     isMapFullscreen: false,
     menuFilter: 'All'
   };
@@ -407,8 +408,8 @@
       $('.dev_chefpress_plan_card-selectable').off('click').on('click', updateNavBar);
     }
     
-    // Step 12: Address inputs
-    if (step === 12) {
+    // Step 13: Address inputs
+    if (step === 13) {
       $('#dev_chefpress_plan_addr-building-input, #dev_chefpress_plan_addr-floor, #dev_chefpress_plan_addr-flat, #dev_chefpress_plan_addr-details').off('change blur input').on('change blur input', function() {
         if ($(this).attr('id') === 'dev_chefpress_plan_addr-building-input') {
           state.address.building = $(this).val();
@@ -1346,7 +1347,7 @@
     console.log('state in renderAddress:', state);  
     var isMobile = window.innerWidth < 640;
     var typeBtns = ['Apartment', 'Home', 'Office'].map(function(type) {
-      var sel = state.address.type === type;
+      var sel = state.selectedAddressType === type;
       return '<button onclick="setAddressType(\'' + type + '\')" style="flex:1 !important;padding:' + (isMobile ? '0.5rem' : '0.75rem') + ' !important;border-radius:1rem !important;border:2px solid ' + (sel ? 'var(--emerald-500)' : 'var(--gray-100)') + ' !important;background:' + (sel ? 'var(--emerald-50)' : 'transparent') + ' !important;color:' + (sel ? 'var(--emerald-700)' : 'var(--gray-400)') + ' !important;font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;font-weight:700 !important;cursor:pointer !important;transition:all 0.2s !important;font-family:inherit !important;">' + type + '</button>';
     }).join('');
 
@@ -1787,7 +1788,7 @@
     else state.deliveryInstructions.push(inst);
     renderStep();
   }
-  function setAddressType(type)  { state.address.type = type; renderStep(); }
+  function setAddressType(type)  { state.address.type = type; state.selectedAddressType = type; renderStep(); }
   function toggleMapFullscreen() { state.isMapFullscreen = !state.isMapFullscreen; renderStep(); }
 
   async function searchLocation(inputId) {
