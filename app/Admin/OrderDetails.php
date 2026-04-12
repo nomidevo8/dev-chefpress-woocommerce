@@ -223,6 +223,13 @@ class OrderDetails {
                     html += '<h3 class="devchefpress-section-title">📍 Delivery Address</h3>';
                     html += '<div class="devchefpress-address-card">';
 
+                    if (data.address.name) {
+                        html += '<div class="devchefpress-address-item">';
+                        html += '<span class="devchefpress-label">Location Name</span>';
+                        html += '<span class="devchefpress-value" style="font-weight: 600; color: var(--cp_product_color-brand);">' + data.address.name + '</span>';
+                        html += '</div>';
+                    }
+
                     if (data.address.type) {
                         html += '<div class="devchefpress-address-item">';
                         html += '<span class="devchefpress-label">Address Type</span>';

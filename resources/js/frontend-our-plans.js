@@ -87,7 +87,7 @@
     startDate: defaultStartDate,
     deliverySlot: null,
     deliveryInstructions: [],
-    address: { type: 'Apartment', building: '', floor: '', flat: '', details: '', lat: null, lng: null },
+    address: { type: 'Apartment', name: '', building: '', floor: '', flat: '', details: '', lat: null, lng: null },
     selectedAddressType: null,
     isMapFullscreen: false,
     menuFilter: 'All'
@@ -196,6 +196,17 @@
     function updateCoords(la, ln) {
       state.address.lat = la;
       state.address.lng = ln;
+      // Reverse geocode to get address name
+      fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + la + '&lon=' + ln)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data && data.display_name) {
+            state.address.name = data.display_name;
+            var nameInput = document.getElementById('dev_chefpress_plan_addr-name-input');
+            if (nameInput) { nameInput.value = state.address.name; }
+          }
+        })
+        .catch(function(e) { console.log('Reverse geocode failed:', e); });
     }
     marker.on('dragend', function(e) {
       var pos = e.target.getLatLng();
@@ -1414,6 +1425,10 @@
         '</div>' +
         '<div class="dev_chefpress_plan_flex dev_chefpress_plan_gap-4" style="gap:' + (isMobile ? '0.75rem' : '1rem') + ' !important;">' + typeBtns + '</div>' +
         '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" id="dev_chefpress_plan_addr-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;gap:' + (isMobile ? '0.75rem' : '1rem') + ' !important;">' +
+          '<div id="dev_chefpress_plan_addr-name" style="grid-column:span 1 !important;">' +
+            '<label style="display:block !important;font-size:' + (isMobile ? '0.625rem' : '0.75rem') + ' !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:' + (isMobile ? '0.25rem' : '0.5rem') + ' !important;">Location Name</label>' +
+            '<input type="text" id="dev_chefpress_plan_addr-name-input" value="' + (state.address.name || '') + '" class="dev_chefpress_plan_input-field" placeholder="e.g. Downtown Dubai, Marina" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;padding:' + (isMobile ? '0.5rem' : '0.75rem') + ' !important;">' +
+          '</div>' +
           '<div id="dev_chefpress_plan_addr-building" style="grid-column:span 1 !important;">' +
             '<label style="display:block !important;font-size:' + (isMobile ? '0.625rem' : '0.75rem') + ' !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;margin-bottom:' + (isMobile ? '0.25rem' : '0.5rem') + ' !important;">Building/Villa</label>' +
             '<input type="text" id="dev_chefpress_plan_addr-building-input" value="' + state.address.building + '" class="dev_chefpress_plan_input-field" placeholder="e.g. Burj Khalifa" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;padding:' + (isMobile ? '0.5rem' : '0.75rem') + ' !important;">' +
@@ -1436,12 +1451,14 @@
 
     if (window.innerWidth >= 640) {
       el.querySelector('#dev_chefpress_plan_addr-grid').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+      el.querySelector('#dev_chefpress_plan_addr-name').style.gridColumn = 'span 2';
       el.querySelector('#dev_chefpress_plan_addr-building').style.gridColumn = 'span 2';
       el.querySelector('#dev_chefpress_plan_addr-details-wrap').style.gridColumn = 'span 2';
     }
 
     $('#dev_chefpress_plan_map-search').on('keypress', function(e) { if (e.key === 'Enter') searchLocation('dev_chefpress_plan_map-search'); });
     $('#dev_chefpress_plan_fullscreen-map-search').on('keypress', function(e) { if (e.key === 'Enter') searchLocation('dev_chefpress_plan_fullscreen-map-search'); });
+    $('#dev_chefpress_plan_addr-name-input').on('change', function() { state.address.name = $(this).val(); });
     $('#dev_chefpress_plan_addr-building-input').on('change', function() { state.address.building = $(this).val(); });
     $('#dev_chefpress_plan_addr-floor').on('change', function() { state.address.floor = $(this).val(); });
     $('#dev_chefpress_plan_addr-flat').on('change', function() { state.address.flat = $(this).val(); });
@@ -1809,6 +1826,13 @@
       if (data && data.length > 0) {
         state.address.lat = parseFloat(data[0].lat);
         state.address.lng = parseFloat(data[0].lon);
+        // Capture the address name from the search result
+        if (data[0].display_name) {
+          state.address.name = data[0].display_name;
+          // Update the address name input field if it exists
+          var nameInput = document.getElementById('dev_chefpress_plan_addr-name-input');
+          if (nameInput) { nameInput.value = state.address.name; }
+        }
         renderStep();
       } else { alert('Location not found. Please try a more specific address.'); }
     } catch(e) { alert('Search failed. Please try again.'); }
