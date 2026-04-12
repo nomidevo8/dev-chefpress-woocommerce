@@ -420,7 +420,13 @@
   }
 
   function nextStep() {
-    if (state.currentStep < 14) { state.currentStep++; renderStep(); }
+    if (state.currentStep < 14) {
+      state.currentStep++;
+      if (window && window.scrollTo) {
+        window.scrollTo({ top: 100, behavior: 'smooth' });
+      }
+      renderStep();
+    }
   }
   function prevStep() {
     if (state.currentStep === 9) {
