@@ -602,8 +602,6 @@ class OrderDetails {
                 };
 
                 addLine('Order ID', orderId);
-                addLine('Order Number', mealPlan.order_number || 'N/A');
-                addLine('Customer', mealPlan.customer_name || 'N/A');
                 y += 10;
 
                 if (mealPlan.goal) addLine('Goal', mealPlan.goal.replace(/\+/g, ' '));
@@ -769,6 +767,10 @@ class OrderDetails {
                 $response_data['couponTotal'] = $coupon_discount;
             }
         }
+
+        // Add order details for PDF generation
+        $response_data['order_number'] = $order->get_order_number();
+        $response_data['customer_name'] = $order->get_formatted_billing_full_name();
 
         // Keep the order ID available for export and UI actions
         $response_data['order_id'] = $order_id;
