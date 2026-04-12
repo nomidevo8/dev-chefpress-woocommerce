@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace DevChefPress;
 
 use DevChefPress\Admin\Admin;
+use DevChefPress\Elementor\Elementor;
 use DevChefPress\Frontend\Frontend;
 use DevChefPress\Hooks\Loader;
 use DevChefPress\Services\PluginSettings;
@@ -54,6 +55,7 @@ final class Plugin {
 		}
 
 		new Frontend( $this->loader );
+		new Elementor( $this->loader );
 	}
 
 	/**
