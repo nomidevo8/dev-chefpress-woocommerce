@@ -427,6 +427,14 @@ class Frontend {
 		// Create order
 		$order = wc_create_order();
 
+		// Assign order to logged-in user if available
+		$user_id = get_current_user_id();
+		if ( $user_id > 0 ) {
+			$order->set_customer_id( $user_id );
+			$user = wp_get_current_user();
+			$order->set_billing_email( $user->user_email );
+		}
+
 		// Add products based on selected recipes
 		foreach ( $state['slots'] as $slot ) {
 			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
