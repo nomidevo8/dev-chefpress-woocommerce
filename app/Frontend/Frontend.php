@@ -88,8 +88,9 @@ class Frontend {
 
 		$is_weekly_menu_page = ( is_page() && has_shortcode( get_post()->post_content ?? '', 'weekly_menu' ) ) || get_query_var( 'weekly_menu' );
 		$is_our_plans_page = get_query_var( 'our_plans' );
+		$is_my_account_page = is_page( 'my-account' ) || is_account_page();
 
-		if ( ! $is_recipe_page && ! $is_weekly_menu_page && ! $is_our_plans_page ) {
+		if ( ! $is_recipe_page && ! $is_weekly_menu_page && ! $is_our_plans_page && ! $is_my_account_page ) {
 			return;
 		}
 		
@@ -151,6 +152,10 @@ class Frontend {
 
 		if ( $is_our_plans_page ) {
 			$this->enqueue_assets_our_plans();
+		}
+
+		if ( $is_my_account_page ) {
+			$this->enqueue_assets_my_account();
 		}
 	}
 
@@ -335,6 +340,33 @@ class Frontend {
 			'nonce'       => wp_create_nonce( 'chefpress_filter_nonce' ),
 			'ajax_url'    => admin_url( 'admin-ajax.php' ),
 		] );
+	}
+
+	/**
+	 * Enqueue my-account page assets.
+	 */
+	private function enqueue_assets_my_account(): void {
+		// Get theme colors
+		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+		$inline_css = ':root {' .
+			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'}';
+
+		// Enqueue WooCommerce My Account CSS
+		wp_enqueue_style(
+			'dev-chefpress-woocommerce-my-account',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/woocommerce-my-account.css',
+			[],
+			DEVCHEFPRESS_VERSION
+		);
+
+		wp_add_inline_style( 'dev-chefpress-woocommerce-my-account', $inline_css );
 	}
 
 	/**

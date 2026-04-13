@@ -1,0 +1,153 @@
+:root {
+  --cp_product_color-brand: #10b981;
+  --cp_product_color-brand-light: #d1fae5;
+  --cp_product_color-text-main: #1f2937;
+  --cp_product_color-text-muted: #6b7280;
+  --cp_product_color-bg-light: #f9fafb;
+  --cp_product_color-border: #e5e7eb;
+  --cp_product_color-white: #ffffff;
+  --cp_product_font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.page-content {
+    margin: 40px 0;
+}
+/* ============================= */
+/* BASE LAYOUT */
+/* ============================= */
+
+.woocommerce-account .woocommerce {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    font-family: var(--cp_product_font-sans);
+}
+
+/* Sidebar */
+.woocommerce-MyAccount-navigation {
+    width: 25%;
+    background: var(--cp_product_color-white);
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid var(--cp_product_color-border);
+}
+
+/* Content */
+.woocommerce-MyAccount-content {
+    width: 75%;
+    background: var(--cp_product_color-white);
+    padding: 25px;
+    border-radius: 14px;
+    border: 1px solid var(--cp_product_color-border);
+}
+
+/* ============================= */
+/* NAVIGATION */
+/* ============================= */
+
+.woocommerce-MyAccount-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.woocommerce-MyAccount-navigation ul li {
+    margin-bottom: 10px;
+}
+
+.woocommerce-MyAccount-navigation ul li a {
+    display: block;
+    padding: 12px 15px;
+    border-radius: 10px;
+    color: var(--cp_product_color-text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.25s ease;
+
+}
+
+/* Hover */
+.woocommerce-MyAccount-navigation ul li a:hover {
+    background: var(--cp_product_color-brand-light);
+    color: var(--cp_product_color-brand);
+    transform: translateX(3px);
+}
+
+/* Active */
+.woocommerce-MyAccount-navigation ul li.is-active a {
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+}
+
+/* ============================= */
+/* TYPOGRAPHY */
+/* ============================= */
+
+.woocommerce-account h2,
+.woocommerce-account h3 {
+    color: var(--cp_product_color-text-main);
+}
+
+.woocommerce-account p {
+    color: var(--cp_product_color-text-muted);
+    line-height: 1.6;
+}
+
+/* ============================= */
+/* TABLES (ORDERS) */
+/* ============================= */
+
+.woocommerce table.shop_table {
+    border: 1px solid var(--cp_product_color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--cp_product_color-white);
+}
+
+.woocommerce table.shop_table th {
+    background: var(--cp_product_color-bg-light);
+    color: var(--cp_product_color-text-main);
+    padding: 12px;
+}
+
+.woocommerce table.shop_table td {
+    padding: 12px;
+    color: var(--cp_product_color-text-muted);
+}
+
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button {
+    background: var(--cp_product_color-brand);
+    color: var(--cp_product_color-white);
+    border-radius: 8px;
+    padding: 10px 16px;
+    border: none;
+    transition: 0.25s ease;
+    margin: 5px 5px;
+}
+
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover {
+    background: #0ea371;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px) {
+    .woocommerce-account .woocommerce {
+        flex-direction: column;
+    }
+
+    .woocommerce-MyAccount-navigation,
+    .woocommerce-MyAccount-content {
+        width: 100%;
+    }
+}
