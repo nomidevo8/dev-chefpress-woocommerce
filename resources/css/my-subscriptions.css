@@ -1,0 +1,829 @@
+/* My Subscriptions Styles - Clean Table Design */
+:root {
+    --cp-brand-color: #10b981 !important;
+    --cp-brand-hover: #059669 !important;
+    --cp-light-color: #d1fae5 !important;
+    --cp-text-color: #1f2937 !important;
+    --cp-text-muted: #6b7280 !important;
+    --cp-border-color: #e5e7eb !important;
+    --cp-bg-light: #f9fafb !important;
+    --cp-white: #ffffff !important;
+    --cp-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    --cp-radius: 8px !important;
+    --cp-spacing-xs: 4px !important;
+    --cp-spacing-sm: 8px !important;
+    --cp-spacing-md: 12px !important;
+    --cp-spacing-lg: 16px !important;
+    --cp-spacing-xl: 20px !important;
+    --cp-spacing-2xl: 24px !important;
+    --cp-transition: all 0.2s ease !important;
+}
+
+.devchefpress-my-subscriptions {
+    min-height: 100vh !important;
+    padding: var(--cp-spacing-2xl) var(--cp-spacing-lg) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.devchefpress-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.devchefpress-header {
+    text-align: center !important;
+    margin-bottom: var(--cp-spacing-2xl) !important;
+    position: relative !important;
+}
+
+.devchefpress-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, var(--cp-brand-color), var(--cp-light-color)) !important;
+    border-radius: 2px !important;
+}
+
+.devchefpress-title {
+    font-size: 2.25rem !important;
+    font-weight: 700 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: var(--cp-spacing-sm) !important;
+    letter-spacing: -0.025em !important;
+}
+
+.devchefpress-subtitle {
+    font-size: 1rem !important;
+    color: var(--cp-text-muted) !important;
+    margin: 0 !important;
+}
+
+/* Empty State */
+.devchefpress-empty-state {
+    text-align: center !important;
+    padding: var(--cp-spacing-2xl) var(--cp-spacing-lg) !important;
+    background: var(--cp-white) !important;
+    border-radius: var(--cp-radius) !important;
+    box-shadow: var(--cp-shadow) !important;
+    border: 1px solid var(--cp-border-color) !important;
+}
+
+.devchefpress-empty-icon {
+    margin-bottom: var(--cp-spacing-lg) !important;
+    opacity: 0.7 !important;
+}
+
+.devchefpress-empty-state h3 {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: var(--cp-spacing-sm) !important;
+}
+
+.devchefpress-empty-state p {
+    color: var(--cp-text-muted) !important;
+    margin-bottom: var(--cp-spacing-lg) !important;
+}
+
+/* Subscriptions Container */
+.devchefpress-subscriptions-container {
+    background: transparent !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+.devchefpress-subscriptions-table-wrapper {
+    overflow-x: auto !important;
+}
+
+.devchefpress-subscriptions-table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    min-width: 680px !important;
+    font-size: 0.95rem !important;
+}
+
+.devchefpress-subscriptions-table thead {
+    background: transparent !important;
+}
+
+.devchefpress-subscriptions-table th {
+    padding: 18px 16px !important;
+    text-align: left !important;
+    font-weight: 700 !important;
+    color: #9ca3af !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+}
+
+.devchefpress-subscriptions-table th:last-child,
+.devchefpress-actions-header {
+    text-align: right !important;
+}
+
+.devchefpress-subscriptions-table tbody tr {
+    border-bottom: 1px solid #e5e7eb !important;
+    background: transparent !important;
+    transition: var(--cp-transition) !important;
+}
+
+.devchefpress-subscriptions-table tbody tr:hover {
+    background: rgba(248, 250, 252, 0.8) !important;
+}
+
+.devchefpress-subscriptions-table td {
+    padding: 18px 16px !important;
+    vertical-align: middle !important;
+    color: var(--cp-text-color) !important;
+}
+
+.devchefpress-subscriptions-table td:last-child {
+    padding-right: var(--cp-spacing-xl) !important;
+    text-align: right !important;
+}
+
+/* Plan Cell */
+.devchefpress-plan-cell {
+    min-width: 220px !important;
+}
+
+.devchefpress-plan-info strong {
+    display: block !important;
+    font-weight: 700 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: 4px !important;
+    font-size: 1rem !important;
+}
+
+.devchefpress-plan-type {
+    font-size: 0.8rem !important;
+    color: var(--cp-text-muted) !important;
+    background: var(--cp-bg-light) !important;
+    padding: 6px 10px !important;
+    border-radius: 999px !important;
+    display: inline-block !important;
+    text-transform: none !important;
+}
+
+/* Action Icons */
+.devchefpress-actions-cell {
+    min-width: 150px !important;
+}
+
+.devchefpress-action-icons {
+    display: flex !important;
+    gap: var(--cp-spacing-sm) !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+}
+
+.devchefpress-action-icon {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    border-radius: 10px !important;
+    color: #9ca3af !important;
+    transition: var(--cp-transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+}
+
+.devchefpress-action-icon:hover {
+    background: #ecfdf5 !important;
+    color: var(--cp-brand-color) !important;
+    transform: translateY(-1px) !important;
+}
+
+.devchefpress-view-details:hover {
+    color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-edit-subscription:hover {
+    color: #2563eb !important;
+}
+
+.devchefpress-book-week:hover {
+    color: #ea580c !important;
+    background: #ffedd5 !important;
+}
+
+/* Status Badge */
+.devchefpress-status-badge {
+    padding: var(--cp-spacing-xs) var(--cp-spacing-sm) !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    display: inline-block !important;
+}
+
+.devchefpress-status-active {
+    background: var(--cp-light-color) !important;
+    color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-status-paused {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+}
+
+.devchefpress-status-expired {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+}
+
+/* Price Cell */
+.devchefpress-price-cell {
+    font-weight: 600 !important;
+    color: var(--cp-brand-color) !important;
+    font-size: 0.875rem !important;
+}
+
+/* Action Icons */
+.devchefpress-actions-cell {
+    min-width: 120px !important;
+}
+
+.devchefpress-action-icons {
+    display: flex !important;
+    gap: var(--cp-spacing-sm) !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.devchefpress-action-icon {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: var(--cp-spacing-sm) !important;
+    border-radius: 6px !important;
+    color: var(--cp-text-muted) !important;
+    transition: var(--cp-transition) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.devchefpress-action-icon:hover {
+    background: var(--cp-bg-light) !important;
+    color: var(--cp-text-color) !important;
+    transform: scale(1.1) !important;
+}
+
+.devchefpress-view-details:hover {
+    color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-edit-subscription:hover {
+    color: #3b82f6 !important;
+}
+
+.devchefpress-book-week:hover {
+    color: var(--cp-brand-color) !important;
+    background: var(--cp-light-color) !important;
+    flex-shrink: 0 !important;
+}
+
+.devchefpress-status-active {
+    background: var(--cp-light-color) !important;
+    color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-status-paused {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+}
+
+.devchefpress-status-expired {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+}
+
+.devchefpress-status-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: currentColor !important;
+}
+
+
+
+/* Modal */
+.devchefpress-modal-overlay {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1000 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-modal-container {
+    background: var(--cp-white) !important;
+    border-radius: var(--cp-radius) !important;
+    max-width: 800px !important;
+    width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.devchefpress-modal-close {
+    position: absolute !important;
+    top: var(--cp-spacing-md) !important;
+    right: var(--cp-spacing-md) !important;
+    background: var(--cp-bg-light) !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: var(--cp-text-muted) !important;
+    transition: var(--cp-transition) !important;
+    z-index: 1 !important;
+}
+
+.devchefpress-modal-close:hover {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+}
+
+.devchefpress-modal-content {
+    padding: var(--cp-spacing-2xl) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .devchefpress-my-subscriptions {
+        padding: var(--cp-spacing-lg) var(--cp-spacing-sm) !important;
+    }
+
+    .devchefpress-title {
+        font-size: 1.875rem !important;
+    }
+
+    .devchefpress-subscriptions-table {
+        font-size: 0.75rem !important;
+    }
+
+    .devchefpress-subscriptions-table th,
+    .devchefpress-subscriptions-table td {
+        padding: var(--cp-spacing-md) var(--cp-spacing-sm) !important;
+    }
+
+    .devchefpress-subscriptions-table th:first-child,
+    .devchefpress-subscriptions-table td:first-child {
+        padding-left: var(--cp-spacing-md) !important;
+    }
+
+    .devchefpress-subscriptions-table th:last-child,
+    .devchefpress-subscriptions-table td:last-child {
+        padding-right: var(--cp-spacing-md) !important;
+    }
+
+    .devchefpress-plan-cell {
+        min-width: 150px !important;
+    }
+
+    .devchefpress-actions-cell {
+        min-width: 100px !important;
+    }
+
+    .devchefpress-action-icons {
+        gap: var(--cp-spacing-xs) !important;
+    }
+
+    .devchefpress-modal-container {
+        width: 95% !important;
+        margin: 0 !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+    }
+
+    .devchefpress-modal-container {
+        width: 100% !important;
+        margin: 0 !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .devchefpress-subscriptions-table-wrapper {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .devchefpress-subscriptions-table {
+        min-width: 600px !important;
+    }
+
+    .devchefpress-title {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Loading States */
+.devchefpress-loading {
+    text-align: center !important;
+    padding: var(--cp-spacing-2xl) !important;
+    color: var(--cp-text-muted) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--cp-spacing-md) !important;
+}
+
+.devchefpress-loading::after {
+    content: '' !important;
+    width: 24px !important;
+    height: 24px !important;
+    border: 2px solid var(--cp-border-color) !important;
+    border-top: 2px solid var(--cp-brand-color) !important;
+    border-radius: 50% !important;
+    animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg) !important; }
+    100% { transform: rotate(360deg) !important; }
+}
+
+.devchefpress-error-state {
+    text-align: center !important;
+    padding: var(--cp-spacing-2xl) !important;
+    color: #dc2626 !important;
+    background: #fef2f2 !important;
+    border-radius: var(--cp-radius) !important;
+    border: 1px solid #fecaca !important;
+}
+
+/* Additional Modal Content Styles */
+.devchefpress-section {
+    margin-bottom: var(--cp-spacing-2xl) !important;
+}
+
+.devchefpress-section:last-child {
+    margin-bottom: 0 !important;
+}
+
+.devchefpress-section-title {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: var(--cp-spacing-lg) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--cp-spacing-sm) !important;
+}
+
+.devchefpress-info-grid-modal {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-info-item-modal {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-md) !important;
+    background: var(--cp-bg-light) !important;
+    border-radius: var(--cp-radius) !important;
+}
+
+.devchefpress-address-card {
+    background: var(--cp-bg-light) !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    padding: var(--cp-spacing-xl) !important;
+}
+
+.devchefpress-meal-plan-tabs {
+    display: flex !important;
+    gap: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-tabs-sidebar {
+    flex: 0 0 200px !important;
+}
+
+.devchefpress-tab-item {
+    padding: var(--cp-spacing-sm) var(--cp-spacing-md) !important;
+    background: var(--cp-bg-light) !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    cursor: pointer !important;
+    margin-bottom: var(--cp-spacing-sm) !important;
+    transition: var(--cp-transition) !important;
+}
+
+.devchefpress-tab-item.active {
+    background: var(--cp-brand-color) !important;
+    color: var(--cp-white) !important;
+    border-color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-tab-item:hover:not(.active) {
+    background: var(--cp-light-color) !important;
+}
+
+.devchefpress-tabs-content {
+    flex: 1 !important;
+}
+
+.devchefpress-tab-content {
+    display: none !important;
+}
+
+.devchefpress-tab-content.active {
+    display: block !important;
+}
+
+.devchefpress-pricing-card {
+    background: var(--cp-bg-light) !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    padding: var(--cp-spacing-xl) !important;
+}
+
+.devchefpress-pricing-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-sm) 0 !important;
+    border-bottom: 1px solid var(--cp-border-color) !important;
+}
+
+.devchefpress-pricing-row:last-child {
+    border-bottom: none !important;
+}
+
+.devchefpress-pricing-total {
+    font-weight: 700 !important;
+    font-size: 1.125rem !important;
+    color: var(--cp-text-color) !important;
+    border-top: 2px solid var(--cp-border-color) !important;
+    margin-top: var(--cp-spacing-md) !important;
+    padding-top: var(--cp-spacing-md) !important;
+}
+
+.devchefpress-discount {
+    color: #dc2626 !important;
+}
+
+.devchefpress-promo-code {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+}
+
+.devchefpress-map-container {
+    width: 100% !important;
+    height: 300px !important;
+    border-radius: var(--cp-radius) !important;
+    margin-top: var(--cp-spacing-md) !important;
+    border: 1px solid var(--cp-border-color) !important;
+}
+
+/* Additional Modal Content Styles */
+.devchefpress-section {
+    margin-bottom: var(--cp-spacing-xl) !important;
+}
+
+.devchefpress-section:last-child {
+    margin-bottom: 0 !important;
+}
+
+.devchefpress-section-title {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: var(--cp-spacing-md) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--cp-spacing-xs) !important;
+}
+
+.devchefpress-info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: var(--cp-spacing-md) !important;
+}
+
+.devchefpress-info-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-sm) var(--cp-spacing-md) !important;
+    background: var(--cp-light-color) !important;
+    border-radius: var(--cp-radius) !important;
+}
+
+.devchefpress-address-card {
+    background: #f9fafb !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    padding: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-address-item {
+    margin-bottom: var(--cp-spacing-sm) !important;
+}
+
+.devchefpress-address-item:last-child {
+    margin-bottom: 0 !important;
+}
+
+.devchefpress-coords {
+    align-items: flex-start  !important;
+}
+
+.devchefpress-gmaps-btn {
+    background: var(--cp-brand-color) !important;
+    color: white !important;
+    border: none !important;
+    padding: var(--cp-spacing-xs) var(--cp-spacing-sm) !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 0.75rem !important;
+    margin-left: var(--cp-spacing-sm) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+}
+
+.devchefpress-gmaps-btn:hover {
+    background: #059669 !important;
+}
+
+.devchefpress-meal-plan-tabs {
+    display: flex !important;
+    gap: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-tabs-sidebar {
+    flex: 0 0 200px !important;
+}
+
+.devchefpress-tab-item {
+    padding: var(--cp-spacing-sm) var(--cp-spacing-md) !important;
+    background: #f9fafb !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    cursor: pointer !important;
+    margin-bottom: var(--cp-spacing-xs) !important;
+    transition: all 0.2s ease !important;
+}
+
+.devchefpress-tab-item.active {
+    background: var(--cp-brand-color) !important;
+    color: white !important;
+    border-color: var(--cp-brand-color) !important;
+}
+
+.devchefpress-tab-item:hover:not(.active) {
+    background: var(--cp-light-color) !important;
+}
+
+.devchefpress-tabs-content {
+    flex: 1 !important;
+}
+
+.devchefpress-tab-content {
+    display: none !important;
+}
+
+.devchefpress-tab-content.active {
+    display: block !important;
+}
+
+.devchefpress-day-title {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: var(--cp-text-color) !important;
+    margin-bottom: var(--cp-spacing-md) !important;
+}
+
+.devchefpress-meal-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-sm) 0 !important;
+    border-bottom: 1px solid var(--cp-border-color) !important;
+}
+
+.devchefpress-meal-item:last-child {
+    border-bottom: none !important;
+}
+
+.devchefpress-meal-type {
+    font-weight: 600 !important;
+    color: var(--cp-text-color) !important;
+}
+
+.devchefpress-recipe-name {
+    color: var(--cp-text-muted) !important;
+}
+
+.devchefpress-pricing-card {
+    background: #f9fafb !important;
+    border: 1px solid var(--cp-border-color) !important;
+    border-radius: var(--cp-radius) !important;
+    padding: var(--cp-spacing-lg) !important;
+}
+
+.devchefpress-pricing-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--cp-spacing-sm) 0 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.devchefpress-pricing-row:last-child {
+    border-bottom: none !important;
+}
+
+.devchefpress-package-discount-row {
+    background: linear-gradient(135deg, var(--cp-light-color), rgba(16, 185, 129, 0.1)) !important;
+    border-radius: var(--cp-radius) !important;
+    padding: var(--cp-spacing-md) !important;
+    margin: var(--cp-spacing-sm) 0 !important;
+    border: 1px solid var(--cp-brand-color) !important;
+}
+
+.devchefpress-pricing-total {
+    font-weight: 700 !important;
+    font-size: 1.125rem !important;
+    color: var(--cp-text-color) !important;
+    border-top: 2px solid var(--cp-border-color) !important;
+    margin-top: var(--cp-spacing-sm) !important;
+    padding-top: var(--cp-spacing-md) !important;
+}
+
+.devchefpress-package-badge {
+    background: var(--cp-brand-color) !important;
+    color: white !important;
+    padding: 2px 8px !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+.devchefpress-discount {
+    color: #dc2626 !important;
+}
+
+.devchefpress-promo-code {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+}
+
+.devchefpress-map-container {
+    width: 100% !important;
+    height: 300px !important;
+    border-radius: var(--cp-radius) !important;
+    margin-top: var(--cp-spacing-sm) !important;
+    border: 1px solid var(--cp-border-color) !important;
+}
+
+.devchefpress-loading,
+.devchefpress-error-state {
+    text-align: center !important;
+    padding: var(--cp-spacing-xl) !important;
+    color: var(--cp-text-muted) !important;
+}
+
+.devchefpress-error-state {
+    color: #dc2626 !important;
+}

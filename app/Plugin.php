@@ -56,7 +56,6 @@ final class Plugin {
 		}
 
 		new Frontend( $this->loader );
-		new SubscriptionsPage( $this->loader );
 		new Elementor( $this->loader );
 	}
 

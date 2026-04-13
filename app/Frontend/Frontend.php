@@ -40,9 +40,14 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_create_meal_plan_order', $this, 'handle_create_meal_plan_order' );
 		$this->loader->add_action( 'wp_ajax_nopriv_create_meal_plan_order', $this, 'handle_create_meal_plan_order' );
 
+		// AJAX handler for subscription details.
+		$this->loader->add_action( 'wp_ajax_devchefpress_get_subscription_details', $this, 'handle_get_subscription_details' );
+		$this->loader->add_action( 'wp_ajax_nopriv_devchefpress_get_subscription_details', $this, 'handle_get_subscription_details' );
+
 		// Register shortcodes directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
 		add_shortcode( 'dev_chefpress_our_plans', [ $this, 'render_our_plans' ] );
+		add_shortcode( 'my_subscriptions', [ $this, 'render_my_subscriptions' ] );
 	}
 
 	/**
@@ -369,6 +374,48 @@ class Frontend {
 		wp_add_inline_style( 'dev-chefpress-woocommerce-my-account', $inline_css );
 	}
 
+	public function enqueue_assets_my_subscriptions(): void {
+		// Get theme colors
+		$theme_colors = \DevChefPress\Services\PluginSettings::get_theme_colors();
+		$inline_css = ':root {' .
+			'--cp_product_color-brand: ' . esc_html( $theme_colors['brand'] ) . ';' .
+			'--cp_product_color-brand-light: ' . esc_html( $theme_colors['brand_light'] ) . ';' .
+			'--cp_product_color-text-main: ' . esc_html( $theme_colors['text_main'] ) . ';' .
+			'--cp_product_color-text-muted: ' . esc_html( $theme_colors['text_muted'] ) . ';' .
+			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
+			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
+			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'}';
+
+		// Enqueue My Subscriptions CSS
+		wp_enqueue_style(
+			'dev-chefpress-my-subscriptions',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/my-subscriptions.css',
+			[],
+			DEVCHEFPRESS_VERSION
+		);
+
+		wp_add_inline_style( 'dev-chefpress-my-subscriptions', $inline_css );
+
+		// Enqueue jQuery
+		wp_enqueue_script( 'jquery' );
+
+		// Enqueue My Subscriptions JS
+		wp_enqueue_script(
+			'dev-chefpress-my-subscriptions',
+			DEVCHEFPRESS_RESOURCES_URL . 'js/my-subscriptions.js',
+			[ 'jquery' ],
+			DEVCHEFPRESS_VERSION,
+			true
+		);
+
+		// Localize script
+		wp_localize_script( 'dev-chefpress-my-subscriptions', 'devchefpress_ajax', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce' => wp_create_nonce( 'devchefpress_subscription_nonce' )
+		) );
+	}
+
 	/**
 	 * AJAX handler for recipe filtering.
 	 */
@@ -443,6 +490,15 @@ class Frontend {
 		
 		ob_start();
 		include DEVCHEFPRESS_PATH . 'templates/our-plans.php';
+		return ob_get_clean();
+	}
+
+	public function render_my_subscriptions(): string {
+		// Enqueue My Subscriptions assets only when shortcode is used
+		$this->enqueue_assets_my_subscriptions();
+		
+		ob_start();
+		include DEVCHEFPRESS_PATH . 'templates/my-subscriptions.php';
 		return ob_get_clean();
 	}
 
@@ -575,5 +631,81 @@ class Frontend {
 			'total' => $total,
 			'meal_counts' => $meal_counts
 		);
+	}
+
+	/**
+	 * AJAX handler for getting subscription details.
+	 */
+	public function handle_get_subscription_details(): void {
+		// Verify nonce
+		if (!wp_verify_nonce($_POST['nonce'] ?? '', 'devchefpress_subscription_nonce')) {
+			wp_send_json_error(['message' => 'Invalid nonce']);
+			return;
+		}
+
+		$order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
+
+		if (!$order_id) {
+			wp_send_json_error(['message' => 'Invalid order ID']);
+			return;
+		}
+
+		$order = wc_get_order($order_id);
+
+		if (!$order) {
+			wp_send_json_error(['message' => 'Order not found']);
+			return;
+		}
+
+		// Check if user owns this order
+		if ($order->get_customer_id() !== get_current_user_id()) {
+			wp_send_json_error(['message' => 'Unauthorized']);
+			return;
+		}
+
+		$state = $order->get_meta('_meal_plan_state');
+		$pricing = $order->get_meta('_meal_plan_pricing');
+
+		if (empty($state)) {
+			wp_send_json_error(['message' => 'No subscription data found']);
+			return;
+		}
+
+		// Prepare response data
+		$response_data = [];
+
+		// Add state data
+		if (!empty($state)) {
+			$response_data = is_array($state) ? $state : json_decode((string)$state, true);
+		}
+
+		// Add pricing data from separate meta if exists
+		if (!empty($pricing)) {
+			$pricing_data = is_array($pricing) ? $pricing : json_decode((string)$pricing, true);
+			$response_data['pricing'] = $pricing_data;
+		}
+
+		// If no separate pricing meta, extract from WooCommerce order
+		if (empty($response_data['pricing']) || empty($response_data['pricing'])) {
+			$response_data['subtotal'] = (float) $order->get_subtotal();
+			$response_data['total'] = (float) $order->get_total();
+
+			// Calculate discounts from order coupons
+			$coupon_discount = 0;
+			foreach ($order->get_coupons() as $coupon) {
+				$coupon_discount += (float) $coupon->get_discount();
+			}
+
+			if ($coupon_discount > 0) {
+				$response_data['couponTotal'] = $coupon_discount;
+			}
+		}
+
+		// Add order details
+		$response_data['order_number'] = $order->get_order_number();
+		$response_data['customer_name'] = $order->get_formatted_billing_full_name();
+		$response_data['order_id'] = $order_id;
+
+		wp_send_json_success($response_data);
 	}
 }
