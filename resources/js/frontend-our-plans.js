@@ -936,8 +936,9 @@
   function renderLoginRequired(el) {
     var isMobile = window.innerWidth < 640;
     var currentUrl = encodeURIComponent(window.location.href);
-    var loginUrl = 'http://aos-fresh.test/my-account/?redirect_to=' + currentUrl;
-    var registerUrl = 'http://aos-fresh.test/my-account/?redirect_to=' + currentUrl; // WooCommerce uses same page for register
+    var baseUrl = window.location.origin;
+    var loginUrl = baseUrl + '/my-account/?redirect_to=' + currentUrl;
+    var registerUrl = baseUrl + '/my-account/?redirect_to=' + currentUrl; // WooCommerce uses same page for register
 
     el.innerHTML =
       '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_py-12 dev_chefpress_plan_px-6" style="min-height:60vh!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;">' +
