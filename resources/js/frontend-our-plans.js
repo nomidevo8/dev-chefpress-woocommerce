@@ -94,6 +94,49 @@
   };
 
   // ─────────────────────────────────────────────────────────
+  //  PROGRESS SAVE/RESTORE
+  // ─────────────────────────────────────────────────────────
+  function saveProgress() {
+    var progressData = {
+      currentStep: state.currentStep,
+      goal: state.goal,
+      age: state.age,
+      weight: state.weight,
+      height: state.height,
+      bodyFat: state.bodyFat,
+      gender: state.gender,
+      targetWeight: state.targetWeight,
+      activityLevel: state.activityLevel,
+      hasAllergies: state.hasAllergies,
+      allergies: state.allergies,
+      dietType: state.dietType,
+      planDuration: state.planDuration,
+      promoCode: state.promoCode,
+      isPromoApplied: state.isPromoApplied,
+      mealQuantities: state.mealQuantities,
+      selectedDays: state.selectedDays,
+      address: state.address,
+      selectedAddressType: state.selectedAddressType,
+      deliverySlot: state.deliverySlot,
+      startDate: state.startDate,
+      selectedMeals: state.selectedMeals,
+      menuFilter: state.menuFilter
+    };
+    localStorage.setItem('meal_plan_progress', JSON.stringify(progressData));
+  }
+
+  function restoreProgress() {
+    var saved = localStorage.getItem('meal_plan_progress');
+    if (saved) {
+      var progressData = JSON.parse(saved);
+      Object.assign(state, progressData);
+      localStorage.removeItem('meal_plan_progress'); // Clear after restore
+      return true;
+    }
+    return false;
+  }
+
+  // ─────────────────────────────────────────────────────────
   //  CALCULATIONS
   // ─────────────────────────────────────────────────────────
   function calculateBMR() {
@@ -431,6 +474,12 @@
   }
 
   function nextStep() {
+    if (state.currentStep === 8 && typeof ChefPressOurPlans !== 'undefined' && !ChefPressOurPlans.isLoggedIn) {
+      saveProgress();
+      var container = document.getElementById('dev_chefpress_plan_step-content');
+      renderLoginRequired(container);
+      return;
+    }
     if (state.currentStep < 14) {
       state.currentStep++;
       if (window && window.scrollTo) {
@@ -881,6 +930,31 @@
       el.querySelector('#dev_chefpress_plan_box-grid').style.gridTemplateColumns = 'repeat(3,minmax(0,1fr))';
       el.querySelector('#dev_chefpress_plan_box-left').style.gridColumn = 'span 2';
     }
+  }
+
+  // Login Required UI
+  function renderLoginRequired(el) {
+    var isMobile = window.innerWidth < 640;
+    var currentUrl = encodeURIComponent(window.location.href);
+    var loginUrl = 'http://aos-fresh.test/my-account/?redirect_to=' + currentUrl;
+    var registerUrl = 'http://aos-fresh.test/my-account/?redirect_to=' + currentUrl; // WooCommerce uses same page for register
+
+    el.innerHTML =
+      '<div class="dev_chefpress_plan_text-center dev_chefpress_plan_py-12 dev_chefpress_plan_px-6" style="min-height:60vh!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;">' +
+        '<div style="background:var(--cp_product_color-bg-light, #f8fafc)!important;border-radius:16px!important;padding:' + (isMobile ? '2rem 1.5rem' : '3rem 2rem') + '!important;max-width:28rem!important;width:100%!important;box-shadow:0 10px 25px rgba(0,0,0,0.1)!important;border:1px solid rgba(0,0,0,0.05)!important;">' +
+          '<div class="dev_chefpress_plan_mb-6">' +
+            '<div style="width:4rem!important;height:4rem!important;background:var(--cp_product_color-brand, #10b981)!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0 auto 1.5rem auto!important;">' +
+              '<i data-lucide="lock" style="width:2rem!important;height:2rem!important;color:#fff!important;"></i>' +
+            '</div>' +
+            '<h2 style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + '!important;font-weight:900!important;color:var(--cp_product_color-text-main, #1f2937)!important;margin:0 0 0.5rem 0!important;">Login Required</h2>' +
+            '<p style="font-size:' + (isMobile ? '0.875rem' : '1rem') + '!important;color:#6b7280!important;line-height:1.5!important;margin:0!important;">Please login or create an account to continue your meal plan booking. Your progress will be saved.</p>' +
+          '</div>' +
+          '<div class="dev_chefpress_plan_space-y-3">' +
+            '<a href="' + loginUrl + '" style="display:block!important;padding:' + (isMobile ? '0.75rem 1rem' : '0.875rem 1.5rem') + '!important;background:var(--cp_product_color-brand, #10b981)!important;color:#fff!important;font-weight:700!important;border-radius:0.75rem!important;text-decoration:none!important;text-align:center!important;transition:background 0.2s!important;" onmouseover="this.style.background=\'var(--cp_product_color-brand-dark, #059669)\'" onmouseout="this.style.background=\'var(--cp_product_color-brand, #10b981)\'">Login</a>' +
+            '<a href="' + registerUrl + '" style="display:block!important;padding:' + (isMobile ? '0.75rem 1rem' : '0.875rem 1.5rem') + '!important;background:#fff!important;color:var(--cp_product_color-brand, #10b981)!important;font-weight:700!important;border:2px solid var(--cp_product_color-brand, #10b981)!important;border-radius:0.75rem!important;text-decoration:none!important;text-align:center!important;transition:all 0.2s!important;" onmouseover="this.style.background=\'var(--cp_product_color-brand, #10b981)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'#fff\';this.style.color=\'var(--cp_product_color-brand, #10b981)\'">Create Account</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
   }
 
   // Step 9 – Menu Selection
@@ -2397,6 +2471,15 @@
 
   $(document).ready(function() {
     if (window.lucide) window.lucide.createIcons();
+
+    // Restore progress if available
+    if (restoreProgress()) {
+      // Show welcome back message
+      setTimeout(function() {
+        alert('Welcome back! Your meal plan progress has been restored.');
+      }, 500);
+    }
+
     renderStep();
   });
 })(jQuery);

@@ -289,6 +289,7 @@ class Frontend {
 			'planDiscounts' => $pricing_presets['planDiscounts'] ?? [],
 			'promoCodes'    => $pricing_presets['promoCodes'] ?? [],
 			'ajax_url'      => admin_url( 'admin-ajax.php' ),
+			'isLoggedIn'    => is_user_logged_in(),
 		] );
 	}
 
