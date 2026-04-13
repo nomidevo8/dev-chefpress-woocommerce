@@ -52,7 +52,9 @@ class ProfileAccount extends Widget_Base {
 
 		echo '<div class="cp-profile-account-widget">';
 		echo '<button type="button" class="cp-profile-account-toggle" aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '" aria-label="' . esc_attr__( 'Account menu', 'dev-chefpress' ) . '">';
-		echo '<span class="cp-profile-account-icon" aria-hidden="true">👤</span>';
+		echo '<span class="cp-profile-account-icon" aria-hidden="true">';
+		echo '<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.866 0-7 3.134-7 7h2c0-2.761 2.239-5 5-5s5 2.239 5 5h2c0-3.866-3.134-7-7-7z" fill="currentColor"/></svg>';
+		echo '</span>';
 		echo '</button>';
 		echo '<div class="cp-profile-account-panel" id="' . esc_attr( $panel_id ) . '" role="menu">';
 

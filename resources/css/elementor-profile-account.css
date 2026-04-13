@@ -50,6 +50,13 @@
   background: transparent !important;
   color: inherit !important;
   font-size: 1.3rem !important;
+  
+}
+.cp-profile-account-icon svg{
+  fill: var(--cp_product_color-brand) !important;
+  width: 20px !important;
+  height: 20px !important;
+
 }
 
 .cp-profile-account-panel {
