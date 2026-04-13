@@ -6,16 +6,19 @@
    CSS Variables
    -------------------------------------------------------------------------- */
 :root {
-  --cp_product_color-brand: #ff6b4a;
-  --cp_product_color-brand-light: #fff0ed;
-  --cp_product_color-text-main: #1a1a1a;
-  --cp_product_color-text-muted: #666666;
-  --cp_product_color-bg-light: #f9f9f9;
-  --cp_product_color-border: #e5e5e5;
+  --cp_product_color-brand: #83C11F;
+  --cp_product_color-brand-dark: #6ea517;
+  --cp_product_color-brand-light: #eef7d9;
+
+  --cp_product_color-text-main: #2B303B;
+  --cp_product_color-text-muted: #6b7280;
+
+  --cp_product_color-bg-light: #f7f8fa;
+  --cp_product_color-border: #e5e7eb;
   --cp_product_color-white: #ffffff;
+
   --cp_product_font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
-
 /* --------------------------------------------------------------------------
    Base Reset inside recipe scope
    -------------------------------------------------------------------------- */

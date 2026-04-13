@@ -1,34 +1,57 @@
 /* ─── CSS Variables ─── */
 :root {
-    --primary: #10b981 !important;
-    --primary-dark: #059669 !important;
-    --primary-light: #d1fae5 !important;
-    --text-main: #1f2937 !important;
+    /* ========================= */
+    /* BRAND COLORS (NEW THEME) */
+    /* ========================= */
+
+    --primary: #83C11F !important;
+    --primary-dark: #6ea517 !important;
+    --primary-light: #eef7d9 !important;
+
+    /* ========================= */
+    /* TEXT COLORS */
+    /* ========================= */
+
+    --text-main: #2B303B !important;
     --text-muted: #6b7280 !important;
-    --emerald-50: #ecfdf5 !important;
-    --emerald-100: #d1fae5 !important;
-    --emerald-200: #a7f3d0 !important;
-    --emerald-300: #6ee7b7 !important;
-    --emerald-400: #34d399 !important;
-    --emerald-500: #10b981 !important;
-    --emerald-600: #059669 !important;
-    --emerald-700: #047857 !important;
-    --emerald-800: #065f46 !important;
-    --emerald-900: #064e3b !important;
-    --gray-50: #f9fafb !important;
-    --gray-100: #f3f4f6 !important;
+
+    /* ========================= */
+    /* EMERALD SCALE (REBUILT) */
+    /* ========================= */
+
+    --emerald-50:  #f6fbe9 !important;
+    --emerald-100: #eef7d9 !important;
+    --emerald-200: #dff0b8 !important;
+    --emerald-300: #c9e78f !important;
+    --emerald-400: #aeda5d !important;
+    --emerald-500: #83C11F !important;
+    --emerald-600: #6ea517 !important;
+    --emerald-700: #5a8a14 !important;
+    --emerald-800: #476f10 !important;
+    --emerald-900: #35540c !important;
+
+    /* ========================= */
+    /* GRAY SCALE (SLATE-BASED) */
+    /* ========================= */
+
+    --gray-50:  #f8f9fa !important;
+    --gray-100: #f1f3f5 !important;
     --gray-200: #e5e7eb !important;
     --gray-300: #d1d5db !important;
     --gray-400: #9ca3af !important;
     --gray-500: #6b7280 !important;
     --gray-600: #4b5563 !important;
     --gray-700: #374151 !important;
-    --gray-800: #1f2937 !important;
-    --gray-900: #111827 !important;
-    --red-50: #fef2f2 !important;
+    --gray-800: #2B303B !important;
+    --gray-900: #1f242d !important;
+
+    /* ========================= */
+    /* STATUS COLORS */
+    /* ========================= */
+
+    --red-50:  #fef2f2 !important;
     --red-600: #dc2626 !important;
 }
-
 /* ─── Reset & Base ─── */
 main *,main *::before,main *::after { box-sizing: border-box !important; margin: 0 !important; padding: 0 !important; }
 

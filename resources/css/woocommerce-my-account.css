@@ -1,14 +1,17 @@
 :root {
-  --cp_product_color-brand: #10b981;
-  --cp_product_color-brand-light: #d1fae5;
-  --cp_product_color-text-main: #1f2937;
+  --cp_product_color-brand: #83C11F;
+  --cp_product_color-brand-dark: #6ea517;
+  --cp_product_color-brand-light: #eef7d9;
+
+  --cp_product_color-text-main: #2B303B;
   --cp_product_color-text-muted: #6b7280;
-  --cp_product_color-bg-light: #f9fafb;
+
+  --cp_product_color-bg-light: #f7f8fa;
   --cp_product_color-border: #e5e7eb;
   --cp_product_color-white: #ffffff;
+
   --cp_product_font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
-
 .page-content {
     margin: 40px 0;
 }
