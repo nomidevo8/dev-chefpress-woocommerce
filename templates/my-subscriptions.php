@@ -156,8 +156,19 @@ get_header();
 
 <?php
 // Enqueue styles and scripts
-wp_enqueue_style('devchefpress-my-subscriptions', plugins_url('resources/css/my-subscriptions.css', dirname(dirname(__FILE__))));
-wp_enqueue_script('devchefpress-my-subscriptions', plugins_url('resources/js/my-subscriptions.js', dirname(dirname(__FILE__))), array('jquery'), '1.0.0', true);
+$plugin_dir = plugin_dir_url(dirname(__FILE__));
+
+wp_enqueue_style('devchefpress-my-subscriptions', $plugin_dir . 'resources/css/my-subscriptions.css');
+
+// Enqueue Leaflet CSS and JS for maps
+wp_enqueue_style('leaflet-css', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css');
+wp_enqueue_script('leaflet-js', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js', array(), '1.9.4', true);
+
+// Enqueue jsPDF for PDF export
+wp_enqueue_script('jspdf-js', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array(), '2.5.1', true);
+
+// Enqueue main subscription script
+wp_enqueue_script('devchefpress-my-subscriptions', $plugin_dir . 'resources/js/my-subscriptions.js', array('jquery', 'leaflet-js', 'jspdf-js'), '1.0.0', true);
 
 // Localize script
 wp_localize_script('devchefpress-my-subscriptions', 'devchefpress_ajax', array(
@@ -166,4 +177,3 @@ wp_localize_script('devchefpress-my-subscriptions', 'devchefpress_ajax', array(
 ));
 
 get_footer();
-?>

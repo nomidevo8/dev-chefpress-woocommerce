@@ -341,10 +341,14 @@
     $(document).on('click', '.devchefpress-view-details', function(e) {
         e.preventDefault();
         const orderId = $(this).data('order-id');
+        
+        console.log('View Details clicked for order:', orderId);
 
+        // Show modal
         $('#devchefpressSubscriptionModal').css('display', 'flex');
         $('#devchefpressSubscriptionContent').html('<div class="devchefpress-loading">Loading subscription details...</div>');
 
+        console.log('Sending AJAX request for order:', orderId);
         $.ajax({
             url: devchefpress_ajax.ajax_url,
             type: 'POST',
@@ -354,6 +358,7 @@
                 order_id: orderId
             },
             success: function(res) {
+                console.log('AJAX success response:', res);
                 if (res.success) {
                     window.devChefpressCurrentSubscription = res.data;
                     $('#devchefpressSubscriptionContent').html(buildSubscriptionDetailsHTML(res.data));
@@ -366,6 +371,12 @@
                                 if (typeof L === 'undefined') {
                                     console.error('Leaflet library not loaded');
                                     return;
+                                }
+
+                                // Destroy existing map if it exists
+                                if (window.devChefpressDeliveryMap) {
+                                    window.devChefpressDeliveryMap.remove();
+                                    window.devChefpressDeliveryMap = null;
                                 }
 
                                 const lat = parseFloat(mapContainer.dataset.lat);
@@ -386,16 +397,21 @@
                                 marker.bindPopup('<div style="font-weight: 600; color: #10b981; margin: 5px 0;">📍 Delivery Location</div>').openPopup();
 
                                 map.invalidateSize();
+                                
+                                // Store map reference globally to clean up later
+                                window.devChefpressDeliveryMap = map;
                             } catch(e) {
                                 console.error('Map initialization error:', e);
                             }
                         }
                     }, 300);
                 } else {
+                    console.error('AJAX error response:', res);
                     $('#devchefpressSubscriptionContent').html('<div class="devchefpress-error-state">No subscription data available</div>');
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error, xhr);
                 $('#devchefpressSubscriptionContent').html('<div class="devchefpress-error-state">Error loading subscription details. Please try again.</div>');
             }
         });
@@ -430,9 +446,24 @@
         $('.devchefpress-tab-content[data-day="' + day + '"]').addClass('active');
     });
 
+    // Close modal from close button
+    $(document).on('click', '.devchefpress-modal-close', function() {
+        // Clean up map before closing
+        if (window.devChefpressDeliveryMap) {
+            window.devChefpressDeliveryMap.remove();
+            window.devChefpressDeliveryMap = null;
+        }
+        $('#devchefpressSubscriptionModal').css('display', 'none');
+    });
+
     // Close modal on outside click
     $(document).on('click', '#devchefpressSubscriptionModal', function(e) {
         if (e.target.id === 'devchefpressSubscriptionModal') {
+            // Clean up map before closing
+            if (window.devChefpressDeliveryMap) {
+                window.devChefpressDeliveryMap.remove();
+                window.devChefpressDeliveryMap = null;
+            }
             $(this).css('display', 'none');
         }
     });

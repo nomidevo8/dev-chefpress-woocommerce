@@ -326,7 +326,7 @@
 
 /* Modal */
 .devchefpress-modal-overlay {
-    display: none !important;
+    display: none;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
