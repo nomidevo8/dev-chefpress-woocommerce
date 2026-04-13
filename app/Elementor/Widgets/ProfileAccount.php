@@ -64,6 +64,7 @@ class ProfileAccount extends Widget_Base {
 			echo '<span class="cp-profile-account-name">' . esc_html( $display_name ) . '</span>';
 			echo '</div>';
 			echo '<a class="cp-profile-account-link" href="' . esc_url( $account_url ) . '">' . esc_html__( 'My Account', 'dev-chefpress' ) . '</a>';
+			echo '<a class="cp-profile-account-link" href="/subscriptions">' . esc_html__( 'Subscriptions', 'dev-chefpress' ) . '</a>';
 			echo '<a class="cp-profile-account-link" href="' . esc_url( $orders_url ) . '">' . esc_html__( 'Orders', 'dev-chefpress' ) . '</a>';
 			echo '<a class="cp-profile-account-link cp-profile-account-link-logout" href="' . esc_url( $logout_url ) . '">' . esc_html__( 'Logout', 'dev-chefpress' ) . '</a>';
 		} else {
