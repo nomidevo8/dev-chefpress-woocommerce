@@ -1,0 +1,342 @@
+:root {
+  --cp_product_color-brand: #10b981;
+  --cp_product_color-brand-light: #d1fae5;
+  --cp_product_color-text-main: #1f2937;
+  --cp_product_color-text-muted: #6b7280;
+  --cp_product_color-bg-light: #f9fafb;
+  --cp_product_color-border: #e5e7eb;
+  --cp_product_color-white: #ffffff;
+  --cp_product_font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================= */
+/* BASE LAYOUT */
+/* ============================= */
+
+.dev_chefpress_my_subscriptions_container {
+  font-family: var(--cp_product_font-sans);
+  background: var(--cp_product_color-white);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.dev_chefpress_subscriptions_wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+.dev_chefpress_subscriptions_header {
+  margin-bottom: 40px;
+}
+
+.dev_chefpress_subscriptions_title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--cp_product_color-text-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.dev_chefpress_subscriptions_subtitle {
+  font-size: 1rem;
+  color: var(--cp_product_color-text-muted);
+  margin: 0;
+}
+
+/* ============================= */
+/* EMPTY STATE */
+/* ============================= */
+
+.dev_chefpress_subscriptions_empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.dev_chefpress_subscriptions_empty_icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.dev_chefpress_subscriptions_empty_title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cp_product_color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.dev_chefpress_subscriptions_empty_message {
+  font-size: 1rem;
+  color: var(--cp_product_color-text-muted);
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.dev_chefpress_subscriptions_empty_button {
+  display: inline-block;
+  padding: 0.875rem 1.5rem;
+  background: var(--cp_product_color-brand);
+  color: var(--cp_product_color-white);
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+}
+
+.dev_chefpress_subscriptions_empty_button:hover {
+  background: #0ea371;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ============================= */
+/* SUBSCRIPTIONS GRID */
+/* ============================= */
+
+.dev_chefpress_subscriptions_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* ============================= */
+/* SUBSCRIPTION CARD */
+/* ============================= */
+
+.dev_chefpress_subscription_card {
+  background: var(--cp_product_color-white);
+  border: 1px solid var(--cp_product_color-border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.dev_chefpress_subscription_card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--cp_product_color-brand);
+  transform: translateY(-4px);
+}
+
+/* ============================= */
+/* CARD HEADER */
+/* ============================= */
+
+.dev_chefpress_subscription_card_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 12px;
+}
+
+.dev_chefpress_subscription_plan_name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--cp_product_color-text-main);
+  margin: 0;
+}
+
+.dev_chefpress_subscription_status_badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.dev_chefpress_subscription_status_active {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--cp_product_color-brand);
+}
+
+.dev_chefpress_subscription_status_paused {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+}
+
+.dev_chefpress_subscription_status_expired {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* ============================= */
+/* CARD INFO */
+/* ============================= */
+
+.dev_chefpress_subscription_info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--cp_product_color-border);
+}
+
+.dev_chefpress_subscription_info_item {
+  display: flex;
+  flex-direction: column;
+}
+
+.dev_chefpress_subscription_info_label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cp_product_color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.375rem;
+}
+
+.dev_chefpress_subscription_info_value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--cp_product_color-text-main);
+}
+
+/* ============================= */
+/* CARD ACTIONS */
+/* ============================= */
+
+.dev_chefpress_subscription_actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.dev_chefpress_subscription_action_primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  background: var(--cp_product_color-brand);
+  color: var(--cp_product_color-white);
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+  gap: 0.5rem;
+}
+
+.dev_chefpress_subscription_action_primary:hover {
+  background: #0ea371;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.dev_chefpress_subscription_actions_row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.dev_chefpress_subscription_action_secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background: var(--cp_product_color-bg-light);
+  color: var(--cp_product_color-brand);
+  border: 1px solid var(--cp_product_color-border);
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  gap: 0.375rem;
+}
+
+.dev_chefpress_subscription_action_secondary:hover {
+  background: var(--cp_product_color-brand-light);
+  border-color: var(--cp_product_color-brand);
+  color: var(--cp_product_color-brand);
+}
+
+/* ============================= */
+/* ICONS */
+/* ============================= */
+
+.dev_chefpress_subscription_icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px) {
+  .dev_chefpress_my_subscriptions_container {
+    padding: 20px 12px;
+  }
+
+  .dev_chefpress_subscriptions_header {
+    margin-bottom: 24px;
+  }
+
+  .dev_chefpress_subscriptions_title {
+    font-size: 1.875rem;
+  }
+
+  .dev_chefpress_subscriptions_grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dev_chefpress_subscription_card {
+    padding: 16px;
+  }
+
+  .dev_chefpress_subscription_card_header {
+    margin-bottom: 1rem;
+  }
+
+  .dev_chefpress_subscription_info {
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .dev_chefpress_subscription_actions_row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dev_chefpress_subscriptions_title {
+    font-size: 1.5rem;
+  }
+
+  .dev_chefpress_subscription_plan_name {
+    font-size: 1.125rem;
+  }
+
+  .dev_chefpress_subscription_action_primary,
+  .dev_chefpress_subscription_action_secondary {
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.875rem;
+  }
+}

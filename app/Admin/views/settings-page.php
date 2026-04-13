@@ -404,7 +404,7 @@ $promo_codes = $settings['promo_codes'] ?? [];
 							<?php esc_html_e( 'Customize the visual appearance and color scheme of your recipe pages.', 'dev-chefpress' ); ?>
 						</p>
 					</div>
-					<div class="chefpress-section__content">
+					<div class="chefpress-section__content" style="display:none;">
 						<div class="chefpress-card">
 							<div class="chefpress-card__header">
 								<h3 class="chefpress-card__title">

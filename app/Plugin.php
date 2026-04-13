@@ -6,6 +6,7 @@ namespace DevChefPress;
 use DevChefPress\Admin\Admin;
 use DevChefPress\Elementor\Elementor;
 use DevChefPress\Frontend\Frontend;
+use DevChefPress\Frontend\SubscriptionsPage;
 use DevChefPress\Hooks\Loader;
 use DevChefPress\Services\PluginSettings;
 
@@ -55,6 +56,7 @@ final class Plugin {
 		}
 
 		new Frontend( $this->loader );
+		new SubscriptionsPage( $this->loader );
 		new Elementor( $this->loader );
 	}
 
