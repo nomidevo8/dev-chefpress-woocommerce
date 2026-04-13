@@ -22,9 +22,194 @@ class SubscriptionService {
 
 		$user_id = get_current_user_id();
 
-		// TODO: Query subscriptions from database once backend is ready
-		// For now, return sample data for UI testing
-		return self::get_sample_subscriptions();
+		// Query orders with meal plan data
+		$orders = wc_get_orders( [
+			'customer_id' => $user_id,
+			'meta_key'    => '_meal_plan_state',
+			'meta_compare' => 'EXISTS',
+			'limit'       => -1,
+			'orderby'     => 'date',
+			'order'       => 'DESC',
+		] );
+
+		$subscriptions = [];
+
+		foreach ( $orders as $order ) {
+			$state = $order->get_meta( '_meal_plan_state' );
+			$pricing = $order->get_meta( '_meal_plan_pricing' );
+
+			if ( empty( $state ) ) {
+				continue;
+			}
+
+			$state_data = is_array( $state ) ? $state : json_decode( (string) $state, true );
+			$pricing_data = is_array( $pricing ) ? $pricing : json_decode( (string) $pricing, true );
+
+			if ( ! $state_data ) {
+				continue;
+			}
+
+			$subscription = self::format_subscription_data( $order, $state_data, $pricing_data );
+			if ( $subscription ) {
+				$subscriptions[] = $subscription;
+			}
+		}
+
+		return $subscriptions;
+	}
+
+	/**
+	 * Format subscription data from order and meal plan state.
+	 *
+	 * @param \WC_Order $order The WooCommerce order
+	 * @param array $state_data Meal plan state data
+	 * @param array|null $pricing_data Pricing data
+	 * @return array|null Formatted subscription data or null if invalid
+	 */
+	private static function format_subscription_data( \WC_Order $order, array $state_data, ?array $pricing_data ): ?array {
+		$order_id = $order->get_id();
+		$start_date = $state_data['startDate'] ?? '';
+		$plan_duration = $state_data['planDuration'] ?? '';
+		$frequency = $state_data['planDuration'] ?? '1 Month'; // Default fallback
+
+		if ( empty( $start_date ) ) {
+			return null;
+		}
+
+		// Determine plan name
+		$plan_name = self::get_plan_name( $state_data );
+
+		// Determine status
+		$status = self::determine_subscription_status( $start_date, $plan_duration );
+
+		// Calculate next delivery
+		$next_delivery = self::calculate_next_delivery( $start_date, $frequency, $status );
+
+		// Get price
+		$price = self::get_subscription_price( $pricing_data, $order );
+
+		return [
+			'id'             => $order_id,
+			'plan_name'      => $plan_name,
+			'status'         => $status,
+			'start_date'     => $start_date,
+			'next_delivery'  => $next_delivery,
+			'frequency'      => $frequency,
+			'price'          => $price,
+			'primary_action' => self::get_primary_action_text( $status ),
+		];
+	}
+
+	/**
+	 * Get plan name from state data.
+	 *
+	 * @param array $state_data
+	 * @return string
+	 */
+	private static function get_plan_name( array $state_data ): string {
+		$duration = $state_data['planDuration'] ?? '';
+		$diet_type = $state_data['dietType'] ?? '';
+
+		if ( $duration && $diet_type ) {
+			return $duration . ' ' . str_replace( '+', ' ', $diet_type ) . ' Plan';
+		} elseif ( $duration ) {
+			return $duration . ' Plan';
+		} elseif ( $diet_type ) {
+			return str_replace( '+', ' ', $diet_type ) . ' Plan';
+		}
+
+		return 'Meal Plan';
+	}
+
+	/**
+	 * Determine subscription status based on dates.
+	 *
+	 * @param string $start_date
+	 * @param string $plan_duration
+	 * @return string
+	 */
+	private static function determine_subscription_status( string $start_date, string $plan_duration ): string {
+		$current_date = current_time( 'Y-m-d' );
+		$end_date = self::calculate_end_date( $start_date, $plan_duration );
+
+		if ( $current_date > $end_date ) {
+			return 'expired';
+		}
+
+		return 'active';
+	}
+
+	/**
+	 * Calculate end date based on start date and duration.
+	 *
+	 * @param string $start_date
+	 * @param string $duration
+	 * @return string
+	 */
+	private static function calculate_end_date( string $start_date, string $duration ): string {
+		$timestamp = strtotime( $start_date );
+
+		if ( strpos( $duration, 'Month' ) !== false ) {
+			$months = (int) filter_var( $duration, FILTER_SANITIZE_NUMBER_INT );
+			$timestamp = strtotime( "+{$months} months", $timestamp );
+		} elseif ( strpos( $duration, 'Week' ) !== false ) {
+			$weeks = (int) filter_var( $duration, FILTER_SANITIZE_NUMBER_INT );
+			$timestamp = strtotime( "+{$weeks} weeks", $timestamp );
+		} elseif ( strpos( $duration, 'Day' ) !== false ) {
+			$days = (int) filter_var( $duration, FILTER_SANITIZE_NUMBER_INT );
+			$timestamp = strtotime( "+{$days} days", $timestamp );
+		}
+
+		return date( 'Y-m-d', $timestamp );
+	}
+
+	/**
+	 * Calculate next delivery date.
+	 *
+	 * @param string $start_date
+	 * @param string $frequency
+	 * @param string $status
+	 * @return string
+	 */
+	private static function calculate_next_delivery( string $start_date, string $frequency, string $status ): string {
+		if ( $status === 'expired' ) {
+			return self::calculate_end_date( $start_date, $frequency );
+		}
+
+		$current_date = current_time( 'Y-m-d' );
+		$timestamp = strtotime( $start_date );
+
+		// For simplicity, assume next delivery is based on frequency from start
+		// In a real implementation, you'd track last delivery
+		if ( strpos( $frequency, 'Month' ) !== false ) {
+			$months = (int) filter_var( $frequency, FILTER_SANITIZE_NUMBER_INT );
+			while ( date( 'Y-m-d', $timestamp ) <= $current_date ) {
+				$timestamp = strtotime( "+{$months} months", $timestamp );
+			}
+		} elseif ( strpos( $frequency, 'Week' ) !== false ) {
+			$weeks = (int) filter_var( $frequency, FILTER_SANITIZE_NUMBER_INT );
+			while ( date( 'Y-m-d', $timestamp ) <= $current_date ) {
+				$timestamp = strtotime( "+{$weeks} weeks", $timestamp );
+			}
+		}
+
+		return date( 'Y-m-d', $timestamp );
+	}
+
+	/**
+	 * Get subscription price.
+	 *
+	 * @param array|null $pricing_data
+	 * @param \WC_Order $order
+	 * @return string
+	 */
+	private static function get_subscription_price( ?array $pricing_data, \WC_Order $order ): string {
+		if ( $pricing_data && isset( $pricing_data['planDiscount'] ) && $pricing_data['planDiscount'] > 0 ) {
+			return 'AED ' . number_format( $pricing_data['planDiscount'], 0 );
+		}
+
+		$subtotal = $order->get_subtotal();
+		return 'AED ' . number_format( $subtotal, 0 );
 	}
 
 	/**
