@@ -114,7 +114,7 @@ $meal_type_terms = get_terms( [
 
     <!-- Sticky Footer -->
     <div class="cp_weekly_menu_sticky_footer">
-        <a href="#" class="cp_weekly_menu_sticky_btn">
+        <a href="/our-plans" class="cp_weekly_menu_sticky_btn">
             <span class="cp_weekly_menu_sticky_btn_title">Try AOS Fresh Now</span>
             <span class="cp_weekly_menu_sticky_btn_subtitle">Order these recipes to your door</span>
         </a>
