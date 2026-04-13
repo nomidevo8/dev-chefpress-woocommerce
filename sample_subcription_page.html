@@ -8,65 +8,65 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --brand: #83C11F;
-            --brand-dark: #6ea517;
-            --brand-light: #eef7d9;
+            --brand: #83C11F !important;
+            --brand-dark: #6ea517 !important;
+            --brand-light: #eef7d9 !important;
 
-            --text-main: #2B303B;
-            --text-muted: #6b7280;
+            --text-main: #2B303B !important;
+            --text-muted: #6b7280 !important;
 
-            --bg-light: #f7f8fa;
-            --border: #e5e7eb;
-            --white: #ffffff;
+            --bg-light: #f7f8fa !important;
+            --border: #e5e7eb !important;
+            --white: #ffffff !important;
 
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
         body {
-            font-family: var(--font-sans);
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
+            font-family: var(--font-sans) !important;
+            background-color: var(--bg-light) !important;
+            color: var(--text-main) !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        .brand-text { color: var(--brand); }
-        .brand-bg { background-color: var(--brand); }
-        .brand-light-bg { background-color: var(--brand-light); }
+        .brand-text { color: var(--brand) !important; }
+        .brand-bg { background-color: var(--brand) !important; }
+        .brand-light-bg { background-color: var(--brand-light) !important; }
         
         .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(4px) !important;
         }
 
         .custom-shadow {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
         }
 
         .table-container {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow: hidden;
+            background: white !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--border) !important;
+            overflow: hidden !important;
         }
 
         /* Custom Scrollbar */
         .modal-content::-webkit-scrollbar {
-            width: 6px;
+            width: 6px !important;
         }
         .modal-content::-webkit-scrollbar-track {
-            background: transparent;
+            background: transparent !important;
         }
         .modal-content::-webkit-scrollbar-thumb {
-            background: #e5e7eb;
-            border-radius: 10px;
+            background: #e5e7eb !important;
+            border-radius: 10px !important;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from { opacity: 0 !important; transform: scale(0.95) translateY(10px) !important; }
+            to { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
         }
         .animate-modal {
-            animation: fadeIn 0.3s ease-out forwards;
+            animation: fadeIn 0.3s ease-out forwards !important;
         }
     </style>
 </head>
