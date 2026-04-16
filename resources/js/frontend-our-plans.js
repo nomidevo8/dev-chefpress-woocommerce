@@ -178,19 +178,8 @@
       else state.goal = 'Maintain Weight';
     }
 
-    // Store the full slots data if provided by backend with recipe data
-    if (orderData.slots && Array.isArray(orderData.slots)) {
-      console.log('Using slots from backend orderData:', orderData.slots);
-      state.slots = orderData.slots;
-    } else {
-      console.log('Generating slots from state.menu:', state.menu);
-      // Generate slots from menu data (will populate recipes in generateSlotsFromState)
-      generateSlotsFromState();
-    }
-
-    console.log('Prefill complete. state.slots:', state.slots);
-    console.log('Prefill complete. state.menu:', state.menu);
-    console.log('RECIPES array available?', typeof RECIPES !== 'undefined', RECIPES ? 'Yes, length: ' + RECIPES.length : 'No');
+    // Generate slots from menu data
+    generateSlotsFromState();
 
     // Keep at step 1 so user can navigate through wizard naturally
     state.currentStep = 1;
@@ -1351,29 +1340,7 @@
     }
   }
 
-  function populateSlotRecipesFromRECIPES() {
-    if (!Array.isArray(state.slots) || typeof RECIPES === 'undefined' || !Array.isArray(RECIPES)) {
-      return; // RECIPES not available yet
-    }
-
-    state.slots.forEach(function(slot) {
-      // Skip if already has recipe data with a title
-      if (slot.recipeSelected && slot.recipeSelected.title) {
-        return;
-      }
-
-      // Try to get recipe from state.menu
-      var recipeId = state.menu && state.menu[slot.id];
-      if (recipeId) {
-        var recipe = RECIPES.find(function(r) { return String(r.id) === String(recipeId); });
-        if (recipe) {
-          slot.recipeSelected = recipe;
-          console.log('Populated recipe for slot ' + slot.id + ':', recipe);
-        }
-      }
-    });
-  }
-
+  function renderMenuSelection(el) {
     var isMobile = window.innerWidth < 640;
     // Get the pre-rendered weekly menu container
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
@@ -1415,11 +1382,6 @@
 
     // Auto-apply filters after the weekly menu is ready
     waitForWeeklyMenuReady(function () {
-      // Populate recipe data now that RECIPES should be available
-      populateSlotRecipesFromRECIPES();
-      // Update popup content with populated recipes
-      updatePopupContent();
-      // Apply filters
       applyWeeklyMenuFilters();
     });
 
@@ -1807,31 +1769,6 @@
     state.slots = slots;
     if (state.currentSlotIndex < 0) state.currentSlotIndex = 0;
     if (state.currentSlotIndex >= slots.length) state.currentSlotIndex = Math.max(0, slots.length - 1);
-
-    // Populate slots with recipe data from menu and state
-    if (Array.isArray(state.slots)) {
-      state.slots.forEach(function(slot) {
-        // Skip if already has recipe data
-        if (slot.recipeSelected && Object.keys(slot.recipeSelected).length > 0) {
-          return;
-        }
-        
-        // Try to get recipe from state.menu using slot ID
-        var recipeId = state.menu && state.menu[slot.id];
-        console.log('Slot ' + slot.id + ': checking state.menu, recipeId=' + recipeId);
-        
-        // Try to find recipe in RECIPES global
-        if (recipeId && typeof RECIPES !== 'undefined' && Array.isArray(RECIPES)) {
-          var recipe = RECIPES.find(function(r) { return String(r.id) === String(recipeId); });
-          if (recipe) {
-            slot.recipeSelected = recipe;
-            console.log('Slot ' + slot.id + ': populated recipe from RECIPES', recipe);
-          } else {
-            console.log('Slot ' + slot.id + ': recipe ID not found in RECIPES array');
-          }
-        }
-      });
-    }
   }
 
   function updateArrowStates() {
