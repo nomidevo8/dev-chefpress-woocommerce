@@ -499,6 +499,39 @@ class SubscriptionManager {
 	}
 
 	/**
+	 * Calculate current price from history by applying all differences
+	 * 
+	 * @param int $subscription_id
+	 * @param float $base_price Base price to start from
+	 * @return float Calculated current price
+	 */
+	public static function calculate_current_price_from_history( int $subscription_id, float $base_price ): float {
+		$history = self::get_history( $subscription_id );
+		
+		if ( empty( $history ) ) {
+			return $base_price;
+		}
+
+		// History is DESC ordered, so reverse to apply changes from oldest to newest
+		$history_asc = array_reverse( $history );
+		
+		// Get the initial price from the first change if available
+		$current_price = $base_price;
+		if ( ! empty( $history_asc ) && isset( $history_asc[0]['old_price'] ) && (float) $history_asc[0]['old_price'] > 0 ) {
+			$current_price = (float) $history_asc[0]['old_price'];
+		}
+
+		// Apply all differences in chronological order
+		foreach ( $history_asc as $record ) {
+			if ( isset( $record['difference'] ) && $record['difference'] != 0 ) {
+				$current_price += (float) $record['difference'];
+			}
+		}
+
+		return max( 0, $current_price ); // Ensure price is never negative
+	}
+
+	/**
 	 * Get or create adjustment product
 	 * 
 	 * Used for adjustment orders

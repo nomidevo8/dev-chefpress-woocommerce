@@ -102,7 +102,17 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
                                 $start_date = $subscription->get_delivery_details()['startDate'] ?? $state_data['startDate'] ?? '';
                                 $formatted_start = $start_date ? date('M j, Y', strtotime($start_date)) : '-';
 
-                                $total_price = $pricing_data['total'] ?? $subscription->get_current_price();
+                                // Get current price and calculate with history adjustments
+                                $total_price = $subscription->get_current_price();
+                                
+                                // Apply history-based price adjustments
+                                if ( class_exists( '\DevChefPress\Services\SubscriptionManager' ) ) {
+                                    $total_price = \DevChefPress\Services\SubscriptionManager::calculate_current_price_from_history(
+                                        $subscription->get_id(),
+                                        $total_price
+                                    );
+                                }
+                                
                                 $formatted_price = '$' . number_format( (float) $total_price, 2 );
                                 $disabled_attr = $order_id ? '' : 'disabled';
                             ?>

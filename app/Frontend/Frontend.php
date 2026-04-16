@@ -727,10 +727,21 @@ class Frontend {
 		}
 
 		// CASE B: Order ALREADY PAID - Handle based on price difference
+		// Get the accurate original total including all historical adjustments
+		$subscription = UserSubscription::get_by_id( $subscription_id );
 		$original_total = (float) $order->get_total();
+		
+		if ( $subscription ) {
+			$original_total = SubscriptionManager::calculate_current_price_from_history( 
+				$subscription_id, 
+				$original_total 
+			);
+		}
+		
 		$new_total = (float) $new_pricing['total'];
 		$price_difference = $new_total - $original_total;
-
+		// echo "Original Total: $original_total, New Total: $new_total, Price Difference: $price_difference"; // Debug log
+		// die;
 		if ( $price_difference > 0 ) {
 			// CASE B1: Price Increase - Create adjustment order
 			$adjustment_order_id = SubscriptionManager::create_adjustment_order(
