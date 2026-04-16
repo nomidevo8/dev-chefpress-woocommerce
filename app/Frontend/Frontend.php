@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace DevChefPress\Frontend;
 
 use DevChefPress\Hooks\Loader;
+use DevChefPress\Models\UserSubscription;
 use DevChefPress\Services\PluginSettings;
 
 /**
@@ -533,6 +534,35 @@ class Frontend {
 	}
 
 	/**
+	 * Create a subscription record in the custom table.
+	 */
+	private function create_subscription_record( array $state, int $user_id ): int|\WP_Error {
+		if ( $user_id <= 0 ) {
+			return new \WP_Error( 'invalid_user', 'Valid user is required to create a meal plan subscription.' );
+		}
+
+		$plan_name = sanitize_text_field( $state['planDuration'] ?? $state['planName'] ?? 'Meal Plan' );
+		$pricing   = $this->calculate_meal_plan_pricing( $state );
+
+		$data = [
+			'user_id'          => $user_id,
+			'plan_name'        => $plan_name,
+			'meals_data'       => $state['slots'] ?? [],
+			'delivery_details' => [
+				'startDate'    => $state['startDate'] ?? '',
+				'deliverySlot' => $state['deliverySlot'] ?? '',
+				'address'      => $state['address'] ?? [],
+			],
+			'original_price'   => $pricing['total'],
+			'current_price'    => $pricing['total'],
+			'total_paid'       => 0.0,
+			'parent_order_id'  => 0,
+		];
+
+		return UserSubscription::create_subscription_record( $data );
+	}
+
+	/**
 	 * Create a WooCommerce order from meal plan state.
 	 */
 	private function create_meal_plan_order( array $state ): int|\WP_Error {
@@ -540,24 +570,34 @@ class Frontend {
 			return new \WP_Error( 'woocommerce_not_found', 'WooCommerce is not available' );
 		}
 
+		$user_id = get_current_user_id();
+		if ( $user_id <= 0 ) {
+			return new \WP_Error( 'user_not_logged_in', 'You must be logged in to create a meal plan order.' );
+		}
+
+		$subscription_id = $this->create_subscription_record( $state, $user_id );
+		if ( is_wp_error( $subscription_id ) ) {
+			return $subscription_id;
+		}
+
 		// Calculate pricing
 		$pricing = $this->calculate_meal_plan_pricing( $state );
 
 		// Create order
 		$order = wc_create_order();
-
-		// Assign order to logged-in user if available
-		$user_id = get_current_user_id();
-		if ( $user_id > 0 ) {
-			$order->set_customer_id( $user_id );
-			$user = wp_get_current_user();
-			$order->set_billing_email( $user->user_email );
+		if ( ! $order ) {
+			return new \WP_Error( 'order_creation_failed', 'Failed to create WooCommerce order.' );
 		}
+
+		// Assign order to logged-in user
+		$order->set_customer_id( $user_id );
+		$user = wp_get_current_user();
+		$order->set_billing_email( $user->user_email );
 
 		// Add products based on selected recipes
 		foreach ( $state['slots'] as $slot ) {
 			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
-				$product_id = $slot['recipeSelected']['id'];
+				$product_id = intval( $slot['recipeSelected']['id'] );
 				$product = wc_get_product( $product_id );
 				if ( $product ) {
 					$order->add_product( $product, 1 );
@@ -577,13 +617,13 @@ class Frontend {
 		// Set billing/shipping address if available
 		if ( isset( $state['address'] ) ) {
 			$address = $state['address'];
-			$order->set_billing_address_1( $address['building'] ?? '' );
-			$order->set_billing_address_2( $address['floor'] . ' ' . $address['flat'] );
-			$order->set_billing_city( '' ); // Not provided
-			$order->set_billing_postcode( '' ); // Not provided
-			$order->set_billing_country( 'AE' ); // Assuming UAE
-			$order->set_shipping_address_1( $address['building'] ?? '' );
-			$order->set_shipping_address_2( $address['floor'] . ' ' . $address['flat'] );
+			$order->set_billing_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+			$order->set_billing_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+			$order->set_billing_city( '' );
+			$order->set_billing_postcode( '' );
+			$order->set_billing_country( 'AE' );
+			$order->set_shipping_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+			$order->set_shipping_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
 			$order->set_shipping_city( '' );
 			$order->set_shipping_postcode( '' );
 			$order->set_shipping_country( 'AE' );
@@ -591,12 +631,12 @@ class Frontend {
 
 		// Set delivery date
 		if ( isset( $state['startDate'] ) ) {
-			$order->update_meta_data( '_delivery_date', $state['startDate'] );
+			$order->update_meta_data( '_delivery_date', sanitize_text_field( $state['startDate'] ) );
 		}
 
 		// Set delivery slot
 		if ( isset( $state['deliverySlot'] ) ) {
-			$order->update_meta_data( '_delivery_slot', $state['deliverySlot'] );
+			$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
 		}
 
 		// Set order status to pending payment
@@ -605,7 +645,20 @@ class Frontend {
 		// Save the order
 		$order->save();
 
-		return $order->get_id();
+		$order_id = $order->get_id();
+		if ( ! $order_id ) {
+			return new \WP_Error( 'order_id_missing', 'The WooCommerce order did not return a valid ID.' );
+		}
+
+		$link_result = UserSubscription::link_subscription_to_order( $subscription_id, $order_id );
+		if ( is_wp_error( $link_result ) ) {
+			return $link_result;
+		}
+
+		update_post_meta( $order_id, '_subscription_id', $subscription_id );
+		update_post_meta( $order_id, '_order_type', 'meal_plan' );
+
+		return $order_id;
 	}
 
 	/**

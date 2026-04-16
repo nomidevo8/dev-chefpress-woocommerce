@@ -65,6 +65,103 @@ class UserSubscription {
 	}
 
 	/**
+	 * Create a subscription record.
+	 */
+	public static function create_subscription_record( array $data ): int|\WP_Error {
+		global $wpdb;
+
+		$user_id = isset( $data['user_id'] ) ? intval( $data['user_id'] ) : 0;
+		if ( $user_id <= 0 ) {
+			return new \WP_Error( 'invalid_user_id', 'A valid user ID is required.' );
+		}
+
+		$plan_name = sanitize_text_field( $data['plan_name'] ?? '' );
+		if ( empty( $plan_name ) ) {
+			return new \WP_Error( 'invalid_plan_name', 'A valid plan name is required.' );
+		}
+
+		$meals_data = wp_json_encode( $data['meals_data'] ?? array() );
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			return new \WP_Error( 'json_encode_failed', 'Unable to encode meals data.' );
+		}
+
+		$delivery_details = wp_json_encode( $data['delivery_details'] ?? array() );
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			return new \WP_Error( 'json_encode_failed', 'Unable to encode delivery details.' );
+		}
+
+		$inserted = $wpdb->insert(
+			self::get_table_name(),
+			array(
+				'user_id'              => $user_id,
+				'parent_order_id'      => 0,
+				'plan_name'            => $plan_name,
+				'meals_data'           => $meals_data,
+				'delivery_details'     => $delivery_details,
+				'original_price'       => floatval( $data['original_price'] ?? 0 ),
+				'current_price'        => floatval( $data['current_price'] ?? 0 ),
+				'total_paid'           => floatval( $data['total_paid'] ?? 0 ),
+				'total_refund_pending' => floatval( $data['total_refund_pending'] ?? 0 ),
+				'status'               => sanitize_text_field( $data['status'] ?? 'active' ),
+			),
+			array( '%d', '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s' )
+		);
+
+		if ( false === $inserted ) {
+			return new \WP_Error( 'db_insert_error', 'Unable to store meal plan subscription.' );
+		}
+
+		return intval( $wpdb->insert_id );
+	}
+
+	/**
+	 * Update subscription parent_order_id and prevent duplicate linking.
+	 */
+	public static function link_subscription_to_order( int $subscription_id, int $order_id ): bool|\WP_Error {
+		global $wpdb;
+
+		$subscription_id = intval( $subscription_id );
+		$order_id        = intval( $order_id );
+
+		if ( $subscription_id <= 0 || $order_id <= 0 ) {
+			return new \WP_Error( 'invalid_ids', 'Valid subscription and order IDs are required.' );
+		}
+
+		$existing = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT id FROM " . self::get_table_name() . " WHERE id = %d AND parent_order_id = %d",
+				$subscription_id,
+				$order_id
+			)
+		);
+
+		if ( $existing ) {
+			return true;
+		}
+
+		$updated = $wpdb->update(
+			self::get_table_name(),
+			array( 'parent_order_id' => $order_id ),
+			array( 'id' => $subscription_id ),
+			array( '%d' ),
+			array( '%d' )
+		);
+
+		if ( false === $updated ) {
+			return new \WP_Error( 'db_update_error', 'Unable to link subscription to order.' );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks whether an order is a meal plan order.
+	 */
+	public static function is_meal_plan_order( int $order_id ): bool {
+		return get_post_meta( intval( $order_id ), '_order_type', true ) === 'meal_plan';
+	}
+
+	/**
 	 * Save subscription to database
 	 */
 	public function save(): bool {
