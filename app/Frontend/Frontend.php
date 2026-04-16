@@ -6,6 +6,8 @@ namespace DevChefPress\Frontend;
 use DevChefPress\Hooks\Loader;
 use DevChefPress\Models\UserSubscription;
 use DevChefPress\Services\PluginSettings;
+use DevChefPress\Services\SubscriptionManager;
+use DevChefPress\Services\NotificationService;
 
 /**
  * Class Frontend
@@ -387,13 +389,22 @@ class Frontend {
 			'--cp_product_color-bg-light: ' . esc_html( $theme_colors['bg_light'] ) . ';' .
 			'--cp_product_color-border: ' . esc_html( $theme_colors['border'] ) . ';' .
 			'--cp_product_color-white: ' . esc_html( $theme_colors['white'] ) . ';' .
+			'--chefpress-primary-color: ' . esc_html( $theme_colors['brand'] ) . ';' .
 			'}';
 
 		// Enqueue My Subscriptions CSS
 		wp_enqueue_style(
 			'dev-chefpress-my-subscriptions',
 			DEVCHEFPRESS_RESOURCES_URL . 'css/my-subscriptions.css',
-			[],
+			array(),
+			DEVCHEFPRESS_VERSION
+		);
+
+		// Enqueue Subscription Details CSS
+		wp_enqueue_style(
+			'dev-chefpress-subscription-details',
+			DEVCHEFPRESS_RESOURCES_URL . 'css/subscription-details.css',
+			array(),
 			DEVCHEFPRESS_VERSION
 		);
 
@@ -406,7 +417,7 @@ class Frontend {
 		wp_enqueue_script(
 			'dev-chefpress-my-subscriptions',
 			DEVCHEFPRESS_RESOURCES_URL . 'js/my-subscriptions.js',
-			[ 'jquery' ],
+			array( 'jquery' ),
 			DEVCHEFPRESS_VERSION,
 			true
 		);
@@ -594,7 +605,7 @@ class Frontend {
 		$user = wp_get_current_user();
 		$order->set_billing_email( $user->user_email );
 
-		// Add products based on selected recipes
+		// Add products based on selected recipes (structure only, prices are 0)
 		foreach ( $state['slots'] as $slot ) {
 			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
 				$product_id = intval( $slot['recipeSelected']['id'] );
@@ -605,10 +616,18 @@ class Frontend {
 			}
 		}
 
-		// Set custom price if needed
+		// Add package pricing as a fee item (source of truth for totals)
 		if ( $pricing['total'] > 0 ) {
-			$order->set_total( $pricing['total'] );
+			$fee = new \WC_Order_Item_Fee();
+			$fee->set_name( 'Meal Plan Package' );
+			$fee->set_amount( $pricing['total'] );
+			$fee->set_total( $pricing['total'] );
+			$fee->set_tax_status( 'none' ); // No tax on package fee
+			$order->add_item( $fee );
 		}
+
+		// Calculate totals after adding all items
+		$order->calculate_totals();
 
 		// Add order meta with all state details
 		$order->update_meta_data( '_meal_plan_state', $state );
@@ -662,7 +681,7 @@ class Frontend {
 	}
 
 	/**
-	 * Update an existing meal plan order.
+	 * Update an existing meal plan order with comprehensive billing logic
 	 */
 	private function update_meal_plan_order( int $order_id, array $state ): array|\WP_Error {
 		if ( ! class_exists( 'WC_Order' ) ) {
@@ -674,108 +693,122 @@ class Frontend {
 			return new \WP_Error( 'order_not_found', 'Order not found' );
 		}
 
-		// Check if user owns this order
-		if ( $order->get_customer_id() !== get_current_user_id() ) {
-			return new \WP_Error( 'unauthorized', 'You do not have permission to edit this order' );
-		}
+		$user_id = get_current_user_id();
 
-		// Get original pricing
-		$original_pricing = $order->get_meta( '_meal_plan_pricing' );
-		$original_total = 0;
-		if ( is_array( $original_pricing ) && isset( $original_pricing['total'] ) ) {
-			$original_total = (float) $original_pricing['total'];
-		} elseif ( is_string( $original_pricing ) ) {
-			$parsed = json_decode( $original_pricing, true );
-			$original_total = (float) ( $parsed['total'] ?? $order->get_total() );
-		} else {
-			$original_total = (float) $order->get_total();
+		// Check if user owns this order
+		if ( $order->get_customer_id() !== $user_id ) {
+			return new \WP_Error( 'unauthorized', 'You do not have permission to edit this order' );
 		}
 
 		// Calculate new pricing
 		$new_pricing = $this->calculate_meal_plan_pricing( $state );
-		$new_total = (float) $new_pricing['total'];
 
-		// Calculate price difference
+		// Get payment status
+		$payment_status = SubscriptionManager::get_payment_status( $order );
+
+		// Get subscription ID
+		$subscription_id = $order->get_meta( '_subscription_id' );
+
+		// CASE A: Order NOT PAID - Update existing order
+		if ( 'unpaid' === $payment_status ) {
+			$result = SubscriptionManager::handle_unpaid_edit( $order_id, $state, $new_pricing );
+
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+
+			$price_difference = $result['price_difference'];
+
+			// Notify user
+			NotificationService::notify_edit_unpaid( $user_id, $order_id, $price_difference );
+
+			return $result;
+		}
+
+		// CASE B: Order ALREADY PAID - Handle based on price difference
+		$original_total = (float) $order->get_total();
+		$new_total = (float) $new_pricing['total'];
 		$price_difference = $new_total - $original_total;
 
-		// Remove existing line items
-		foreach ( $order->get_items() as $item_id => $item ) {
-			$order->remove_item( $item_id );
-		}
+		if ( $price_difference > 0 ) {
+			// CASE B1: Price Increase - Create adjustment order
+			$adjustment_order_id = SubscriptionManager::create_adjustment_order(
+				$order_id,
+				(int) $subscription_id,
+				$price_difference,
+				$new_pricing
+			);
 
-		// Add new products based on selected recipes
-		foreach ( $state['slots'] as $slot ) {
-			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
-				$product_id = $slot['recipeSelected']['id'];
-				$product = wc_get_product( $product_id );
-				if ( $product ) {
-					$order->add_product( $product, 1 );
+			if ( is_wp_error( $adjustment_order_id ) ) {
+				return $adjustment_order_id;
+			}
+
+			// Notify user and admin
+			NotificationService::notify_price_increase( $user_id, $adjustment_order_id, $price_difference );
+			NotificationService::notify_admin( $order_id, 'price_increase' );
+
+			return array(
+				'order_id' => $adjustment_order_id,
+				'price_difference' => $price_difference,
+				'original_total' => $original_total,
+				'new_total' => $new_total,
+				'adjustment_order' => true
+			);
+
+		} elseif ( $price_difference < 0 ) {
+			// CASE B2: Price Decrease - Handle refund
+			$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+
+			if ( ! $subscription ) {
+				return new \WP_Error( 'subscription_not_found', 'Subscription record not found' );
+			}
+
+			$refund_result = SubscriptionManager::handle_price_decrease(
+				(int) $subscription_id,
+				$order_id,
+				$price_difference,
+				$subscription->get_delivery_details(),
+				$state
+			);
+
+			if ( is_wp_error( $refund_result ) ) {
+				return $refund_result;
+			}
+
+			// Notify user and admin
+			NotificationService::notify_refund_pending(
+				$user_id,
+				$refund_result['refund_amount'],
+				$refund_result['remaining_days']
+			);
+			NotificationService::notify_admin( $order_id, 'refund_required' );
+
+			return array(
+				'order_id' => $order_id,
+				'price_difference' => $price_difference,
+				'original_total' => $original_total,
+				'new_total' => $new_total,
+				'refund' => $refund_result
+			);
+
+		} else {
+			// No price difference - just update subscription
+			if ( $subscription_id ) {
+				$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+				if ( $subscription ) {
+					$subscription->set_meals_data( $state['slots'] ?? array() )
+						->set_delivery_details( $state['address'] ?? array() )
+						->save();
 				}
 			}
+
+			return array(
+				'order_id' => $order_id,
+				'price_difference' => 0,
+				'original_total' => $original_total,
+				'new_total' => $new_total
+			);
 		}
-
-		// Update order total
-		$order->set_total( $new_total );
-
-		// Update order meta with new state and pricing
-		$order->update_meta_data( '_meal_plan_state', $state );
-		$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
-
-		// Store edit information
-		$order->update_meta_data( '_original_order_total', $original_total );
-		$order->update_meta_data( '_updated_order_total', $new_total );
-		$order->update_meta_data( '_price_difference', $price_difference );
-		$order->update_meta_data( '_is_edited_order', 'yes' );
-
-		// Handle refund if new price is lower
-		if ( $price_difference < 0 ) {
-			$refund_amount = abs( $price_difference );
-			$order->update_meta_data( '_refund_pending_amount', $refund_amount );
-		} else {
-			$order->delete_meta_data( '_refund_pending_amount' );
-		}
-
-		// Update billing/shipping address if changed
-		if ( isset( $state['address'] ) ) {
-			$address = $state['address'];
-			$order->set_billing_address_1( $address['building'] ?? '' );
-			$order->set_billing_address_2( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) );
-			$order->set_billing_city( '' );
-			$order->set_billing_postcode( '' );
-			$order->set_billing_country( 'AE' );
-			$order->set_shipping_address_1( $address['building'] ?? '' );
-			$order->set_shipping_address_2( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) );
-			$order->set_shipping_city( '' );
-			$order->set_shipping_postcode( '' );
-			$order->set_shipping_country( 'AE' );
-		}
-
-		// Update delivery date
-		if ( isset( $state['startDate'] ) ) {
-			$order->update_meta_data( '_delivery_date', $state['startDate'] );
-		}
-
-		// Update delivery slot
-		if ( isset( $state['deliverySlot'] ) ) {
-			$order->update_meta_data( '_delivery_slot', $state['deliverySlot'] );
-		}
-
-		// Set order status to processing if no payment needed, or pending if payment required
-		if ( $price_difference > 0 ) {
-			$order->set_status( 'pending' );
-		} else {
-			$order->set_status( 'processing' );
-		}
-
-		// Save the order
-		$order->save();
-
-		return array(
-			'order_id' => $order_id,
-			'price_difference' => $price_difference,
-			'original_total' => $original_total,
-			'new_total' => $new_total
-		);
 	}
 
 	/**
@@ -838,66 +871,68 @@ class Frontend {
 	 */
 	public function handle_get_subscription_details(): void {
 		// Verify nonce
-		if (!wp_verify_nonce($_POST['nonce'] ?? '', 'devchefpress_subscription_nonce')) {
-			wp_send_json_error(['message' => 'Invalid nonce']);
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'devchefpress_subscription_nonce' ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid nonce' ) );
 			return;
 		}
 
-		$order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
+		$order_id = isset( $_POST['order_id'] ) ? intval( $_POST['order_id'] ) : 0;
 
-		if (!$order_id) {
-			wp_send_json_error(['message' => 'Invalid order ID']);
+		if ( ! $order_id ) {
+			wp_send_json_error( array( 'message' => 'Invalid order ID' ) );
 			return;
 		}
 
-		$order = wc_get_order($order_id);
+		$order = wc_get_order( $order_id );
 
-		if (!$order) {
-			wp_send_json_error(['message' => 'Order not found']);
+		if ( ! $order ) {
+			wp_send_json_error( array( 'message' => 'Order not found' ) );
 			return;
 		}
 
 		// Check if user owns this order
-		if ($order->get_customer_id() !== get_current_user_id()) {
-			wp_send_json_error(['message' => 'Unauthorized']);
+		if ( $order->get_customer_id() !== get_current_user_id() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 			return;
 		}
 
-		$state = $order->get_meta('_meal_plan_state');
-		$pricing = $order->get_meta('_meal_plan_pricing');
+		$state = $order->get_meta( '_meal_plan_state' );
+		$pricing = $order->get_meta( '_meal_plan_pricing' );
 
-		if (empty($state)) {
-			wp_send_json_error(['message' => 'No subscription data found']);
+		if ( empty( $state ) ) {
+			wp_send_json_error( array( 'message' => 'No subscription data found' ) );
 			return;
 		}
 
 		// Prepare response data
-		$response_data = [];
+		$response_data = array();
 
 		// Add state data
-		if (!empty($state)) {
-			$response_data = is_array($state) ? $state : json_decode((string)$state, true);
+		if ( ! empty( $state ) ) {
+			$response_data = is_array( $state ) ? $state : json_decode( (string) $state, true );
 		}
 
 		// Add pricing data from separate meta if exists
-		if (!empty($pricing)) {
-			$pricing_data = is_array($pricing) ? $pricing : json_decode((string)$pricing, true);
+		if ( ! empty( $pricing ) ) {
+			$pricing_data = is_array( $pricing ) ? $pricing : json_decode( (string) $pricing, true );
 			$response_data['pricing'] = $pricing_data;
 		}
 
 		// If no separate pricing meta, extract from WooCommerce order
-		if (empty($response_data['pricing']) || empty($response_data['pricing'])) {
-			$response_data['subtotal'] = (float) $order->get_subtotal();
-			$response_data['total'] = (float) $order->get_total();
+		if ( empty( $response_data['pricing'] ) ) {
+			$response_data['pricing'] = array(
+				'subtotal' => (float) $order->get_subtotal(),
+				'total' => (float) $order->get_total(),
+			);
 
 			// Calculate discounts from order coupons
 			$coupon_discount = 0;
-			foreach ($order->get_coupons() as $coupon) {
+			foreach ( $order->get_coupons() as $coupon ) {
 				$coupon_discount += (float) $coupon->get_discount();
 			}
 
-			if ($coupon_discount > 0) {
-				$response_data['couponTotal'] = $coupon_discount;
+			if ( $coupon_discount > 0 ) {
+				$response_data['pricing']['coupon_discount'] = $coupon_discount;
 			}
 		}
 
@@ -906,6 +941,19 @@ class Frontend {
 		$response_data['customer_name'] = $order->get_formatted_billing_full_name();
 		$response_data['order_id'] = $order_id;
 
-		wp_send_json_success($response_data);
+		// Get subscription ID and build detailed HTML
+		$subscription_id = $order->get_meta( '_subscription_id' );
+		if ( $subscription_id ) {
+			$response_data['subscription_id'] = $subscription_id;
+			// Build detailed HTML with history
+			$html = SubscriptionDetailsHelper::build_subscription_details_html(
+				$response_data,
+				(int) $subscription_id,
+				$order_id
+			);
+			$response_data['html'] = $html;
+		}
+
+		wp_send_json_success( $response_data );
 	}
 }

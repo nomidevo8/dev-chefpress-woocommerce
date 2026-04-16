@@ -359,9 +359,12 @@
             },
             success: function(res) {
                 console.log('AJAX success response:', res);
-                if (res.success) {
+                if (res.success && res.data) {
                     window.devChefpressCurrentSubscription = res.data;
-                    $('#devchefpressSubscriptionContent').html(buildSubscriptionDetailsHTML(res.data));
+                    
+                    // Use HTML from backend if available, otherwise fall back to JavaScript builder
+                    let html = res.data.html || buildSubscriptionDetailsHTML(res.data);
+                    $('#devchefpressSubscriptionContent').html(html);
 
                     // Initialize map if coordinates exist
                     setTimeout(function() {

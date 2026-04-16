@@ -1,0 +1,323 @@
+/* Subscription Details Modal Styles */
+
+.devchefpress-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.devchefpress-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.devchefpress-info-grid-modal {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.devchefpress-info-item-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.devchefpress-info-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.devchefpress-info-value {
+    font-size: 14px;
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+/* Address Section */
+.devchefpress-address-card {
+    background: white;
+    border-left: 4px solid var(--chefpress-primary-color, #10b981);
+    padding: 16px;
+    border-radius: 4px;
+}
+
+.devchefpress-address-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.devchefpress-address-item:last-child {
+    margin-bottom: 0;
+}
+
+.devchefpress-address-item strong {
+    min-width: 80px;
+    color: #666;
+}
+
+/* Meal Plan Section */
+.devchefpress-meal-plan-tabs {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.devchefpress-day-meals {
+    background: white;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.devchefpress-day-meals strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.devchefpress-day-meals ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.devchefpress-day-meals li {
+    font-size: 13px;
+    color: #555;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.devchefpress-day-meals li:before {
+    content: "🍴";
+    display: inline-block;
+}
+
+.devchefpress-day-meals li:last-child {
+    border-bottom: none;
+}
+
+/* Pricing Section */
+.devchefpress-pricing-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.devchefpress-pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.devchefpress-pricing-row:last-child {
+    border-bottom: none;
+}
+
+.devchefpress-pricing-row span:last-child {
+    font-weight: 600;
+    color: #10b981;
+}
+
+.devchefpress-pricing-total {
+    background: #f8f9fa;
+    padding: 12px;
+    margin: 0 -16px -16px -16px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.devchefpress-pricing-total span:last-child {
+    color: #10b981;
+    font-size: 18px;
+}
+
+/* History Section */
+.devchefpress-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.devchefpress-history-item {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.devchefpress-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.devchefpress-history-type {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.devchefpress-history-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.devchefpress-history-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.devchefpress-history-details strong {
+    color: #1a1a1a;
+}
+
+/* Refund Section */
+.devchefpress-refund-section {
+    border-left: 4px solid #f59e0b;
+    background: #fffbeb;
+}
+
+.devchefpress-refund-card {
+    background: white;
+    border: 1px solid #fcd34d;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.devchefpress-refund-card p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+}
+
+.devchefpress-refund-card p:last-child {
+    margin-bottom: 0;
+}
+
+.devchefpress-refund-notice {
+    background: #fef3c7;
+    padding: 12px;
+    border-radius: 4px;
+    color: #92400e;
+    font-size: 12px;
+}
+
+/* Adjustment Orders Section */
+.devchefpress-adjustments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.devchefpress-adjustment-item {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.devchefpress-adjustment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+}
+
+.devchefpress-adjustment-header span:last-child {
+    color: #10b981;
+    font-size: 16px;
+}
+
+.devchefpress-adjustment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.devchefpress-adjustment-details strong {
+    color: #1a1a1a;
+}
+
+/* Loading State */
+.devchefpress-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 14px;
+}
+
+/* Empty State */
+.devchefpress-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+/* Error State */
+.devchefpress-error-state {
+    background: #fee;
+    color: #c00;
+    padding: 20px;
+    border-radius: 4px;
+    border-left: 4px solid #c00;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .devchefpress-info-grid-modal {
+        grid-template-columns: 1fr;
+    }
+
+    .devchefpress-history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .devchefpress-adjustment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .devchefpress-pricing-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

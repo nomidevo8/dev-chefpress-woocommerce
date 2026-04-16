@@ -95,8 +95,11 @@ register_activation_hook( __FILE__, function (): void {
 	\DevChefPress\Plugin::create_default_week_terms();
 	\DevChefPress\Plugin::create_default_meal_type_terms();
 	
-	// Create custom subscription database table
+	// Create custom subscription database tables
 	\DevChefPress\Models\UserSubscription::create_table();
+	
+	// Run all database migrations (including history table)
+	\DevChefPress\Database\Migrations::run();
 	
 	flush_rewrite_rules();
 } );

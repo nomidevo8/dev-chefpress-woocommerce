@@ -25,46 +25,63 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
     if ( ! is_array( $subscriptions ) ) {
         $subscriptions = array();
     }
+
+	// Filter to show only main subscriptions (not adjustment orders)
+	$subscriptions = array_filter( $subscriptions, function( $subscription ) {
+		$order_id = $subscription->get_parent_order_id();
+		if ( ! $order_id ) {
+			return false;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return false;
+		}
+
+		$order_type = $order->get_meta( '_order_type' );
+		// Include if order_type is 'meal_plan' or not set (legacy)
+		return empty( $order_type ) || 'meal_plan' === $order_type;
+	} );
 }
 
 get_header();
 ?>
 
 <div class="devchefpress-my-subscriptions">
-    <div class="devchefpress-container">
-        <div class="devchefpress-header">
-            <h1 class="devchefpress-title">My Subscriptions</h1>
-            <p class="devchefpress-subtitle">Manage your meal plan subscriptions</p>
-        </div>
+	<div class="devchefpress-container">
+		<div class="devchefpress-header">
+			<h1 class="devchefpress-title">My Subscriptions</h1>
+			<p class="devchefpress-subtitle">Manage your meal plan subscriptions</p>
+		</div>
 
-        <?php if (empty($subscriptions)): ?>
-            <!-- Empty State -->
-            <div class="devchefpress-empty-state">
-                <div class="devchefpress-empty-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h3>You don't have any subscriptions yet</h3>
-                <p>Start your healthy journey by creating your first meal plan subscription.</p>
-                <a href="<?php echo esc_url(home_url('/our-plans')); ?>" class="devchefpress-btn devchefpress-btn-primary">
-                    Create Subscription
-                </a>
-            </div>
-        <?php else: ?>
-            <!-- Subscriptions Table -->
-            <div class="devchefpress-subscriptions-container">
-                <div class="devchefpress-subscriptions-table-wrapper">
-                    <table class="devchefpress-subscriptions-table">
-                        <thead>
-                            <tr>
-                                <th>Plan Name</th>
-                                <th>Price</th>
-                                <th>Start Date</th>
-                                <th class="devchefpress-actions-header">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+		<?php if (empty($subscriptions)): ?>
+			<!-- Empty State -->
+			<div class="devchefpress-empty-state">
+				<div class="devchefpress-empty-icon">
+					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</div>
+				<h3>You don't have any subscriptions yet</h3>
+				<p>Start your healthy journey by creating your first meal plan subscription.</p>
+				<a href="<?php echo esc_url(home_url('/our-plans')); ?>" class="devchefpress-btn devchefpress-btn-primary">
+					Create Subscription
+				</a>
+			</div>
+		<?php else: ?>
+			<!-- Subscriptions Table -->
+			<div class="devchefpress-subscriptions-container">
+				<div class="devchefpress-subscriptions-table-wrapper">
+					<table class="devchefpress-subscriptions-table">
+						<thead>
+							<tr>
+								<th>Plan Name</th>
+								<th>Price</th>
+								<th>Start Date</th>
+								<th class="devchefpress-actions-header">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
                             <?php foreach ($subscriptions as $subscription):
                                 $order_id = $subscription->get_parent_order_id();
                                 $order = $order_id ? wc_get_order( $order_id ) : null;
