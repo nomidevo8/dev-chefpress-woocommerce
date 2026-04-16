@@ -24,7 +24,7 @@ class SubscriptionDetailsHelper {
 		$html = self::build_basic_info( $data );
 		$html .= self::build_address_section( $data );
 		$html .= self::build_meal_plan_section( $data );
-		$html .= self::build_pricing_section( $data );
+		$html .= self::build_pricing_section( $data, $subscription_id );
 		$html .= self::build_history_section( $subscription_id, $order_id );
 		$html .= self::build_refund_section( $subscription_id, $order_id );
 		$html .= self::build_adjustment_orders_section( $order_id );
@@ -263,19 +263,22 @@ class SubscriptionDetailsHelper {
 	 * @param array $data
 	 * @return string
 	 */
-	private static function build_pricing_section( array $data ): string {
+	private static function build_pricing_section( array $data, int $subscription_id ): string {
 		$html = '<div class="devchefpress-section">';
 		$html .= '<h3 class="devchefpress-section-title">💰 Pricing Summary</h3>';
 		$html .= '<div class="devchefpress-pricing-card">';
 
 		// Subtotal
+		$base_price = 0;
 		if ( isset( $data['pricing']['subtotal'] ) ) {
+			$base_price = (float) $data['pricing']['subtotal'];
 			$html .= '<div class="devchefpress-pricing-row">';
 			$html .= '<span>Subtotal:</span>';
 			$html .= '<span>$' . number_format( (float) $data['pricing']['subtotal'], 2 ) . '</span>';
 			$html .= '</div>';
 			$html .= '<hr>';
-			$html .= '<span> Current Price: $' . number_format( (float) $data['pricing']['current_price'], 2 ) . '</span>';
+			
+			
 		}
 
 		// Plan Discount
@@ -299,6 +302,9 @@ class SubscriptionDetailsHelper {
 			$html .= '<div class="devchefpress-pricing-row devchefpress-pricing-total">';
 			$html .= '<span><strong>Total:</strong></span>';
 			$html .= '<span><strong>$' . number_format( (float) $data['pricing']['total'], 2 ) . '</strong></span>';
+			$html .= '</div>';
+			$html .= '<div class="devchefpress-pricing-row devchefpress-pricing-total">';
+			$html .= '<span><strong>Current price :</strong></span> <span><strong>$' . number_format( SubscriptionManager::calculate_current_price_from_history( $subscription_id, $base_price ), 2 ) . '</span></strong>';
 			$html .= '</div>';
 		}
 
