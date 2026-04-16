@@ -2543,7 +2543,7 @@
             } else {
               // No payment needed, redirect to success or dashboard
               alert('Subscription updated successfully!');
-              window.location.href = response.data.redirect_url || '/my-account';
+              window.location.href = '/subscriptions';
             }
           } else {
             // Normal creation flow
