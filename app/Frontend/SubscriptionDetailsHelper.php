@@ -202,29 +202,54 @@ class SubscriptionDetailsHelper {
 				'Sun' => 'Sunday',
 			);
 
+			$html .= '<div class="devchefpress-tabs-sidebar">';
+			$first_day = true;
 			foreach ( $days_order as $day_code ) {
 				if ( ! isset( $meals_by_day[ $day_code ] ) ) {
 					continue;
 				}
 
-				$html .= '<div class="devchefpress-day-meals">';
-				$html .= '<strong>' . esc_html( $days_display[ $day_code ] ) . '</strong>';
-				$html .= '<ul>';
+				$active_class = $first_day ? ' active' : '';
+				$html .= '<div class="devchefpress-tab-item' . esc_attr( $active_class ) . '" data-day="' . esc_attr( $day_code ) . '">' . esc_html( $days_display[ $day_code ] ?? $day_code ) . '</div>';
+				$first_day = false;
+			}
+			$html .= '</div>';
+
+			$html .= '<div class="devchefpress-tabs-content">';
+			$first_day = true;
+			foreach ( $days_order as $day_code ) {
+				if ( ! isset( $meals_by_day[ $day_code ] ) ) {
+					continue;
+				}
+
+				$active_class = $first_day ? ' active' : '';
+				$html .= '<div class="devchefpress-tab-content' . esc_attr( $active_class ) . '" data-day="' . esc_attr( $day_code ) . '">';
+				$html .= '<h4 class="devchefpress-day-title">' . esc_html( $days_display[ $day_code ] ?? $day_code ) . '</h4>';
 
 				foreach ( $meals_by_day[ $day_code ] as $slot ) {
 					$meal_type = $slot['meal'] ?? '';
 					$recipe = $slot['recipeSelected'] ?? array();
-					$recipe_name = $recipe['name'] ?? 'Unknown';
+					$recipe_name = 'Unknown';
 
-					$html .= '<li>';
-					$html .= esc_html( $meal_type ) . ': ' . esc_html( $recipe_name );
-					$html .= '</li>';
+					if ( is_array( $recipe ) ) {
+						$recipe_name = $recipe['title'] ?? $recipe['name'] ?? 'Unknown';
+					} elseif ( is_object( $recipe ) ) {
+						$recipe_name = $recipe->title ?? $recipe->name ?? 'Unknown';
+					}
+
+					$html .= '<div class="devchefpress-meal-item">';
+					$html .= '<span class="devchefpress-meal-type">' . esc_html( $meal_type ) . '</span>';
+					$html .= '<span class="devchefpress-recipe-name">' . esc_html( $recipe_name ) . '</span>';
+					$html .= '</div>';
 				}
 
-				$html .= '</ul>';
 				$html .= '</div>';
+				$first_day = false;
 			}
+			$html .= '</div>';
 		}
+
+		
 
 		$html .= '</div>';
 		$html .= '</div>';

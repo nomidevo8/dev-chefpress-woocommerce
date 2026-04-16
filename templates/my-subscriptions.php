@@ -44,7 +44,7 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
 	} );
 }
 
-get_header();
+// get_header();
 ?>
 
 <div class="devchefpress-my-subscriptions">
@@ -179,4 +179,4 @@ wp_localize_script('devchefpress-my-subscriptions', 'devchefpress_ajax', array(
     'edit_our_plans_url' => esc_url(home_url('/our-plans'))
 ));
 
-get_footer();
+// get_footer();
