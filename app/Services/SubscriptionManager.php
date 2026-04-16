@@ -53,6 +53,53 @@ class SubscriptionManager {
 	}
 
 	/**
+	 * Resolve original order total for pending subscription edits.
+	 *
+	 * Prefer current_price from the custom subscription table,
+	 * then the latest history record new_price if available.
+	 *
+	 * @param \WC_Order $order
+	 * @return float
+	 */
+	private static function resolve_original_order_total( $order ): float {
+		$original_total = 0.0;
+
+		$subscription_id = $order->get_meta( '_subscription_id' );
+		$subscription = null;
+
+		if ( $subscription_id ) {
+			$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+		}
+
+		if ( ! $subscription ) {
+			$subscription = UserSubscription::get_by_order_id( (int) $order->get_id() );
+		}
+
+		if ( $subscription ) {
+			$original_total = $subscription->get_current_price();
+
+			$history = self::get_history( $subscription->get_id() );
+			if ( ! empty( $history ) && isset( $history[0]['new_price'] ) && is_numeric( $history[0]['new_price'] ) ) {
+				$original_total = (float) $history[0]['new_price'];
+			}
+
+			return $original_total;
+		}
+
+		$original_pricing = $order->get_meta( '_meal_plan_pricing' );
+		if ( is_array( $original_pricing ) ) {
+			$original_total = (float) ( $original_pricing['total'] ?? 0 );
+		} elseif ( is_string( $original_pricing ) ) {
+			$parsed = json_decode( $original_pricing, true );
+			$original_total = (float) ( $parsed['total'] ?? $order->get_total() );
+		} else {
+			$original_total = (float) $order->get_total();
+		}
+
+		return $original_total;
+	}
+
+	/**
 	 * Calculate refund amount based on remaining days
 	 * 
 	 * @param float $price_difference The absolute difference (positive number)
@@ -136,19 +183,8 @@ class SubscriptionManager {
 			return new \WP_Error( 'order_not_found', 'Order not found' );
 		}
 
-		// Get original pricing
-		$original_pricing = $order->get_meta( '_meal_plan_pricing' );
-		$original_total = 0;
-		
-		if ( is_array( $original_pricing ) ) {
-			$original_total = (float) ( $original_pricing['total'] ?? 0 );
-		} elseif ( is_string( $original_pricing ) ) {
-			$parsed = json_decode( $original_pricing, true );
-			$original_total = (float) ( $parsed['total'] ?? $order->get_total() );
-		} else {
-			$original_total = (float) $order->get_total();
-		}
-
+		// Get original pricing from subscription records or history, then fallback to order meta
+		$original_total = self::resolve_original_order_total( $order );
 		$new_total = (float) $new_pricing['total'];
 		$price_difference = $new_total - $original_total;
 
@@ -168,8 +204,26 @@ class SubscriptionManager {
 			}
 		}
 
-		// Update order total
-		$order->set_total( $new_total );
+		// Remove any existing meal plan fees
+		foreach ( $order->get_items( 'fee' ) as $fee_id => $fee_item ) {
+			$fee_name = $fee_item->get_name();
+			if ( in_array( $fee_name, array( 'Meal Plan Adjustment', 'Meal Plan Discount', 'Meal Plan Package' ), true ) ) {
+				$order->remove_item( $fee_id );
+			}
+		}
+
+		// Add package pricing as a fee item (source of truth for totals)
+		if ( (float) $new_pricing['total'] > 0 ) {
+			$fee = new \WC_Order_Item_Fee();
+			$fee->set_name( 'Meal Plan Package' );
+			$fee->set_amount( (float) $new_pricing['total'] );
+			$fee->set_total( (float) $new_pricing['total'] );
+			$fee->set_tax_status( 'none' ); // No tax on package fee
+			$order->add_item( $fee );
+		}
+
+		// Recalculate the order total based on new products and package fee
+		$order->calculate_totals( false );
 
 		// Update order meta
 		$order->update_meta_data( '_meal_plan_state', $state );
