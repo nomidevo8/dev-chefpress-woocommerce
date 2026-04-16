@@ -299,6 +299,7 @@ class Frontend {
 			'planDiscounts' => $pricing_presets['planDiscounts'] ?? [],
 			'promoCodes'    => $pricing_presets['promoCodes'] ?? [],
 			'ajax_url'      => admin_url( 'admin-ajax.php' ),
+			'nonce'         => wp_create_nonce( 'devchefpress_subscription_nonce' ),
 			'isLoggedIn'    => is_user_logged_in(),
 		] );
 	}
@@ -452,24 +453,53 @@ class Frontend {
 			return;
 		}
 
-		// Create the WooCommerce order
-		$order_id = $this->create_meal_plan_order( $state );
-		if ( is_wp_error( $order_id ) ) {
-			wp_send_json_error( $order_id->get_error_message() );
+		$is_edit_mode = isset( $_POST['is_edit_mode'] ) && $_POST['is_edit_mode'] === '1';
+		$edit_order_id = isset( $_POST['edit_order_id'] ) ? intval( $_POST['edit_order_id'] ) : 0;
+
+		if ( $is_edit_mode ) {
+			$result = $this->update_meal_plan_order( $edit_order_id, $state );
+		} else {
+			$result = $this->create_meal_plan_order( $state );
+		}
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( $result->get_error_message() );
 			return;
 		}
 
-		// Get the order and redirect to its payment page
-		$order = wc_get_order( $order_id );
-		if ( ! $order ) {
-			wp_send_json_error( 'Failed to retrieve created order' );
-			return;
+		// For edit mode, check if payment is needed
+		if ( $is_edit_mode ) {
+			$order = wc_get_order( $result['order_id'] );
+			$needs_payment = $result['price_difference'] > 0;
+			
+			if ( $needs_payment ) {
+				$checkout_url = $order->get_checkout_payment_url();
+				wp_send_json_success( array( 
+					'needs_payment' => true, 
+					'checkout_url' => $checkout_url,
+					'price_difference' => $result['price_difference']
+				) );
+			} else {
+				// No payment needed
+				wp_send_json_success( array( 
+					'needs_payment' => false, 
+					'redirect_url' => wc_get_account_endpoint_url( 'orders' ),
+					'price_difference' => $result['price_difference']
+				) );
+			}
+		} else {
+			// Normal creation flow
+			$order = wc_get_order( $result );
+			if ( ! $order ) {
+				wp_send_json_error( 'Failed to retrieve created order' );
+				return;
+			}
+
+			// Redirect to the order payment page (pay for pending order)
+			$checkout_url = $order->get_checkout_payment_url();
+
+			wp_send_json_success( array( 'checkout_url' => $checkout_url ) );
 		}
-
-		// Redirect to the order payment page (pay for pending order)
-		$checkout_url = $order->get_checkout_payment_url();
-
-		wp_send_json_success( array( 'checkout_url' => $checkout_url ) );
 	}
 
 	/**
@@ -576,6 +606,123 @@ class Frontend {
 		$order->save();
 
 		return $order->get_id();
+	}
+
+	/**
+	 * Update an existing meal plan order.
+	 */
+	private function update_meal_plan_order( int $order_id, array $state ): array|\WP_Error {
+		if ( ! class_exists( 'WC_Order' ) ) {
+			return new \WP_Error( 'woocommerce_not_found', 'WooCommerce is not available' );
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return new \WP_Error( 'order_not_found', 'Order not found' );
+		}
+
+		// Check if user owns this order
+		if ( $order->get_customer_id() !== get_current_user_id() ) {
+			return new \WP_Error( 'unauthorized', 'You do not have permission to edit this order' );
+		}
+
+		// Get original pricing
+		$original_pricing = $order->get_meta( '_meal_plan_pricing' );
+		$original_total = 0;
+		if ( is_array( $original_pricing ) && isset( $original_pricing['total'] ) ) {
+			$original_total = (float) $original_pricing['total'];
+		} elseif ( is_string( $original_pricing ) ) {
+			$parsed = json_decode( $original_pricing, true );
+			$original_total = (float) ( $parsed['total'] ?? $order->get_total() );
+		} else {
+			$original_total = (float) $order->get_total();
+		}
+
+		// Calculate new pricing
+		$new_pricing = $this->calculate_meal_plan_pricing( $state );
+		$new_total = (float) $new_pricing['total'];
+
+		// Calculate price difference
+		$price_difference = $new_total - $original_total;
+
+		// Remove existing line items
+		foreach ( $order->get_items() as $item_id => $item ) {
+			$order->remove_item( $item_id );
+		}
+
+		// Add new products based on selected recipes
+		foreach ( $state['slots'] as $slot ) {
+			if ( isset( $slot['recipeSelected'] ) && $slot['recipeSelected'] ) {
+				$product_id = $slot['recipeSelected']['id'];
+				$product = wc_get_product( $product_id );
+				if ( $product ) {
+					$order->add_product( $product, 1 );
+				}
+			}
+		}
+
+		// Update order total
+		$order->set_total( $new_total );
+
+		// Update order meta with new state and pricing
+		$order->update_meta_data( '_meal_plan_state', $state );
+		$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
+
+		// Store edit information
+		$order->update_meta_data( '_original_order_total', $original_total );
+		$order->update_meta_data( '_updated_order_total', $new_total );
+		$order->update_meta_data( '_price_difference', $price_difference );
+		$order->update_meta_data( '_is_edited_order', 'yes' );
+
+		// Handle refund if new price is lower
+		if ( $price_difference < 0 ) {
+			$refund_amount = abs( $price_difference );
+			$order->update_meta_data( '_refund_pending_amount', $refund_amount );
+		} else {
+			$order->delete_meta_data( '_refund_pending_amount' );
+		}
+
+		// Update billing/shipping address if changed
+		if ( isset( $state['address'] ) ) {
+			$address = $state['address'];
+			$order->set_billing_address_1( $address['building'] ?? '' );
+			$order->set_billing_address_2( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) );
+			$order->set_billing_city( '' );
+			$order->set_billing_postcode( '' );
+			$order->set_billing_country( 'AE' );
+			$order->set_shipping_address_1( $address['building'] ?? '' );
+			$order->set_shipping_address_2( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) );
+			$order->set_shipping_city( '' );
+			$order->set_shipping_postcode( '' );
+			$order->set_shipping_country( 'AE' );
+		}
+
+		// Update delivery date
+		if ( isset( $state['startDate'] ) ) {
+			$order->update_meta_data( '_delivery_date', $state['startDate'] );
+		}
+
+		// Update delivery slot
+		if ( isset( $state['deliverySlot'] ) ) {
+			$order->update_meta_data( '_delivery_slot', $state['deliverySlot'] );
+		}
+
+		// Set order status to processing if no payment needed, or pending if payment required
+		if ( $price_difference > 0 ) {
+			$order->set_status( 'pending' );
+		} else {
+			$order->set_status( 'processing' );
+		}
+
+		// Save the order
+		$order->save();
+
+		return array(
+			'order_id' => $order_id,
+			'price_difference' => $price_difference,
+			'original_total' => $original_total,
+			'new_total' => $new_total
+		);
 	}
 
 	/**

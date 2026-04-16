@@ -22,6 +22,12 @@ class OrderDetails {
         );
 
         $this->loader->add_action(
+            'add_meta_boxes',
+            $this,
+            'add_edit_subscription_meta_box'
+        );
+
+        $this->loader->add_action(
             'admin_footer',
             $this,
             'render_modal_template'
@@ -68,6 +74,65 @@ class OrderDetails {
         </button>';
         echo '</div>';
         
+    }
+
+    /**
+     * Add meta box for edit subscription information.
+     */
+    public function add_edit_subscription_meta_box(): void {
+        global $post;
+
+        if ( ! $post || $post->post_type !== 'shop_order' ) {
+            return;
+        }
+
+        $order = wc_get_order( $post->ID );
+        if ( ! $order ) {
+            return;
+        }
+
+        $is_edited = $order->get_meta( '_is_edited_order' );
+        if ( $is_edited !== 'yes' ) {
+            return;
+        }
+
+        add_meta_box(
+            'devchefpress_edit_subscription_info',
+            __( 'Subscription Edit Information', 'dev-chefpress' ),
+            array( $this, 'render_edit_subscription_meta_box' ),
+            'shop_order',
+            'side',
+            'default'
+        );
+    }
+
+    /**
+     * Render the edit subscription meta box.
+     */
+    public function render_edit_subscription_meta_box( $post ): void {
+        $order = wc_get_order( $post->ID );
+        if ( ! $order ) {
+            return;
+        }
+
+        $original_total = (float) $order->get_meta( '_original_order_total' );
+        $updated_total = (float) $order->get_meta( '_updated_order_total' );
+        $price_difference = (float) $order->get_meta( '_price_difference' );
+        $refund_pending = (float) $order->get_meta( '_refund_pending_amount' );
+
+        echo '<div class="devchefpress-edit-info">';
+        echo '<p><strong>' . esc_html__( 'Original Total:', 'dev-chefpress' ) . '</strong> AED ' . esc_html( number_format( $original_total, 2 ) ) . '</p>';
+        echo '<p><strong>' . esc_html__( 'Updated Total:', 'dev-chefpress' ) . '</strong> AED ' . esc_html( number_format( $updated_total, 2 ) ) . '</p>';
+        echo '<p><strong>' . esc_html__( 'Price Difference:', 'dev-chefpress' ) . '</strong> AED ' . esc_html( number_format( $price_difference, 2 ) ) . '</p>';
+
+        if ( $refund_pending > 0 ) {
+            echo '<div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin-top: 10px; border-radius: 4px;">';
+            echo '<p style="margin: 0; color: #856404;"><strong>' . esc_html__( 'Manual Refund Required:', 'dev-chefpress' ) . '</strong> AED ' . esc_html( number_format( $refund_pending, 2 ) ) . '</p>';
+            echo '<p style="margin: 5px 0 0 0; font-size: 12px; color: #856404;">' . esc_html__( 'The customer paid more than the new total. Process refund manually.', 'dev-chefpress' ) . '</p>';
+            echo '</div>';
+        }
+
+        echo '</div>';
     }
 
     /**

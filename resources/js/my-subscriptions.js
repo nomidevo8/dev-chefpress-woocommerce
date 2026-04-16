@@ -422,9 +422,9 @@
         e.preventDefault();
         const orderId = $(this).data('order-id');
 
-        // Placeholder: redirect to edit page or show message
-        alert('Edit subscription functionality will be implemented. Order ID: ' + orderId);
-        // You can redirect to an edit page: window.location.href = '/edit-subscription/' + orderId;
+        if (orderId && devchefpress_ajax.edit_our_plans_url) {
+            window.location.href = devchefpress_ajax.edit_our_plans_url + '?edit_order=' + orderId;
+        }
     });
 
     // Book Current Week Click

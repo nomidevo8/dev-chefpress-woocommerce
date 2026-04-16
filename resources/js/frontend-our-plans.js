@@ -90,8 +90,115 @@
     address: { type: 'Apartment', name: '', building: '', floor: '', flat: '', details: '', lat: null, lng: null },
     selectedAddressType: null,
     isMapFullscreen: false,
-    menuFilter: 'All'
+    menuFilter: 'All',
+    isEditMode: false,
+    editOrderId: null,
+    originalOrderTotal: 0
   };
+
+  // ─────────────────────────────────────────────────────────
+  //  EDIT MODE DETECTION AND PREFILL
+  // ─────────────────────────────────────────────────────────
+  function detectEditMode() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var editOrderId = urlParams.get('edit_order');
+    if (editOrderId && !isNaN(editOrderId)) {
+      state.isEditMode = true;
+      state.editOrderId = parseInt(editOrderId);
+      prefillOrderData();
+    }
+  }
+
+  function prefillOrderData() {
+    $.ajax({
+      url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
+      type: 'POST',
+      data: {
+        action: 'devchefpress_get_subscription_details',
+        order_id: state.editOrderId,
+        nonce: window.ChefPressOurPlans.nonce || ''
+      },
+      success: function(response) {
+        if (response.success && response.data) {
+          var orderData = response.data;
+          prefillStateFromOrderData(orderData);
+        } else {
+          alert('Failed to load subscription data: ' + (response.data.message || 'Unknown error'));
+          // Reset to normal mode
+          state.isEditMode = false;
+          state.editOrderId = null;
+        }
+      },
+      error: function(xhr, status, error) {
+        alert('Error loading subscription data: ' + error);
+        state.isEditMode = false;
+        state.editOrderId = null;
+      }
+    });
+  }
+
+  function prefillStateFromOrderData(orderData) {
+    // Prefill user profile data
+    if (orderData.weight) state.weight = parseFloat(orderData.weight);
+    if (orderData.height) state.height = parseFloat(orderData.height);
+    if (orderData.age) state.age = parseInt(orderData.age);
+    if (orderData.gender) state.gender = orderData.gender;
+    if (orderData.bodyFat) state.bodyFat = parseFloat(orderData.bodyFat);
+    if (orderData.targetWeight) state.targetWeight = parseFloat(orderData.targetWeight);
+    if (orderData.activityLevel) state.activityLevel = orderData.activityLevel;
+    if (orderData.hasAllergies !== undefined) state.hasAllergies = orderData.hasAllergies;
+    if (orderData.selectedAllergens) state.selectedAllergens = orderData.selectedAllergens;
+    if (orderData.dietType) state.dietType = orderData.dietType;
+    if (orderData.planDuration) state.planDuration = orderData.planDuration;
+    if (orderData.promoCode) state.promoCode = orderData.promoCode;
+    if (orderData.promoDiscount) state.promoDiscount = parseFloat(orderData.promoDiscount || 0);
+    if (orderData.isPromoApplied) state.isPromoApplied = orderData.isPromoApplied;
+    if (orderData.mealQuantities) state.mealQuantities = orderData.mealQuantities;
+    if (orderData.selectedDays) state.selectedDays = orderData.selectedDays;
+    if (orderData.menu) state.menu = orderData.menu;
+    if (orderData.startDate) state.startDate = orderData.startDate;
+    if (orderData.deliverySlot) state.deliverySlot = orderData.deliverySlot;
+    if (orderData.deliveryInstructions) state.deliveryInstructions = orderData.deliveryInstructions;
+    if (orderData.address) state.address = orderData.address;
+    if (orderData.selectedAddressType) state.selectedAddressType = orderData.selectedAddressType;
+
+    // Store original order total for comparison
+    if (orderData.pricing && orderData.pricing.total) {
+      state.originalOrderTotal = parseFloat(orderData.pricing.total);
+    }
+
+    // Determine goal from data (reverse engineer if needed)
+    if (orderData.goal) {
+      state.goal = orderData.goal;
+    } else {
+      // Try to determine from target weight vs current weight
+      var weightDiff = state.targetWeight - state.weight;
+      if (weightDiff < -2) state.goal = 'Lose Weight';
+      else if (weightDiff > 2) state.goal = 'Gain Weight';
+      else state.goal = 'Maintain Weight';
+    }
+
+    // Store the full slots data if provided by backend with recipe data
+    if (orderData.slots && Array.isArray(orderData.slots)) {
+      console.log('Using slots from backend orderData:', orderData.slots);
+      state.slots = orderData.slots;
+    } else {
+      console.log('Generating slots from state.menu:', state.menu);
+      // Generate slots from menu data (will populate recipes in generateSlotsFromState)
+      generateSlotsFromState();
+    }
+
+    console.log('Prefill complete. state.slots:', state.slots);
+    console.log('Prefill complete. state.menu:', state.menu);
+    console.log('RECIPES array available?', typeof RECIPES !== 'undefined', RECIPES ? 'Yes, length: ' + RECIPES.length : 'No');
+
+    // Keep at step 1 so user can navigate through wizard naturally
+    state.currentStep = 1;
+
+    // Render the UI with prefilled data and update navigation
+    renderStep();
+    updateNavBar();
+  }
 
   // ─────────────────────────────────────────────────────────
   //  PROGRESS SAVE/RESTORE
@@ -207,7 +314,8 @@
   // ─────────────────────────────────────────────────────────
   function updateProgress() {
     $('#dev_chefpress_plan_step-number').text(state.currentStep + '/15');
-    $('#dev_chefpress_plan_step-label').text(STEP_LABELS[state.currentStep - 1]);
+    var stepLabel = state.isEditMode ? 'Edit Subscription' : STEP_LABELS[state.currentStep - 1];
+    $('#dev_chefpress_plan_step-label').text(stepLabel);
     var circumference = 2 * Math.PI * 20;
     var offset = circumference - (state.currentStep / 15) * circumference;
     $('#dev_chefpress_plan_progress-circle').css('stroke-dashoffset', offset);
@@ -1243,7 +1351,29 @@
     }
   }
 
-  function renderMenuSelection(el) {
+  function populateSlotRecipesFromRECIPES() {
+    if (!Array.isArray(state.slots) || typeof RECIPES === 'undefined' || !Array.isArray(RECIPES)) {
+      return; // RECIPES not available yet
+    }
+
+    state.slots.forEach(function(slot) {
+      // Skip if already has recipe data with a title
+      if (slot.recipeSelected && slot.recipeSelected.title) {
+        return;
+      }
+
+      // Try to get recipe from state.menu
+      var recipeId = state.menu && state.menu[slot.id];
+      if (recipeId) {
+        var recipe = RECIPES.find(function(r) { return String(r.id) === String(recipeId); });
+        if (recipe) {
+          slot.recipeSelected = recipe;
+          console.log('Populated recipe for slot ' + slot.id + ':', recipe);
+        }
+      }
+    });
+  }
+
     var isMobile = window.innerWidth < 640;
     // Get the pre-rendered weekly menu container
     var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
@@ -1285,6 +1415,11 @@
 
     // Auto-apply filters after the weekly menu is ready
     waitForWeeklyMenuReady(function () {
+      // Populate recipe data now that RECIPES should be available
+      populateSlotRecipesFromRECIPES();
+      // Update popup content with populated recipes
+      updatePopupContent();
+      // Apply filters
       applyWeeklyMenuFilters();
     });
 
@@ -1608,20 +1743,29 @@
   // Step 15 – Success
   function renderSuccess(el) {
     var isMobile = window.innerWidth < 640;
+    var successMessage = state.isEditMode ? 
+      'Your subscription has been updated successfully!' : 
+      'Your first box will arrive on ' + state.startDate + '. Get ready for a healthier you!';
+    
+    var buttonText = state.isEditMode ? 'Back to My Subscriptions' : 'Go to Dashboard';
+    var buttonAction = state.isEditMode ? 
+      "window.location.href='/my-account'" : 
+      "location.reload()";
+
     el.innerHTML =
       '<div class="dev_chefpress_plan_text-center" style="padding:' + (isMobile ? '2rem 0 !important' : '3rem 0 !important') + '; !important">' +
         '<div class="dev_chefpress_plan_animate-bounce" style="width:' + (isMobile ? '4.5rem' : '6rem') + ' !important;height:' + (isMobile ? '4.5rem' : '6rem') + ' !important;background:var(--emerald-500) !important;border-radius:9999px !important;display:flex !important;align-items:center !important;justify-content:center !important;margin:0 auto ' + (isMobile ? '1.5rem' : '2rem') + ' auto !important;box-shadow:0 25px 50px -12px rgba(16,185,129,0.4) !important;">' +
           '<i data-lucide="check" style="color:#fff !important;width:' + (isMobile ? '2rem' : '3rem') + ' !important;height:' + (isMobile ? '2rem' : '3rem') + ' !important;"></i>' +
         '</div>' +
-        '<h2 style="font-size:' + (isMobile ? '1.875rem' : '3rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin-bottom:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-family:\'Outfit\',sans-serif !important;">You\'re all set!</h2>' +
-        '<p style="color:var(--gray-500) !important;font-size:' + (isMobile ? '0.875rem' : '1.125rem') + ' !important;max-width:28rem !important;margin:0 auto ' + (isMobile ? '2rem' : '3rem') + ' auto !important;line-height:1.6 !important;">Your first box will arrive on <span style="font-weight:700 !important;color:var(--emerald-600) !important;">' + state.startDate + '</span>. Get ready for a healthier you!</p>' +
+        '<h2 style="font-size:' + (isMobile ? '1.875rem' : '3rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;margin-bottom:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-family:\'Outfit\',sans-serif !important;">' + (state.isEditMode ? 'Subscription Updated!' : 'You\'re all set!') + '</h2>' +
+        '<p style="color:var(--gray-500) !important;font-size:' + (isMobile ? '0.875rem' : '1.125rem') + ' !important;max-width:28rem !important;margin:0 auto ' + (isMobile ? '2rem' : '3rem') + ' auto !important;line-height:1.6 !important;">' + successMessage + '</p>' +
         '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-4" style="max-width:32rem !important;margin:0 auto !important;grid-template-columns:repeat(1,minmax(0,1fr)) !important;gap:' + (isMobile ? '0.75rem' : '1rem') + ' !important;" id="dev_chefpress_plan_success-btns">' +
-          '<button onclick="location.reload()" class="dev_chefpress_plan_btn-primary" style="padding:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-size:' + (isMobile ? '0.875rem' : '1rem') + ' !important;font-weight:700 !important;border-radius:1rem !important;box-shadow:0 10px 15px -3px rgba(16,185,129,0.2) !important;">Go to Dashboard</button>' +
-          '<button onclick="modifyPlan()" class="dev_chefpress_plan_btn-outline" style="padding:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-size:' + (isMobile ? '0.875rem' : '1rem') + ' !important;font-weight:700 !important;border-radius:1rem !important;border:2px solid var(--emerald-900) !important;background:transparent !important;color:var(--emerald-900) !important;">Modify Subscription</button>' +
+          '<button onclick="' + buttonAction + '" class="dev_chefpress_plan_btn-primary" style="padding:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-size:' + (isMobile ? '0.875rem' : '1rem') + ' !important;font-weight:700 !important;border-radius:1rem !important;box-shadow:0 10px 15px -3px rgba(16,185,129,0.2) !important;">' + buttonText + '</button>' +
+          (!state.isEditMode ? '<button onclick="modifyPlan()" class="dev_chefpress_plan_btn-outline" style="padding:' + (isMobile ? '0.75rem' : '1rem') + ' !important;font-size:' + (isMobile ? '0.875rem' : '1rem') + ' !important;font-weight:700 !important;border-radius:1rem !important;border:2px solid var(--emerald-900) !important;background:transparent !important;color:var(--emerald-900) !important;">Modify Subscription</button>' : '') +
         '</div>' +
       '</div>';
 
-    if (window.innerWidth >= 640) el.querySelector('#dev_chefpress_plan_success-btns').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr)) !important';
+    if (window.innerWidth >= 640 && !state.isEditMode) el.querySelector('#dev_chefpress_plan_success-btns').style.gridTemplateColumns = 'repeat(2,minmax(0,1fr)) !important';
   }
 
   // ─────────────────────────────────────────────────────────
@@ -1663,6 +1807,31 @@
     state.slots = slots;
     if (state.currentSlotIndex < 0) state.currentSlotIndex = 0;
     if (state.currentSlotIndex >= slots.length) state.currentSlotIndex = Math.max(0, slots.length - 1);
+
+    // Populate slots with recipe data from menu and state
+    if (Array.isArray(state.slots)) {
+      state.slots.forEach(function(slot) {
+        // Skip if already has recipe data
+        if (slot.recipeSelected && Object.keys(slot.recipeSelected).length > 0) {
+          return;
+        }
+        
+        // Try to get recipe from state.menu using slot ID
+        var recipeId = state.menu && state.menu[slot.id];
+        console.log('Slot ' + slot.id + ': checking state.menu, recipeId=' + recipeId);
+        
+        // Try to find recipe in RECIPES global
+        if (recipeId && typeof RECIPES !== 'undefined' && Array.isArray(RECIPES)) {
+          var recipe = RECIPES.find(function(r) { return String(r.id) === String(recipeId); });
+          if (recipe) {
+            slot.recipeSelected = recipe;
+            console.log('Slot ' + slot.id + ': populated recipe from RECIPES', recipe);
+          } else {
+            console.log('Slot ' + slot.id + ': recipe ID not found in RECIPES array');
+          }
+        }
+      });
+    }
   }
 
   function updateArrowStates() {
@@ -2003,7 +2172,7 @@
     var buttonHTML = `
       <div class="dev_chefpress_step9_popup_button_container" style="padding: 1.5rem 1rem; text-align: center; border-bottom: 1px solid #f0f0f0;">
         <button id="dev_chefpress_step9_popup_btn" class="dev_chefpress_step9_popup_button" type="button" title="View your selected recipes" aria-label="View meal plan">
-          <span>📋</span> View Meal Plan
+          <span>📋</span> Edit Meal Plan
         </button>
       </div>
     `;
@@ -2420,15 +2589,29 @@
       type: 'POST',
       data: {
         action: 'create_meal_plan_order',
-        state: JSON.stringify(state)
+        state: JSON.stringify(state),
+        is_edit_mode: state.isEditMode ? '1' : '0',
+        edit_order_id: state.editOrderId || '',
+        nonce: window.ChefPressOurPlans.nonce || ''
       },
       success: function(response) {
         if (response.success) {
-          // Redirect to checkout page
-          window.location.href = response.data.checkout_url;
-          console.log('Order created successfully. Checkout URL:', response);
+          if (state.isEditMode) {
+            // For edit mode, check if payment is needed
+            if (response.data.needs_payment) {
+              window.location.href = response.data.checkout_url;
+            } else {
+              // No payment needed, redirect to success or dashboard
+              alert('Subscription updated successfully!');
+              window.location.href = response.data.redirect_url || '/my-account';
+            }
+          } else {
+            // Normal creation flow
+            window.location.href = response.data.checkout_url;
+          }
+          console.log('Order processed successfully. Response:', response);
         } else {
-          alert('Error creating order: ' + (response.data || 'Unknown error'));
+          alert('Error processing order: ' + (response.data || 'Unknown error'));
           // Go back to previous step
           prevStep();
         }
@@ -2473,8 +2656,11 @@
   $(document).ready(function() {
     if (window.lucide) window.lucide.createIcons();
 
-    // Restore progress if available
-    if (restoreProgress()) {
+    // Detect edit mode and prefill data
+    detectEditMode();
+
+    // Restore progress if available (but not in edit mode)
+    if (!state.isEditMode && restoreProgress()) {
       // Show welcome back message
       setTimeout(function() {
         alert('Welcome back! Your meal plan progress has been restored.');
