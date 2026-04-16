@@ -71,6 +71,7 @@ get_header();
                         <thead>
                             <tr>
                                 <th>Plan Name</th>
+                                <th>Price</th>
                                 <th>Start Date</th>
                                 <th class="devchefpress-actions-header">Actions</th>
                             </tr>
@@ -111,6 +112,7 @@ get_header();
                                             <strong><?php echo esc_html($plan_name); ?></strong>
                                         </div>
                                     </td>
+                                    <td><?php echo esc_html($formatted_price); ?></td>
                                     <td><?php echo esc_html($formatted_start); ?></td>
                                     <td class="devchefpress-actions-cell">
                                         <div class="devchefpress-action-icons">
