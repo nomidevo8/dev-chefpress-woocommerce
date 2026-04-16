@@ -1,5 +1,12 @@
 <?php 
 use DevChefPress\Helpers\WeekCalculator;
+// use DevChefPress\Models\UserSubscription;
+
+// $dummy_subscription = UserSubscription::get_by_id(1);
+// echo "<pre>";
+// print_r($dummy_subscription);
+// echo "</pre>";
+// die;
 
 ?>
 
