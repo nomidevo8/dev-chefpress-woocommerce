@@ -18,14 +18,16 @@ class Admin {
 	private SaveHandler $save_handler;
 	private SettingsPage $settings_page;
 	private OrderDetails $order_details;
+	private SubscriptionsAdminPage $subscriptions_page;
 
 	public function __construct( Loader $loader ) {
-		$this->loader         = $loader;
-		$this->assets         = new Assets( $loader );
-		$this->meta_boxes     = new MetaBoxes( $loader );
-		$this->save_handler   = new SaveHandler( $loader );
-		$this->settings_page  = new SettingsPage( $loader );
-		$this->order_details  = new OrderDetails( $loader );
+		$this->loader              = $loader;
+		$this->assets              = new Assets( $loader );
+		$this->meta_boxes          = new MetaBoxes( $loader );
+		$this->save_handler        = new SaveHandler( $loader );
+		$this->settings_page       = new SettingsPage( $loader );
+		$this->order_details       = new OrderDetails( $loader );
+		$this->subscriptions_page  = new SubscriptionsAdminPage( $loader );
 
 		$this->register_hooks();
 	}

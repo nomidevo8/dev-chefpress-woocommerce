@@ -1,0 +1,358 @@
+/* ChefPress Admin Subscriptions Styles */
+
+.chefpress-admin-filters {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 15px;
+	margin-bottom: 20px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.chefpress-search-input {
+	flex: 1;
+	min-width: 200px;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+}
+
+.chefpress-filter-select,
+.chefpress-filter-date {
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	font-size: 13px;
+}
+
+.chefpress-subscriptions-table-wrapper {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.chefpress-subscriptions-table-wrapper table {
+	width: 100%;
+	margin: 0;
+}
+
+.chefpress-subscriptions-table-wrapper th {
+	background-color: #f8f9fa;
+	font-weight: 600;
+	padding: 12px;
+	text-align: left;
+	border-bottom: 2px solid #e9ecef;
+}
+
+.chefpress-subscriptions-table-wrapper td {
+	padding: 12px;
+	border-bottom: 1px solid #f0f0f0;
+	vertical-align: middle;
+}
+
+.chefpress-subscriptions-table-wrapper tr:hover {
+	background-color: #f9f9f9;
+}
+
+/* Badges */
+.chefpress-badge {
+	display: inline-block;
+	padding: 4px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.chefpress-badge-active {
+	background-color: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.chefpress-badge-paused {
+	background-color: #fff3cd;
+	color: #856404;
+	border: 1px solid #ffeeba;
+}
+
+.chefpress-badge-completed {
+	background-color: #d1ecf1;
+	color: #0c5460;
+	border: 1px solid #bee5eb;
+}
+
+.chefpress-badge-cancelled {
+	background-color: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+.chefpress-badge-warning {
+	display: inline-block;
+	padding: 4px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	background-color: #fff3cd;
+	color: #856404;
+	border: 1px solid #ffeeba;
+}
+
+/* Pagination */
+.tablenav {
+	padding: 10px 12px;
+	background-color: #f9f9f9;
+	border-top: 1px solid #e9ecef;
+}
+
+.tablenav-pages {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.pagination-links {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.pagination-links .button {
+	padding: 4px 8px;
+	font-size: 12px;
+	min-width: 30px;
+	text-align: center;
+}
+
+.pagination-links .button:disabled,
+.pagination-links .button[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.paging-input {
+	padding: 4px 8px;
+	font-size: 13px;
+}
+
+/* Details Page */
+.chefpress-details-container {
+	max-width: 900px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 0;
+}
+
+.chefpress-detail-section {
+	padding: 20px;
+	border-bottom: 1px solid #e9ecef;
+}
+
+.chefpress-detail-section:last-child {
+	border-bottom: none;
+}
+
+.chefpress-detail-section h2 {
+	margin-top: 0;
+	margin-bottom: 15px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #333;
+}
+
+.chefpress-detail-section .form-table {
+	margin: 0;
+	width: 100%;
+}
+
+.chefpress-detail-section .form-table th {
+	width: 25%;
+	padding: 8px 10px;
+	text-align: left;
+	font-weight: 600;
+	color: #555;
+	background: #f9f9f9;
+	border: 1px solid #e9ecef;
+}
+
+.chefpress-detail-section .form-table td {
+	padding: 8px 10px;
+	border: 1px solid #e9ecef;
+	color: #333;
+}
+
+.chefpress-detail-section .form-table tr:nth-child(odd) td,
+.chefpress-detail-section .form-table tr:nth-child(odd) th {
+	background-color: #f9f9f9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.chefpress-admin-filters {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.chefpress-search-input,
+	.chefpress-filter-select,
+	.chefpress-filter-date,
+	.chefpress-admin-filters .button {
+		width: 100%;
+	}
+
+	.chefpress-subscriptions-table-wrapper table {
+		font-size: 12px;
+	}
+
+	.chefpress-subscriptions-table-wrapper th,
+	.chefpress-subscriptions-table-wrapper td {
+		padding: 8px;
+	}
+
+	.chefpress-detail-section .form-table th {
+		width: 40%;
+	}
+}
+
+/* History Section */
+.chefpress-history-list {
+	margin-top: 15px;
+}
+
+.chefpress-history-item {
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+	border-radius: 4px;
+	margin-bottom: 10px;
+	padding: 15px;
+}
+
+.chefpress-history-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.chefpress-history-type {
+	color: #495057;
+}
+
+.chefpress-history-date {
+	color: #6c757d;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+.chefpress-history-details {
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.chefpress-history-details > div {
+	margin-bottom: 5px;
+}
+
+.chefpress-history-details > div:last-child {
+	margin-bottom: 0;
+}
+
+.chefpress-price-increase {
+	color: #dc3545;
+	font-weight: 600;
+}
+
+.chefpress-price-decrease {
+	color: #28a745;
+	font-weight: 600;
+}
+
+/* Refund Processing Section */
+.chefpress-refund-processing {
+	border-left: 4px solid #dc3545;
+	background: #fff5f5;
+}
+
+.chefpress-refund-processing h2 {
+	color: #dc3545;
+}
+
+.chefpress-refund-notice {
+	background: #fff3cd;
+	border: 1px solid #ffeaa7;
+	border-radius: 4px;
+	padding: 15px;
+	margin-bottom: 20px;
+}
+
+.chefpress-refund-notice p {
+	margin: 0 0 10px 0;
+}
+
+.chefpress-refund-notice p:last-child {
+	margin-bottom: 0;
+}
+
+.chefpress-refund-processing form {
+	background: #f8f9fa;
+	padding: 20px;
+	border-radius: 4px;
+	border: 1px solid #e9ecef;
+}
+
+.chefpress-refund-processing label {
+	display: block;
+	margin-bottom: 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.chefpress-refund-processing input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+.chefpress-refund-processing textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	font-family: inherit;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.chefpress-refund-completed {
+	border-left: 4px solid #28a745;
+	background: #f8fff8;
+}
+
+.chefpress-refund-completed h2 {
+	color: #28a745;
+}
+
+.chefpress-refund-completed-notice {
+	background: #d4edda;
+	border: 1px solid #c3e6cb;
+	border-radius: 4px;
+	padding: 15px;
+	color: #155724;
+}
+
+.chefpress-refund-completed-notice p {
+	margin: 0 0 5px 0;
+	font-weight: 600;
+}
+
+.chefpress-refund-completed-notice p:last-child {
+	margin-bottom: 0;
+	font-weight: normal;
+}

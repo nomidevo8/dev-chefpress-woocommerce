@@ -326,7 +326,28 @@ class UserSubscription {
 	}
 
 	public function get_current_price(): float {
-		return $this->current_price ?? 0;
+		// Get base price from order if available, otherwise use stored original_price
+		$base_price = $this->get_base_price_from_order();
+		
+		// Calculate current price by applying all history changes
+		return \DevChefPress\Services\SubscriptionManager::calculate_current_price_from_history(
+			$this->id,
+			$base_price
+		);
+	}
+
+	/**
+	 * Get base price from parent order, fallback to stored original_price
+	 */
+	private function get_base_price_from_order(): float {
+		if ( $this->parent_order_id > 0 ) {
+			$order = wc_get_order( $this->parent_order_id );
+			if ( $order ) {
+				return (float) $order->get_total();
+			}
+		}
+		
+		return $this->original_price;
 	}
 
 	public function get_total_paid(): float {
