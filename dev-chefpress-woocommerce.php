@@ -94,6 +94,10 @@ register_activation_hook( __FILE__, function (): void {
 	// Ensure the weekly taxonomy is registered before creating terms.
 	\DevChefPress\Plugin::create_default_week_terms();
 	\DevChefPress\Plugin::create_default_meal_type_terms();
+	
+	// Create custom subscription database table
+	\DevChefPress\Models\UserSubscription::create_table();
+	
 	flush_rewrite_rules();
 } );
 
