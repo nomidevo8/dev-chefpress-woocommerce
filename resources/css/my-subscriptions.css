@@ -728,11 +728,11 @@
 
 .devchefpress-info-item-modal {
     display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
     padding: var(--cp-spacing-md) !important;
     background: var(--cp-bg-light) !important;
     border-radius: var(--cp-radius) !important;
+    gap: 11px;
+    flex-direction: column;
 }
 
 .devchefpress-address-card {
@@ -873,6 +873,8 @@
 }
 
 .devchefpress-address-item {
+    display: flex !important;
+        gap: 25px;
     margin-bottom: var(--cp-spacing-sm) !important;
 }
 

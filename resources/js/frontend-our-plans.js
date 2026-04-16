@@ -178,6 +178,9 @@
       else state.goal = 'Maintain Weight';
     }
 
+    // Clear all recipe slots so user must refill step 9
+    state.menu = {};
+
     // Generate slots from menu data
     generateSlotsFromState();
 
