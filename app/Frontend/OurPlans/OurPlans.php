@@ -7,7 +7,13 @@ use DevChefPress\Helpers\WeekCalculator;
 // print_r($dummy_subscription);
 // echo "</pre>";
 // die;
-
+// $order = wc_get_order(1868);
+// echo "<pre>";
+// print_r($order);
+// $subscription_id = $order ? $order->get_meta('_subscription_id') : 0;
+// echo "<pre>";
+// echo "Subscription ID: " . $subscription_id . "\n";
+// die;
 ?>
 
 <main id="dev_chefpress_plan_main">

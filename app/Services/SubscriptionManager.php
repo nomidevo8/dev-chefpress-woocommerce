@@ -214,15 +214,17 @@ class SubscriptionManager {
 		}
 
 		// Record history
-		self::insert_history( array(
-			'subscription_id' => $subscription_id ? (int) $subscription_id : 0,
-			'order_id' => $order_id,
-			'change_type' => 'edit_unpaid',
-			'old_price' => $original_total,
-			'new_price' => $new_total,
-			'difference' => $price_difference,
-			'notes' => 'Order updated before payment'
-		) );
+		if ( $subscription_id ) {
+			self::insert_history( array(
+				'subscription_id' => (int) $subscription_id,
+				'order_id' => $order_id,
+				'change_type' => 'edit_unpaid',
+				'old_price' => $original_total,
+				'new_price' => $new_total,
+				'difference' => $price_difference,
+				'notes' => 'Order updated before payment'
+			) );
+		}
 
 		return array(
 			'order_id' => $order_id,

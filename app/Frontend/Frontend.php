@@ -658,6 +658,10 @@ class Frontend {
 			$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
 		}
 
+		// Set subscription and order type in meta BEFORE saving
+		$order->update_meta_data( '_subscription_id', $subscription_id );
+		$order->update_meta_data( '_order_type', 'meal_plan' );
+
 		// Set order status to pending payment
 		$order->set_status( 'pending' );
 
@@ -673,9 +677,6 @@ class Frontend {
 		if ( is_wp_error( $link_result ) ) {
 			return $link_result;
 		}
-
-		update_post_meta( $order_id, '_subscription_id', $subscription_id );
-		update_post_meta( $order_id, '_order_type', 'meal_plan' );
 
 		return $order_id;
 	}
@@ -707,7 +708,7 @@ class Frontend {
 		$payment_status = SubscriptionManager::get_payment_status( $order );
 
 		// Get subscription ID
-		$subscription_id = $order->get_meta( '_subscription_id' );
+		$subscription_id = (int) $order->get_meta( '_subscription_id' );
 
 		// CASE A: Order NOT PAID - Update existing order
 		if ( 'unpaid' === $payment_status ) {
@@ -734,7 +735,7 @@ class Frontend {
 			// CASE B1: Price Increase - Create adjustment order
 			$adjustment_order_id = SubscriptionManager::create_adjustment_order(
 				$order_id,
-				(int) $subscription_id,
+				$subscription_id,
 				$price_difference,
 				$new_pricing
 			);
@@ -757,14 +758,14 @@ class Frontend {
 
 		} elseif ( $price_difference < 0 ) {
 			// CASE B2: Price Decrease - Handle refund
-			$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+			$subscription = UserSubscription::get_by_id( $subscription_id );
 
 			if ( ! $subscription ) {
 				return new \WP_Error( 'subscription_not_found', 'Subscription record not found' );
 			}
 
 			$refund_result = SubscriptionManager::handle_price_decrease(
-				(int) $subscription_id,
+				$subscription_id,
 				$order_id,
 				$price_difference,
 				$subscription->get_delivery_details(),
@@ -793,13 +794,26 @@ class Frontend {
 
 		} else {
 			// No price difference - just update subscription
-			if ( $subscription_id ) {
-				$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+			if ( $subscription_id > 0 ) {
+				$subscription = UserSubscription::get_by_id( $subscription_id );
 				if ( $subscription ) {
 					$subscription->set_meals_data( $state['slots'] ?? array() )
 						->set_delivery_details( $state['address'] ?? array() )
 						->save();
 				}
+			}
+
+			// Record history for the edit
+			if ( $subscription_id > 0 ) {
+				SubscriptionManager::insert_history( array(
+					'subscription_id' => $subscription_id,
+					'order_id' => $order_id,
+					'change_type' => 'edit_no_change',
+					'old_price' => $original_total,
+					'new_price' => $new_total,
+					'difference' => 0,
+					'notes' => 'Subscription updated with no price change'
+				) );
 			}
 
 			return array(
