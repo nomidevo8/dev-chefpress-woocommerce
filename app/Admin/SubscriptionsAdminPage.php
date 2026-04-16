@@ -15,10 +15,12 @@ final class SubscriptionsAdminPage {
 
 	private const SUBMENU_SLUG = 'chefpress-subscriptions';
 	private const DETAILS_SLUG = 'chefpress-subscription-details';
+	private const ACTION_MARK_REFUND_COMPLETED = 'chefpress_mark_refund_completed';
 
 	public function __construct( Loader $loader ) {
 		$loader->add_action( 'admin_menu', $this, 'register_menu', 20 );
 		$loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_styles' );
+		$loader->add_action( 'admin_post_' . self::ACTION_MARK_REFUND_COMPLETED, $this, 'handle_mark_refund_completed' );
 	}
 
 	/**
@@ -367,6 +369,7 @@ final class SubscriptionsAdminPage {
 			<h1><?php echo esc_html__( 'Subscription Details', 'dev-chefpress' ); ?></h1>
 
 			<div class="chefpress-details-container">
+				<?php $this->render_admin_notice(); ?>
 				<!-- User Info -->
 				<div class="chefpress-detail-section">
 					<h2><?php echo esc_html__( 'User Information', 'dev-chefpress' ); ?></h2>
@@ -436,7 +439,20 @@ final class SubscriptionsAdminPage {
 					</table>
 				</div>
 
-				<!-- Parent Order -->
+				<?php if ( $subscription->get_total_refund_pending() > 0 ) : ?>
+				<div class="chefpress-detail-section">
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+						<?php wp_nonce_field( 'chefpress_mark_refund_completed_action', 'chefpress_mark_refund_completed_nonce' ); ?>
+						<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION_MARK_REFUND_COMPLETED ); ?>">
+						<input type="hidden" name="subscription_id" value="<?php echo esc_attr( $subscription->get_id() ); ?>">
+						<button type="submit" class="button button-primary">
+							<?php echo esc_html__( 'Mark Refund as Completed', 'dev-chefpress' ); ?>
+						</button>
+					</form>
+				</div>
+			<?php endif; ?>
+
+			<!-- Parent Order -->
 				<?php if ( $parent_order ) : ?>
 					<div class="chefpress-detail-section">
 						<h2><?php echo esc_html__( 'Parent Order', 'dev-chefpress' ); ?></h2>
@@ -636,6 +652,58 @@ final class SubscriptionsAdminPage {
 	/**
 	 * Format change type for display
 	 */
+	public function handle_mark_refund_completed(): void {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'dev-chefpress' ) );
+		}
+
+		check_admin_referer( 'chefpress_mark_refund_completed_action', 'chefpress_mark_refund_completed_nonce' );
+
+		$subscription_id = isset( $_POST['subscription_id'] ) ? intval( wp_unslash( $_POST['subscription_id'] ) ) : 0;
+		if ( $subscription_id <= 0 ) {
+			wp_die( esc_html__( 'Invalid subscription ID.', 'dev-chefpress' ) );
+		}
+
+		$result = SubscriptionManager::complete_refund( $subscription_id );
+		if ( is_wp_error( $result ) ) {
+			$redirect_url = add_query_arg(
+				array(
+					'page' => self::DETAILS_SLUG,
+					'id' => $subscription_id,
+					'refund_completed' => '0',
+					'error' => urlencode( $result->get_error_message() ),
+				),
+				admin_url( 'admin.php' )
+			);
+			wp_safe_redirect( $redirect_url );
+			exit;
+		}
+
+		$redirect_url = add_query_arg(
+			array(
+				'page' => self::DETAILS_SLUG,
+				'id' => $subscription_id,
+				'refund_completed' => '1',
+			),
+			admin_url( 'admin.php' )
+		);
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	private function render_admin_notice(): void {
+		if ( isset( $_GET['refund_completed'] ) && '1' === $_GET['refund_completed'] ) : ?>
+			<div class="notice notice-success inline">
+				<p><?php echo esc_html__( 'Refund marked as completed successfully', 'dev-chefpress' ); ?></p>
+			</div>
+		<?php elseif ( isset( $_GET['refund_completed'] ) && '0' === $_GET['refund_completed'] ) : ?>
+			<div class="notice notice-error inline">
+				<p><?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['error'] ?? __( 'Failed to mark refund as completed.', 'dev-chefpress' ) ) ) ); ?></p>
+			</div>
+		<?php endif;
+	}
+
 	private static function format_change_type( string $type ): string {
 		$types = [
 			'edit_unpaid' => '✏️ Edited (Before Payment)',

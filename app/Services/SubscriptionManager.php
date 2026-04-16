@@ -422,7 +422,7 @@ class SubscriptionManager {
 			'remaining_days' => $remaining_days,
 			'total_days' => $total_days,
 			'refund_status' => 'pending',
-			'notes' => 'Pro-rata refund pending approval: ' . $refund_calc['refund_ratio'] * 100 . '% of difference'
+			'notes' => 'Refund recorded for price decrease'
 		) );
 
 		return array(
@@ -496,6 +496,42 @@ class SubscriptionManager {
 		return $results ? array_map( function( $row ) {
 			return (array) $row;
 		}, $results ) : array();
+	}
+
+	/**
+	 * Complete the pending refund on a subscription and insert a history record.
+	 *
+	 * This is an internal action only; it does not change WooCommerce orders.
+	 *
+	 * @param int $subscription_id
+	 * @return array|\WP_Error Contains refund_amount on success.
+	 */
+	public static function complete_refund( int $subscription_id ): array|\WP_Error {
+		$subscription = UserSubscription::get_by_id( $subscription_id );
+		if ( ! $subscription ) {
+			return new \WP_Error( 'subscription_not_found', 'Subscription not found.' );
+		}
+
+		$pending_amount = $subscription->get_total_refund_pending();
+		if ( $pending_amount <= 0 ) {
+			return array( 'refund_amount' => 0 );
+		}
+
+		$completed = UserSubscription::complete_pending_refund( $subscription_id );
+		if ( is_wp_error( $completed ) ) {
+			return $completed;
+		}
+
+		self::insert_history( array(
+			'subscription_id' => $subscription_id,
+			'order_id' => $subscription->get_parent_order_id(),
+			'change_type' => 'refund_completed',
+			'refund_amount' => $pending_amount,
+			'refund_status' => 'completed',
+			'notes' => 'Admin marked pending refund as completed.',
+		) );
+
+		return array( 'refund_amount' => $pending_amount );
 	}
 
 	/**

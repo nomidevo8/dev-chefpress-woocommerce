@@ -274,6 +274,8 @@ class SubscriptionDetailsHelper {
 			$html .= '<span>Subtotal:</span>';
 			$html .= '<span>$' . number_format( (float) $data['pricing']['subtotal'], 2 ) . '</span>';
 			$html .= '</div>';
+			$html .= '<hr>';
+			$html .= '<span> Current Price: $' . number_format( (float) $data['pricing']['current_price'], 2 ) . '</span>';
 		}
 
 		// Plan Discount

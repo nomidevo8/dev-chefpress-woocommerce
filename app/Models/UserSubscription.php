@@ -155,6 +155,40 @@ class UserSubscription {
 	}
 
 	/**
+	 * Complete a pending refund without modifying WooCommerce order state.
+	 *
+	 * @param int $subscription_id
+	 * @return float|\WP_Error Previous pending refund amount or WP_Error on failure.
+	 */
+	public static function complete_pending_refund( int $subscription_id ): float|\WP_Error {
+		global $wpdb;
+
+		$subscription = self::get_by_id( $subscription_id );
+		if ( ! $subscription ) {
+			return new \WP_Error( 'subscription_not_found', 'Subscription not found.' );
+		}
+
+		$pending_amount = $subscription->get_total_refund_pending();
+		if ( $pending_amount <= 0 ) {
+			return 0.0;
+		}
+
+		$updated = $wpdb->update(
+			self::get_table_name(),
+			array( 'total_refund_pending' => 0 ),
+			array( 'id' => $subscription_id ),
+			array( '%f' ),
+			array( '%d' )
+		);
+
+		if ( false === $updated ) {
+			return new \WP_Error( 'db_update_error', 'Unable to mark refund as completed.' );
+		}
+
+		return $pending_amount;
+	}
+
+	/**
 	 * Checks whether an order is a meal plan order.
 	 */
 	public static function is_meal_plan_order( int $order_id ): bool {
