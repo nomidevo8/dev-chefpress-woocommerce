@@ -258,6 +258,75 @@
 	line-height: 1.5;
 }
 
+.chefpress-week-card {
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+	border-radius: 4px;
+	margin-bottom: 15px;
+	padding: 16px;
+}
+
+.chefpress-week-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 12px;
+	flex-wrap: wrap;
+}
+
+.chefpress-week-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #333;
+}
+
+.chefpress-week-start {
+	font-size: 12px;
+	color: #6c757d;
+}
+
+.chefpress-week-day {
+	margin-bottom: 12px;
+}
+
+.chefpress-week-day-title {
+	font-size: 13px;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.chefpress-week-recipe-item {
+	display: grid;
+	grid-template-columns: 140px 1fr;
+	gap: 10px;
+	align-items: center;
+	padding: 12px;
+	border: 1px solid #e9ecef;
+	border-radius: 4px;
+	background: #fff;
+	margin-bottom: 10px;
+}
+
+.chefpress-week-recipe-meal {
+	font-size: 12px;
+	font-weight: 700;
+	color: #155724;
+	white-space: nowrap;
+}
+
+.chefpress-week-recipe-title {
+	font-size: 13px;
+	color: #333;
+	line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+	.chefpress-week-recipe-item {
+		grid-template-columns: 1fr;
+	}
+}
+
 .chefpress-history-details > div {
 	margin-bottom: 5px;
 }

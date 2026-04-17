@@ -496,6 +496,65 @@ final class SubscriptionsAdminPage {
 					</div>
 				<?php endif; ?>
 
+				<?php
+					$weekly_recipes = $this->get_saved_weekly_recipes( $subscription->get_id(), $parent_order_id );
+				?>
+				<div class="chefpress-detail-section">
+					<h2><?php echo esc_html__( 'Saved Weekly Recipes', 'dev-chefpress' ); ?></h2>
+					<?php if ( ! empty( $weekly_recipes ) ) : ?>
+						<?php
+						$weeks = array();
+						foreach ( $weekly_recipes as $recipe ) {
+							$week_number = intval( $recipe['week_number'] );
+							if ( ! isset( $weeks[ $week_number ] ) ) {
+								$weeks[ $week_number ] = array(
+									'week_start_date' => $recipe['week_start_date'],
+									'days' => array(),
+								);
+							}
+							$day = $recipe['day'] ?? '';
+							if ( ! isset( $weeks[ $week_number ]['days'][ $day ] ) ) {
+								$weeks[ $week_number ]['days'][ $day ] = array();
+							}
+							$weeks[ $week_number ]['days'][ $day ][] = $recipe;
+						}
+						$day_labels = array(
+							'Mon' => __( 'Monday', 'dev-chefpress' ),
+							'Tue' => __( 'Tuesday', 'dev-chefpress' ),
+							'Wed' => __( 'Wednesday', 'dev-chefpress' ),
+							'Thu' => __( 'Thursday', 'dev-chefpress' ),
+							'Fri' => __( 'Friday', 'dev-chefpress' ),
+							'Sat' => __( 'Saturday', 'dev-chefpress' ),
+							'Sun' => __( 'Sunday', 'dev-chefpress' ),
+						);
+						?>
+						<?php foreach ( $weeks as $week_number => $week_data ) : ?>
+							<div class="chefpress-week-card">
+								<div class="chefpress-week-card-header">
+									<div class="chefpress-week-title"><?php echo esc_html( sprintf( __( 'Week %d', 'dev-chefpress' ), $week_number ) ); ?></div>
+									<?php if ( ! empty( $week_data['week_start_date'] ) ) : ?>
+										<div class="chefpress-week-start"><?php echo esc_html( sprintf( __( 'Starting %s', 'dev-chefpress' ), wp_date( 'M j, Y', strtotime( $week_data['week_start_date'] ) ) ) ); ?></div>
+									<?php endif; ?>
+								</div>
+								<?php foreach ( $day_labels as $day_code => $day_label ) : ?>
+									<?php if ( empty( $week_data['days'][ $day_code ] ) ) { continue; } ?>
+									<div class="chefpress-week-day">
+										<div class="chefpress-week-day-title"><?php echo esc_html( $day_label ); ?></div>
+										<?php foreach ( $week_data['days'][ $day_code ] as $day_recipe ) : ?>
+											<div class="chefpress-week-recipe-item">
+												<div class="chefpress-week-recipe-meal"><?php echo esc_html( $day_recipe['meal'] ?? __( 'Meal', 'dev-chefpress' ) ); ?></div>
+												<div class="chefpress-week-recipe-title"><?php echo esc_html( $day_recipe['recipe_title'] ?? __( 'Selected Recipe', 'dev-chefpress' ) ); ?></div>
+											</div>
+										<?php endforeach; ?>
+									</div>
+								<?php endforeach; ?>
+							</div>
+						<?php endforeach; ?>
+					<?php else : ?>
+						<p><?php echo esc_html__( 'No weekly recipes saved yet for this subscription.', 'dev-chefpress' ); ?></p>
+					<?php endif; ?>
+				</div>
+
 				<!-- Subscription History -->
 				<?php
 					$history = SubscriptionManager::get_history( $subscription->get_id() );
@@ -735,6 +794,31 @@ final class SubscriptionsAdminPage {
 				<p><?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['error'] ?? __( 'Failed to mark refund as completed.', 'dev-chefpress' ) ) ) ); ?></p>
 			</div>
 		<?php endif;
+	}
+
+	/**
+	 * Get saved weekly recipes for the admin subscription details page.
+	 *
+	 * @param int $subscription_id
+	 * @param int|null $order_id
+	 * @return array
+	 */
+	private function get_saved_weekly_recipes( int $subscription_id, ?int $order_id ): array {
+		if ( $subscription_id <= 0 || $order_id <= 0 ) {
+			return array();
+		}
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'devchefpress_weekly_recipes';
+
+		$query = $wpdb->prepare(
+			"SELECT * FROM {$table_name} WHERE subscription_id = %d AND order_id = %d ORDER BY week_number ASC, FIELD(day, 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') ASC, meal ASC",
+			$subscription_id,
+			$order_id
+		);
+
+		$results = $wpdb->get_results( $query, ARRAY_A );
+		return $results ? $results : array();
 	}
 
 	private static function format_change_type( string $type ): string {
