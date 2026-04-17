@@ -18,6 +18,15 @@
         }
     }
 
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     // Get day label helper
     function getDayLabel(dayCode) {
         const days = {
@@ -30,6 +39,47 @@
             'Sun': 'Sunday'
         };
         return days[dayCode] || dayCode;
+    }
+
+    function initializeDeliveryMap() {
+        const mapContainer = document.getElementById('devchefpress-delivery-map');
+        if (!mapContainer || !mapContainer.dataset.lat || !mapContainer.dataset.lng) {
+            return;
+        }
+
+        if (typeof L === 'undefined') {
+            console.error('Leaflet library not loaded');
+            return;
+        }
+
+        if (window.devChefpressDeliveryMap) {
+            window.devChefpressDeliveryMap.remove();
+            window.devChefpressDeliveryMap = null;
+        }
+
+        const lat = parseFloat(mapContainer.dataset.lat);
+        const lng = parseFloat(mapContainer.dataset.lng);
+
+        try {
+            const map = L.map('devchefpress-delivery-map', {
+                scrollWheelZoom: true,
+                zoomControl: true
+            }).setView([lat, lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                maxNativeZoom: 18
+            }).addTo(map);
+
+            const marker = L.marker([lat, lng]).addTo(map);
+            marker.bindPopup('<div style="font-weight: 600; color: #10b981; margin: 5px 0;">📍 Delivery Location</div>').openPopup();
+
+            map.invalidateSize();
+            window.devChefpressDeliveryMap = map;
+        } catch (e) {
+            console.error('Map initialization error:', e);
+        }
     }
 
     // Build subscription details HTML
@@ -136,67 +186,71 @@
         }
 
         // SECTION 2: ADDRESS
-        if (data.address) {
-            html += '<div class="devchefpress-section">';
-            html += '<h3 class="devchefpress-section-title">📍 Delivery Address</h3>';
-            html += '<div class="devchefpress-address-card">';
+        const address = data.address || {};
+        html += '<div class="devchefpress-section">';
+        html += '<h3 class="devchefpress-section-title">📍 Delivery Address</h3>';
+        html += '<form id="devchefpressAddressForm" class="devchefpress-address-form" data-order-id="' + (data.order_id || '') + '">';
+        html += '<div class="devchefpress-info-grid-modal">';
 
-            if (data.address.name) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Location Name</span>';
-                html += '<span class="devchefpress-value" style="font-weight: 600; color: #10b981;">' + data.address.name + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Location Name</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-name" name="name" type="text" value="' + escapeHtml(address.name) + '" />';
+        html += '</div>';
 
-            if (data.address.type) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Address Type</span>';
-                html += '<span class="devchefpress-value">' + data.address.type + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Address Type</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-type" name="type" type="text" value="' + escapeHtml(address.type) + '" />';
+        html += '</div>';
 
-            if (data.address.building) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Building/House</span>';
-                html += '<span class="devchefpress-value">' + data.address.building + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Building / House</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-building" name="building" type="text" value="' + escapeHtml(address.building) + '" />';
+        html += '</div>';
 
-            if (data.address.floor) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Floor</span>';
-                html += '<span class="devchefpress-value">' + data.address.floor + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Floor</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-floor" name="floor" type="text" value="' + escapeHtml(address.floor) + '" />';
+        html += '</div>';
 
-            if (data.address.flat) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Flat / Unit</span>';
-                html += '<span class="devchefpress-value">' + data.address.flat + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Flat / Unit</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-flat" name="flat" type="text" value="' + escapeHtml(address.flat) + '" />';
+        html += '</div>';
 
-            if (data.address.details) {
-                html += '<div class="devchefpress-address-item">';
-                html += '<span class="devchefpress-label">Special Instructions</span>';
-                html += '<span class="devchefpress-value">' + data.address.details + '</span>';
-                html += '</div>';
-            }
+        html += '<div class="devchefpress-info-item-modal devchefpress-full-width">';
+        html += '<span class="devchefpress-info-label">Special Instructions</span>';
+        html += '<textarea class="devchefpress-info-textarea" id="devchefpress-address-details" name="details">' + escapeHtml(address.details) + '</textarea>';
+        html += '</div>';
 
-            if (data.address.lat && data.address.lng) {
-                html += '<div class="devchefpress-address-item devchefpress-coords">';
-                html += '<span class="devchefpress-label">Coordinates</span>';
-                html += '<span class="devchefpress-value devchefpress-muted">' + data.address.lat.toFixed(4) + ', ' + data.address.lng.toFixed(4) + '</span>';
-                html += '<button class="devchefpress-gmaps-btn" onclick="window.open(\'https://www.google.com/maps?q=' + data.address.lat + ',' + data.address.lng + '\', \'_blank\')" title="Open in Google Maps">';
-                html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>';
-                html += ' View in Maps</button>';
-                html += '</div>';
-                html += '<div id="devchefpress-delivery-map" class="devchefpress-map-container" data-lat="' + data.address.lat + '" data-lng="' + data.address.lng + '"></div>';
-            }
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Latitude</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-lat" name="lat" type="number" step="any" value="' + escapeHtml(address.lat !== undefined ? address.lat : '') + '" />';
+        html += '</div>';
 
+        html += '<div class="devchefpress-info-item-modal">';
+        html += '<span class="devchefpress-info-label">Longitude</span>';
+        html += '<input class="devchefpress-info-input" id="devchefpress-address-lng" name="lng" type="number" step="any" value="' + escapeHtml(address.lng !== undefined ? address.lng : '') + '" />';
+        html += '</div>';
+
+        html += '</div>';
+        html += '<div class="devchefpress-address-form-actions">';
+        html += '<button type="button" id="devchefpress-save-address-btn" class="devchefpress-btn devchefpress-btn-primary">Save Address</button>';
+        html += '<span id="devchefpress-address-save-feedback" class="devchefpress-save-address-feedback"></span>';
+        html += '</div>';
+        html += '</form>';
+
+        if (address.lat !== undefined && address.lng !== undefined && address.lat !== '' && address.lng !== '') {
+            html += '<div class="devchefpress-address-item devchefpress-coords">';
+            html += '<span class="devchefpress-label">Coordinates</span>';
+            html += '<span class="devchefpress-value devchefpress-muted">' + parseFloat(address.lat).toFixed(4) + ', ' + parseFloat(address.lng).toFixed(4) + '</span>';
+            html += '<button class="devchefpress-gmaps-btn" onclick="window.open(\'https://www.google.com/maps?q=' + address.lat + ',' + address.lng + '\', \'_blank\')" title="Open in Google Maps">';
+            html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>';
+            html += ' View in Maps</button>';
             html += '</div>';
-            html += '</div>';
+            html += '<div id="devchefpress-delivery-map" class="devchefpress-map-container" data-lat="' + address.lat + '" data-lng="' + address.lng + '"></div>';
         }
+
+        html += '</div>';
 
         // SECTION 3: MEAL PLAN
         if (data.slots && data.slots.length > 0) {
@@ -358,53 +412,11 @@
             success: function(res) {
                 if (res.success && res.data) {
                     window.devChefpressCurrentSubscription = res.data;
-                    
-                    // Use HTML from backend if available, otherwise fall back to JavaScript builder
-                    let html = res.data.html || buildSubscriptionDetailsHTML(res.data);
+                    let html = buildSubscriptionDetailsHTML(res.data);
                     $('#devchefpressSubscriptionContent').html(html);
 
                     // Initialize map if coordinates exist
-                    setTimeout(function() {
-                        const mapContainer = document.getElementById('devchefpress-delivery-map');
-                        if (mapContainer && mapContainer.dataset.lat && mapContainer.dataset.lng) {
-                            try {
-                                if (typeof L === 'undefined') {
-                                    console.error('Leaflet library not loaded');
-                                    return;
-                                }
-
-                                // Destroy existing map if it exists
-                                if (window.devChefpressDeliveryMap) {
-                                    window.devChefpressDeliveryMap.remove();
-                                    window.devChefpressDeliveryMap = null;
-                                }
-
-                                const lat = parseFloat(mapContainer.dataset.lat);
-                                const lng = parseFloat(mapContainer.dataset.lng);
-
-                                const map = L.map('devchefpress-delivery-map', {
-                                    scrollWheelZoom: true,
-                                    zoomControl: true
-                                }).setView([lat, lng], 15);
-
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                                    maxZoom: 19,
-                                    maxNativeZoom: 18
-                                }).addTo(map);
-
-                                const marker = L.marker([lat, lng]).addTo(map);
-                                marker.bindPopup('<div style="font-weight: 600; color: #10b981; margin: 5px 0;">📍 Delivery Location</div>').openPopup();
-
-                                map.invalidateSize();
-                                
-                                // Store map reference globally to clean up later
-                                window.devChefpressDeliveryMap = map;
-                            } catch(e) {
-                                console.error('Map initialization error:', e);
-                            }
-                        }
-                    }, 300);
+                    setTimeout(initializeDeliveryMap, 300);
                 } else {
                     console.error('AJAX error response:', res);
                     $('#devchefpressSubscriptionContent').html('<div class="devchefpress-error-state">No subscription data available</div>');
@@ -416,6 +428,63 @@
             }
         });
     });
+
+    // Save Address Click
+    $(document).on('click', '#devchefpress-save-address-btn', function(e) {
+        e.preventDefault();
+        const $form = $('#devchefpressAddressForm');
+        const orderId = $form.data('order-id');
+        const $feedback = $('#devchefpress-address-save-feedback');
+
+        if ( ! orderId ) {
+            $feedback.text('Unable to determine subscription order.');
+            return;
+        }
+
+        const address = {
+            name: $('#devchefpress-address-name').val() || '',
+            type: $('#devchefpress-address-type').val() || '',
+            building: $('#devchefpress-address-building').val() || '',
+            floor: $('#devchefpress-address-floor').val() || '',
+            flat: $('#devchefpress-address-flat').val() || '',
+            details: $('#devchefpress-address-details').val() || '',
+            lat: $('#devchefpress-address-lat').val() || '',
+            lng: $('#devchefpress-address-lng').val() || ''
+        };
+
+        $feedback.text('Saving address...');
+        $(this).prop('disabled', true);
+
+        $.ajax({
+            url: devchefpress_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'devchefpress_update_subscription_address',
+                nonce: devchefpress_ajax.nonce,
+                order_id: orderId,
+                address: JSON.stringify(address)
+            },
+            success: function(res) {
+                if ( res.success && res.data ) {
+                    $feedback.text('Address updated successfully.');
+                    window.devChefpressCurrentSubscription.address = res.data.address || address;
+                    const html = buildSubscriptionDetailsHTML(window.devChefpressCurrentSubscription);
+                    $('#devchefpressSubscriptionContent').html(html);
+                    setTimeout(initializeDeliveryMap, 300);
+                } else {
+                    $feedback.text(res.data?.message || 'Unable to save address.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Save address error:', status, error, xhr);
+                $feedback.text('Error saving address. Please try again.');
+            },
+            complete: function() {
+                $('#devchefpress-save-address-btn').prop('disabled', false);
+            }
+        });
+    });
+
 
     // Edit Subscription Click
     $(document).on('click', '.devchefpress-edit-subscription', function(e) {

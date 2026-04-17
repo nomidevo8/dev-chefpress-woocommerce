@@ -50,6 +50,9 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_devchefpress_save_menu_selection', $this, 'handle_save_menu_selection' );
 		$this->loader->add_action( 'wp_ajax_nopriv_devchefpress_save_menu_selection', $this, 'handle_save_menu_selection' );
 
+		// AJAX handler for updating subscription address from the modal.
+		$this->loader->add_action( 'wp_ajax_devchefpress_update_subscription_address', $this, 'handle_update_subscription_address' );
+		$this->loader->add_action( 'wp_ajax_nopriv_devchefpress_update_subscription_address', $this, 'handle_update_subscription_address' );
 
 		// Register shortcodes directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
@@ -1136,6 +1139,85 @@ class Frontend {
 		}
 
 		wp_send_json_success( $response_data );
+	}
+
+	/**
+	 * AJAX handler for updating the subscription delivery address.
+	 */
+	public function handle_update_subscription_address(): void {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'devchefpress_subscription_nonce' ) ) {
+			wp_send_json_error( [ 'message' => 'Invalid nonce' ], 403 );
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( [ 'message' => 'User not logged in' ], 401 );
+			return;
+		}
+
+		$order_id = isset( $_POST['order_id'] ) ? intval( $_POST['order_id'] ) : 0;
+		$address = isset( $_POST['address'] ) ? json_decode( wp_unslash( $_POST['address'] ), true ) : array();
+
+		if ( $order_id <= 0 || ! is_array( $address ) ) {
+			wp_send_json_error( [ 'message' => 'Invalid request data' ], 400 );
+			return;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			wp_send_json_error( [ 'message' => 'Order not found' ], 404 );
+			return;
+		}
+
+		if ( $order->get_customer_id() !== get_current_user_id() ) {
+			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
+			return;
+		}
+
+		$state = $order->get_meta( '_meal_plan_state' );
+		$state_data = is_array( $state ) ? $state : json_decode( (string) $state, true );
+		if ( ! is_array( $state_data ) ) {
+			$state_data = array();
+		}
+
+		$sanitized_address = array(
+			'name'     => sanitize_text_field( $address['name'] ?? '' ),
+			'type'     => sanitize_text_field( $address['type'] ?? '' ),
+			'building' => sanitize_text_field( $address['building'] ?? '' ),
+			'floor'    => sanitize_text_field( $address['floor'] ?? '' ),
+			'flat'     => sanitize_text_field( $address['flat'] ?? '' ),
+			'details'  => sanitize_textarea_field( $address['details'] ?? '' ),
+			'lat'      => isset( $address['lat'] ) ? floatval( $address['lat'] ) : '',
+			'lng'      => isset( $address['lng'] ) ? floatval( $address['lng'] ) : '',
+		);
+
+		$state_data['address'] = $sanitized_address;
+		$order->update_meta_data( '_meal_plan_state', $state_data );
+		$order->set_billing_address_1( $sanitized_address['building'] );
+		$order->set_billing_address_2( trim( $sanitized_address['floor'] . ' ' . $sanitized_address['flat'] ) );
+		$order->set_shipping_address_1( $sanitized_address['building'] );
+		$order->set_shipping_address_2( trim( $sanitized_address['floor'] . ' ' . $sanitized_address['flat'] ) );
+		$order->save();
+
+		// Update subscription table delivery details if available.
+		$subscription = null;
+		$subscription_id = $order->get_meta( '_subscription_id' );
+		if ( $subscription_id ) {
+			$subscription = UserSubscription::get_by_id( (int) $subscription_id );
+		}
+		if ( ! $subscription ) {
+			$subscription = UserSubscription::get_by_order_id( $order_id );
+		}
+
+		if ( $subscription ) {
+			$subscription->set_delivery_details( $sanitized_address );
+			$subscription->save();
+		}
+
+		wp_send_json_success( array(
+			'message' => 'Delivery address updated successfully',
+			'address' => $sanitized_address,
+		) );
 	}
 
 
