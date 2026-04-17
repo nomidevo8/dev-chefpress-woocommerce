@@ -43,6 +43,8 @@ use DevChefPress\Services\SubscriptionManager;
         <div id="dev_chefpress_plan_step-content" class="dev_chefpress_plan_step-transition"></div>
     </div>
 
+    <div id="dev_chefpress_plan_notice" class="dev_chefpress_plan_notice" style="display:none;position:fixed;top:1rem;right:1rem;max-width:360px;width:auto;z-index:9999;pointer-events:none;"></div>
+
     <!-- Sticky Bottom Navigation -->
     <div id="dev_chefpress_plan_nav_bar" class="dev_chefpress_plan_nav_bar">
         <button id="dev_chefpress_plan_back_btn" class="dev_chefpress_plan_nav_btn dev_chefpress_plan_nav_btn_back" onclick="handleBack()" aria-label="Back">

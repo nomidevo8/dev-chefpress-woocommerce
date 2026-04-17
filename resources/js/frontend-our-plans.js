@@ -475,6 +475,61 @@
     }
   }
 
+  function clearFrontendMessage() {
+    var existing = document.getElementById('dev_chefpress_plan_error_message');
+    if (existing) {
+      existing.parentNode.removeChild(existing);
+    }
+
+    var noticeContainer = document.getElementById('dev_chefpress_plan_notice');
+    if (noticeContainer) {
+      noticeContainer.style.display = 'none';
+      noticeContainer.style.pointerEvents = 'none';
+      noticeContainer.innerHTML = '';
+    }
+  }
+
+  function getVisibleMessageContainer() {
+    var noticeContainer = document.getElementById('dev_chefpress_plan_notice');
+    if (noticeContainer) {
+      return noticeContainer;
+    }
+    if (state.currentStep === 9) {
+      var weeklyMenuContainer = document.getElementById('dev_chefpress_weekly_menu_container');
+      if (weeklyMenuContainer) {
+        return weeklyMenuContainer;
+      }
+    }
+    return document.getElementById('dev_chefpress_plan_step-content');
+  }
+
+  function showFrontendMessage(message) {
+    clearFrontendMessage();
+    var container = getVisibleMessageContainer();
+    if (!container) return;
+
+    if (container.id === 'dev_chefpress_plan_notice') {
+      container.style.display = 'block';
+      container.style.pointerEvents = 'auto';
+      container.style.padding = '0';
+      container.innerHTML = '';
+    }
+
+    var messageEl = document.createElement('div');
+    messageEl.id = 'dev_chefpress_plan_error_message';
+    messageEl.style.background = '#fee2e2';
+    messageEl.style.color = '#991b1b';
+    messageEl.style.padding = '1rem !important';
+    messageEl.style.border = '1px solid #fca5a5';
+    messageEl.style.borderRadius = '0.75rem';
+    messageEl.style.marginBottom = '0';
+    messageEl.style.fontSize = '0.95rem';
+    messageEl.style.lineHeight = '1.5';
+    messageEl.style.boxShadow = '0 10px 30px rgba(0,0,0,0.12)';
+    messageEl.innerText = message;
+    container.insertBefore(messageEl, container.firstChild);
+  }
+
   // ─────────────────────────────────────────────────────────
   //  VALIDATION SYSTEM
   // ─────────────────────────────────────────────────────────
@@ -626,12 +681,20 @@
         ajaxData.edit_order_id = state.editOrderId;
       }
 
+      var currentDate = new Date();
+      var startDateValue = state.startDate ? new Date(state.startDate) : null;
+      if (startDateValue && currentDate < startDateValue) {
+        showFrontendMessage('You cannot select this week recipes before your subscription start date. Your subscription begins on ' + startDateValue.toLocaleDateString() + '.');
+        return;
+      }
+
       $.ajax({
         url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
         type: 'POST',
         data: ajaxData,
         success: function(response) {
           if (response.success) {
+            clearFrontendMessage();
             // Proceed to next step
             console.log('Menu selection saved successfully');
             console.log('Response data:', response.data);
@@ -641,11 +704,30 @@
             }
             renderStep();
           } else {
-            alert('Failed to save menu selection: ' + (response.data.message || 'Unknown error'));
+            var messageText = 'Unknown error';
+            if (response.data && response.data.message) {
+              messageText = response.data.message;
+            } else if (typeof response.data === 'string') {
+              messageText = response.data;
+            }
+            showFrontendMessage('Failed to save menu selection: ' + messageText);
           }
         },
         error: function(xhr, status, error) {
-          alert('Error saving menu selection: ' + error);
+          var message = error || 'Unable to save menu selection. Please try again.';
+          if (xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
+            message = xhr.responseJSON.data.message;
+          } else if (xhr && xhr.responseText) {
+            try {
+              var parsed = JSON.parse(xhr.responseText);
+              if (parsed && parsed.data && parsed.data.message) {
+                message = parsed.data.message;
+              }
+            } catch (e) {
+              // ignore parse error
+            }
+          }
+          showFrontendMessage('Error saving menu selection: ' + message);
         }
       });
       return;
