@@ -611,11 +611,10 @@ final class SubscriptionsAdminPage {
 			$where[] = $wpdb->prepare( 'status = %s', $status );
 		}
 
-		// Filter by refund status
-		if ( $refund_filter === 'has_refund' ) {
-			$where[] = 'total_refund_pending > 0';
-		} elseif ( $refund_filter === 'no_refund' ) {
-			$where[] = '(total_refund_pending IS NULL OR total_refund_pending = 0)';
+		// Filter by refund status (done entirely in PHP for accuracy)
+		$needs_php_refund_filter = false;
+		if ( $refund_filter === 'has_refund' || $refund_filter === 'no_refund' ) {
+			$needs_php_refund_filter = true;
 		}
 
 		// Filter by date range
@@ -628,25 +627,54 @@ final class SubscriptionsAdminPage {
 
 		$where_clause = implode( ' AND ', $where );
 
-		// Count total
-		$total_query = "SELECT COUNT(*) FROM {$table} WHERE {$where_clause}";
-		if ( ! empty( $params ) ) {
-			$total_query = $wpdb->prepare( $total_query, ...$params );
+		// For refund filters, we need to get all results and filter in PHP
+		if ( $needs_php_refund_filter ) {
+			// Get all subscriptions without pagination first for accurate filtering
+			$all_query = "SELECT * FROM {$table} WHERE {$where_clause} ORDER BY created_at DESC";
+			if ( ! empty( $params ) ) {
+				$all_query = $wpdb->prepare( $all_query, ...$params );
+			}
+			$all_subscriptions = $wpdb->get_results( $all_query );
+
+			// Filter by refund status in PHP
+			$filtered_subscriptions = [];
+			foreach ( $all_subscriptions as $sub ) {
+				$subscription_id = intval( $sub->id );
+				$has_pending_refund = SubscriptionManager::has_pending_refund( $subscription_id );
+				$has_legacy_refund = floatval( $sub->total_refund_pending ?? 0 ) > 0;
+
+				if ( $refund_filter === 'has_refund' && ( $has_pending_refund || $has_legacy_refund ) ) {
+					$filtered_subscriptions[] = $sub;
+				} elseif ( $refund_filter === 'no_refund' && ! $has_pending_refund && ! $has_legacy_refund ) {
+					$filtered_subscriptions[] = $sub;
+				}
+			}
+
+			// Apply pagination to filtered results
+			$total = count( $filtered_subscriptions );
+			$offset = ( $page - 1 ) * $per_page;
+			$subscriptions = array_slice( $filtered_subscriptions, $offset, $per_page );
+		} else {
+			// Count total
+			$total_query = "SELECT COUNT(*) FROM {$table} WHERE {$where_clause}";
+			if ( ! empty( $params ) ) {
+				$total_query = $wpdb->prepare( $total_query, ...$params );
+			}
+			$total = (int) $wpdb->get_var( $total_query );
+
+			// Get subscriptions
+			$offset = ( $page - 1 ) * $per_page;
+			$query = "SELECT * FROM {$table} WHERE {$where_clause} ORDER BY created_at DESC LIMIT %d OFFSET %d";
+
+			// Add limit and offset params
+			$query_params = $params;
+			$query_params[] = $per_page;
+			$query_params[] = $offset;
+
+			$subscriptions = $wpdb->get_results(
+				$wpdb->prepare( $query, ...$query_params )
+			);
 		}
-		$total = (int) $wpdb->get_var( $total_query );
-
-		// Get subscriptions
-		$offset = ( $page - 1 ) * $per_page;
-		$query = "SELECT * FROM {$table} WHERE {$where_clause} ORDER BY created_at DESC LIMIT %d OFFSET %d";
-		
-		// Add limit and offset params
-		$query_params = $params;
-		$query_params[] = $per_page;
-		$query_params[] = $offset;
-
-		$subscriptions = $wpdb->get_results(
-			$wpdb->prepare( $query, ...$query_params )
-		);
 
 		return [
 			'subscriptions' => $subscriptions,
