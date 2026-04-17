@@ -236,8 +236,9 @@
   }
 
   function renderNinthStepRecipes() {
-    // This function will be used to direct jump on 9th step with prefilled recipes if user is coming from edit mode or booking flow
-    if (state.isEditMode || state.isBookingRecipes) {
+    // Only jump to step 9 for booking_recipes flow (new recipe selection)
+    // For edit_order, keep at step 1 so user can review/edit subscription from the beginning
+    if (state.isBookingRecipes) {
       state.currentStep = 9;
       renderStep();
     }
