@@ -683,9 +683,18 @@
     
     // Step 13: Address inputs
     if (step === 13) {
-      $('#dev_chefpress_plan_addr-building-input, #dev_chefpress_plan_addr-floor, #dev_chefpress_plan_addr-flat, #dev_chefpress_plan_addr-details').off('change blur input').on('change blur input', function() {
-        if ($(this).attr('id') === 'dev_chefpress_plan_addr-building-input') {
+      $('#dev_chefpress_plan_addr-name-input, #dev_chefpress_plan_addr-building-input, #dev_chefpress_plan_addr-floor, #dev_chefpress_plan_addr-flat, #dev_chefpress_plan_addr-details').off('change blur input').on('change blur input', function() {
+        var id = $(this).attr('id');
+        if (id === 'dev_chefpress_plan_addr-name-input') {
+          state.address.name = $(this).val();
+        } else if (id === 'dev_chefpress_plan_addr-building-input') {
           state.address.building = $(this).val();
+        } else if (id === 'dev_chefpress_plan_addr-floor') {
+          state.address.floor = $(this).val();
+        } else if (id === 'dev_chefpress_plan_addr-flat') {
+          state.address.flat = $(this).val();
+        } else if (id === 'dev_chefpress_plan_addr-details') {
+          state.address.details = $(this).val();
         }
         updateNavBar();
       });
@@ -1808,11 +1817,6 @@
 
     $('#dev_chefpress_plan_map-search').on('keypress', function(e) { if (e.key === 'Enter') searchLocation('dev_chefpress_plan_map-search'); });
     $('#dev_chefpress_plan_fullscreen-map-search').on('keypress', function(e) { if (e.key === 'Enter') searchLocation('dev_chefpress_plan_fullscreen-map-search'); });
-    $('#dev_chefpress_plan_addr-name-input').on('input', function() { state.address.name = $(this).val(); });
-    $('#dev_chefpress_plan_addr-building-input').on('input', function() { state.address.building = $(this).val(); });
-    $('#dev_chefpress_plan_addr-floor').on('input', function() { state.address.floor = $(this).val(); });
-    $('#dev_chefpress_plan_addr-flat').on('input', function() { state.address.flat = $(this).val(); });
-    $('#dev_chefpress_plan_addr-details').on('input', function() { state.address.details = $(this).val(); });
   }
 
   // Step 14 – Order Submission
