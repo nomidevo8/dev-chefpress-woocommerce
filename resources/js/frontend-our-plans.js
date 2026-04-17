@@ -94,8 +94,37 @@
     isEditMode: false,
     editOrderId: null,
     isBookingRecipes: false,
+    isLoading: false,
     originalOrderTotal: 0
   };
+
+  function createLoaderOverlay() {
+    if ($('#dev_chefpress_page_loader').length) {
+      return;
+    }
+
+    var loaderHtml = '<div id="dev_chefpress_page_loader" class="dev_chefpress_page_loader">' +
+      '<div class="dev_chefpress_page_loader_inner">' +
+      '<div class="dev_chefpress_page_loader_spinner"></div>' +
+      '<span>Loading...</span>' +
+      '</div>' +
+      '</div>';
+
+    $('body').append(loaderHtml);
+  }
+
+  function setLoading(isLoading) {
+    state.isLoading = !!isLoading;
+    createLoaderOverlay();
+
+    if (state.isLoading) {
+      $('#dev_chefpress_page_loader').addClass('active');
+      $('#dev_chefpress_plan_wizard-container').addClass('dev_chefpress_content_blur');
+    } else {
+      $('#dev_chefpress_page_loader').removeClass('active');
+      $('#dev_chefpress_plan_wizard-container').removeClass('dev_chefpress_content_blur');
+    }
+  }
 
   // ─────────────────────────────────────────────────────────
   //  EDIT MODE DETECTION AND PREFILL
@@ -116,6 +145,8 @@
   }
 
   function prefillOrderData(orderId) {
+    setLoading(true);
+
     $.ajax({
       url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
       type: 'POST',
@@ -142,6 +173,9 @@
         state.isEditMode = false;
         state.editOrderId = null;
         state.isBookingRecipes = false;
+      },
+      complete: function() {
+        setLoading(false);
       }
     });
   }
