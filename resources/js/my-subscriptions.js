@@ -41,47 +41,6 @@
         return days[dayCode] || dayCode;
     }
 
-    function initializeDeliveryMap() {
-        const mapContainer = document.getElementById('devchefpress-delivery-map');
-        if (!mapContainer || !mapContainer.dataset.lat || !mapContainer.dataset.lng) {
-            return;
-        }
-
-        if (typeof L === 'undefined') {
-            console.error('Leaflet library not loaded');
-            return;
-        }
-
-        if (window.devChefpressDeliveryMap) {
-            window.devChefpressDeliveryMap.remove();
-            window.devChefpressDeliveryMap = null;
-        }
-
-        const lat = parseFloat(mapContainer.dataset.lat);
-        const lng = parseFloat(mapContainer.dataset.lng);
-
-        try {
-            const map = L.map('devchefpress-delivery-map', {
-                scrollWheelZoom: true,
-                zoomControl: true
-            }).setView([lat, lng], 15);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19,
-                maxNativeZoom: 18
-            }).addTo(map);
-
-            const marker = L.marker([lat, lng]).addTo(map);
-            marker.bindPopup('<div style="font-weight: 600; color: #10b981; margin: 5px 0;">📍 Delivery Location</div>').openPopup();
-
-            map.invalidateSize();
-            window.devChefpressDeliveryMap = map;
-        } catch (e) {
-            console.error('Map initialization error:', e);
-        }
-    }
-
     // Build subscription details HTML
     function buildSubscriptionDetailsHTML(data) {
         if (!data) {
@@ -222,34 +181,21 @@
         html += '<textarea class="devchefpress-info-textarea" id="devchefpress-address-details" name="details">' + escapeHtml(address.details) + '</textarea>';
         html += '</div>';
 
-        html += '<div class="devchefpress-info-item-modal">';
-        html += '<span class="devchefpress-info-label">Latitude</span>';
-        html += '<input class="devchefpress-info-input" id="devchefpress-address-lat" name="lat" type="number" step="any" value="' + escapeHtml(address.lat !== undefined ? address.lat : '') + '" />';
-        html += '</div>';
+        // html += '<div class="devchefpress-info-item-modal">';
+        // html += '<span class="devchefpress-info-label">Latitude</span>';
+        // html += '<span class="devchefpress-info-value">' + escapeHtml(address.lat !== undefined ? address.lat : '') + '</span>';
+        // html += '</div>';
 
-        html += '<div class="devchefpress-info-item-modal">';
-        html += '<span class="devchefpress-info-label">Longitude</span>';
-        html += '<input class="devchefpress-info-input" id="devchefpress-address-lng" name="lng" type="number" step="any" value="' + escapeHtml(address.lng !== undefined ? address.lng : '') + '" />';
-        html += '</div>';
+        // html += '<div class="devchefpress-info-item-modal">';
+        // html += '<span class="devchefpress-info-label">Longitude</span>';
+        // html += '<span class="devchefpress-info-value">' + escapeHtml(address.lng !== undefined ? address.lng : '') + '</span>';
+        // html += '</div>';
 
         html += '</div>';
         html += '<div class="devchefpress-address-form-actions">';
-        html += '<button type="button" id="devchefpress-save-address-btn" class="devchefpress-btn devchefpress-btn-primary">Save Address</button>';
+        html += ' <button type="button" id="devchefpress-save-address-btn" class="devchefpress-btn devchefpress-btn-primary">Save Address</button>';
         html += '<span id="devchefpress-address-save-feedback" class="devchefpress-save-address-feedback"></span>';
-        html += '</div>';
         html += '</form>';
-
-        if (address.lat !== undefined && address.lng !== undefined && address.lat !== '' && address.lng !== '') {
-            html += '<div class="devchefpress-address-item devchefpress-coords">';
-            html += '<span class="devchefpress-label">Coordinates</span>';
-            html += '<span class="devchefpress-value devchefpress-muted">' + parseFloat(address.lat).toFixed(4) + ', ' + parseFloat(address.lng).toFixed(4) + '</span>';
-            html += '<button class="devchefpress-gmaps-btn" onclick="window.open(\'https://www.google.com/maps?q=' + address.lat + ',' + address.lng + '\', \'_blank\')" title="Open in Google Maps">';
-            html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>';
-            html += ' View in Maps</button>';
-            html += '</div>';
-            html += '<div id="devchefpress-delivery-map" class="devchefpress-map-container" data-lat="' + address.lat + '" data-lng="' + address.lng + '"></div>';
-        }
-
         html += '</div>';
 
         // SECTION 3: MEAL PLAN
@@ -414,9 +360,6 @@
                     window.devChefpressCurrentSubscription = res.data;
                     let html = buildSubscriptionDetailsHTML(res.data);
                     $('#devchefpressSubscriptionContent').html(html);
-
-                    // Initialize map if coordinates exist
-                    setTimeout(initializeDeliveryMap, 300);
                 } else {
                     console.error('AJAX error response:', res);
                     $('#devchefpressSubscriptionContent').html('<div class="devchefpress-error-state">No subscription data available</div>');
@@ -448,8 +391,8 @@
             floor: $('#devchefpress-address-floor').val() || '',
             flat: $('#devchefpress-address-flat').val() || '',
             details: $('#devchefpress-address-details').val() || '',
-            lat: $('#devchefpress-address-lat').val() || '',
-            lng: $('#devchefpress-address-lng').val() || ''
+            lat: window.devChefpressCurrentSubscription?.address?.lat || '',
+            lng: window.devChefpressCurrentSubscription?.address?.lng || ''
         };
 
         $feedback.text('Saving address...');
@@ -470,7 +413,6 @@
                     window.devChefpressCurrentSubscription.address = res.data.address || address;
                     const html = buildSubscriptionDetailsHTML(window.devChefpressCurrentSubscription);
                     $('#devchefpressSubscriptionContent').html(html);
-                    setTimeout(initializeDeliveryMap, 300);
                 } else {
                     $feedback.text(res.data?.message || 'Unable to save address.');
                 }
@@ -508,22 +450,12 @@
 
     // Close modal from close button
     $(document).on('click', '.devchefpress-modal-close', function() {
-        // Clean up map before closing
-        if (window.devChefpressDeliveryMap) {
-            window.devChefpressDeliveryMap.remove();
-            window.devChefpressDeliveryMap = null;
-        }
         $('#devchefpressSubscriptionModal').css('display', 'none');
     });
 
     // Close modal on outside click
     $(document).on('click', '#devchefpressSubscriptionModal', function(e) {
         if (e.target.id === 'devchefpressSubscriptionModal') {
-            // Clean up map before closing
-            if (window.devChefpressDeliveryMap) {
-                window.devChefpressDeliveryMap.remove();
-                window.devChefpressDeliveryMap = null;
-            }
             $(this).css('display', 'none');
         }
     });

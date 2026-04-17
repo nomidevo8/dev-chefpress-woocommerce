@@ -93,7 +93,7 @@ main {
 
 /* ─── Progress Header ─── */
 #dev_chefpress_plan_progress-container {
-    display: flex !important;
+    display: none !important;
     justify-content: center !important;
     align-items: center !important;
     padding-bottom: 2rem !important;

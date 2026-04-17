@@ -1193,3 +1193,45 @@
 .devchefpress-error-state {
     color: #dc2626 !important;
 }
+#devchefpress-save-address-btn {
+    display: inline-block !important;
+    padding: var(--cp-spacing-md) var(--cp-spacing-lg) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: var(--cp-radius) !important;
+    border: 1px solid transparent !important;
+    cursor: pointer !important;
+    transition: var(--cp-transition) !important;
+
+    background-color: var(--cp-brand-color) !important;
+    color: var(--cp-white) !important;
+    box-shadow: var(--cp-shadow) !important;
+    margin-bottom: 20px !important;
+}
+
+/* Hover */
+#devchefpress-save-address-btn:hover {
+    background-color: var(--cp-brand-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Active */
+#devchefpress-save-address-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: var(--cp-shadow) !important;
+}
+
+/* Focus (IMPORTANT for UX) */
+#devchefpress-save-address-btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px var(--cp-light-color) !important;
+}
+
+/* Disabled */
+#devchefpress-save-address-btn:disabled {
+    background-color: var(--cp-border-color) !important;
+    color: var(--cp-text-muted) !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
