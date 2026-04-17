@@ -430,15 +430,6 @@
         }
     });
 
-    // Book Current Week Click
-    $(document).on('click', '.devchefpress-book-week', function(e) {
-        e.preventDefault();
-        const orderId = $(this).data('order-id');
-
-        // Placeholder: redirect to booking page or show message
-        alert('Book current week functionality will be implemented. Order ID: ' + orderId);
-        // You can redirect to booking page: window.location.href = '/book-week/' + orderId;
-    });
 
     // Tab switching for meal plan schedule
     $(document).on('click', '.devchefpress-tab-item', function() {
