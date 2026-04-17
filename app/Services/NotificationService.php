@@ -87,22 +87,44 @@ class NotificationService {
 		}
 
 		$customer_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+		$customer_email = $order->get_billing_email();
 		$order_url = admin_url( "post.php?post=$order_id&action=edit" );
+
+		// Get subscription ID and build subscription details URL
+		$subscription_id = (int) $order->get_meta( '_subscription_id' );
+		$subscription_url = '';
+		if ( $subscription_id > 0 && class_exists( '\DevChefPress\Admin\SubscriptionsAdminPage' ) ) {
+			$subscription_url = \DevChefPress\Admin\SubscriptionsAdminPage::subscription_details_url( $subscription_id );
+		}
 
 		if ( 'price_increase' === $notification_type ) {
 			$subject = sprintf( 'Meal Plan Updated: Additional Payment Required (Order #%d)', $order_id );
 			$message = sprintf(
-				'A customer (%s) has updated their meal plan subscription and an additional payment is required. Order: %s',
+				'A customer has updated their meal plan subscription and an additional payment is required.' . "\n\n" .
+				'Customer: %s' . "\n" .
+				'Email: %s' . "\n" .
+				'Order: %s',
 				esc_html( $customer_name ),
+				esc_html( $customer_email ),
 				$order_url
 			);
+			if ( $subscription_url ) {
+				$message .= sprintf( "\n" . 'Subscription Details: %s', $subscription_url );
+			}
 		} elseif ( 'refund_required' === $notification_type ) {
 			$subject = sprintf( 'Meal Plan Updated: Refund Processing Required (Order #%d)', $order_id );
 			$message = sprintf(
-				'A customer (%s) has updated their meal plan subscription. A refund needs to be processed. Order: %s',
+				'A customer has updated their meal plan subscription. A refund needs to be processed.' . "\n\n" .
+				'Customer: %s' . "\n" .
+				'Email: %s' . "\n" .
+				'Order: %s',
 				esc_html( $customer_name ),
+				esc_html( $customer_email ),
 				$order_url
 			);
+			if ( $subscription_url ) {
+				$message .= sprintf( "\n" . 'Subscription Details: %s', $subscription_url );
+			}
 		} else {
 			return;
 		}
