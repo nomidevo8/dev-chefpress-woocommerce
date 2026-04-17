@@ -500,6 +500,48 @@ class SubscriptionManager {
 		}, $results ) : array();
 	}
 
+	public static function get_pending_refund_amount( int $subscription_id ): float {
+		global $wpdb;
+
+		$pending_amount = (float) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT SUM(refund_amount) FROM {$wpdb->prefix}chefpress_subscription_history 
+				WHERE subscription_id = %d AND refund_status = %s",
+				$subscription_id,
+				'pending'
+			)
+		);
+
+		return $pending_amount > 0 ? $pending_amount : 0.0;
+	}
+
+	public static function has_pending_refund( int $subscription_id ): bool {
+		$subscription = UserSubscription::get_by_id( $subscription_id );
+		if ( $subscription && $subscription->get_total_refund_pending() > 0 ) {
+			return true;
+		}
+
+		return self::get_pending_refund_amount( $subscription_id ) > 0;
+	}
+
+	public static function get_refund_status( int $subscription_id ): string {
+		if ( self::has_pending_refund( $subscription_id ) ) {
+			return 'pending';
+		}
+
+		global $wpdb;
+		$completed_count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}chefpress_subscription_history 
+				WHERE subscription_id = %d AND refund_status = %s",
+				$subscription_id,
+				'completed'
+			)
+		);
+
+		return $completed_count > 0 ? 'completed' : 'none';
+	}
+
 	/**
 	 * Complete the pending refund on a subscription and insert a history record.
 	 *
@@ -514,7 +556,7 @@ class SubscriptionManager {
 			return new \WP_Error( 'subscription_not_found', 'Subscription not found.' );
 		}
 
-		$pending_amount = $subscription->get_total_refund_pending();
+		$pending_amount = self::get_pending_refund_amount( $subscription_id );
 		if ( $pending_amount <= 0 ) {
 			return array( 'refund_amount' => 0 );
 		}

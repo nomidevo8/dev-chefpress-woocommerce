@@ -391,15 +391,15 @@ class SubscriptionDetailsHelper {
 			return '';
 		}
 
-		$subscription = \DevChefPress\Models\UserSubscription::get_by_id( $subscription_id );
-		if ( ! $subscription || 0 === $subscription->get_total_refund_pending() ) {
+		$pending_refund = \DevChefPress\Services\SubscriptionManager::get_pending_refund_amount( $subscription_id );
+		if ( $pending_refund <= 0 ) {
 			return '';
 		}
 
 		$html = '<div class="devchefpress-section devchefpress-refund-section">';
 		$html .= '<h3 class="devchefpress-section-title">💸 Pending Refunds</h3>';
 		$html .= '<div class="devchefpress-refund-card">';
-		$html .= '<p><strong>Refund Amount Pending:</strong> $' . number_format( $subscription->get_total_refund_pending(), 2 ) . '</p>';
+		$html .= '<p><strong>Refund Amount Pending:</strong> $' . number_format( $pending_refund, 2 ) . '</p>';
 		$html .= '<p class="devchefpress-refund-notice">This refund will be processed within 5-7 business days to your original payment method.</p>';
 		$html .= '</div>';
 		$html .= '</div>';

@@ -168,11 +168,24 @@ class UserSubscription {
 			return new \WP_Error( 'subscription_not_found', 'Subscription not found.' );
 		}
 
-		$pending_amount = $subscription->get_total_refund_pending();
+		$pending_amount = \DevChefPress\Services\SubscriptionManager::get_pending_refund_amount( $subscription_id );
 		if ( $pending_amount <= 0 ) {
 			return 0.0;
 		}
 
+		// Mark history records as completed
+		$wpdb->update(
+			$wpdb->prefix . 'chefpress_subscription_history',
+			array( 'refund_status' => 'completed' ),
+			array(
+				'subscription_id' => $subscription_id,
+				'refund_status' => 'pending'
+			),
+			array( '%s' ),
+			array( '%d', '%s' )
+		);
+
+		// Reset the subscription's total_refund_pending to 0
 		$updated = $wpdb->update(
 			self::get_table_name(),
 			array( 'total_refund_pending' => 0 ),

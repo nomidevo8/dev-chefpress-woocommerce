@@ -224,10 +224,11 @@ final class SubscriptionsAdminPage {
 									</td>
 									<td>
 										<?php
-											$refund = floatval( $subscription->get_total_refund_pending() ?? 0 );
-											if ( $refund > 0 ) {
+											$pending_refund = SubscriptionManager::get_pending_refund_amount( $subscription->get_id() );
+											$refund_display = $pending_refund > 0 ? $pending_refund : floatval( $subscription->get_total_refund_pending() ?? 0 );
+											if ( $refund_display > 0 ) {
 												echo '<span class="chefpress-badge-warning">';
-												echo '&dollar;' . number_format( $refund, 2 );
+												echo '&dollar;' . number_format( $refund_display, 2 );
 												echo '</span>';
 											} else {
 												echo '—';
@@ -424,12 +425,16 @@ final class SubscriptionsAdminPage {
 							<td>&dollar;<?php echo number_format( floatval( $subscription->get_total_paid() ), 2 ); ?></td>
 						</tr>
 						<tr>
+							<th><?php echo esc_html__( 'Refund Status', 'dev-chefpress' ); ?></th>
+							<td><?php echo esc_html( ucfirst( SubscriptionManager::get_refund_status( $subscription->get_id() ) ) ); ?></td>
+						</tr>
+						<tr>
 							<th><?php echo esc_html__( 'Refund Pending', 'dev-chefpress' ); ?></th>
 							<td>
 								<?php
-									$refund = floatval( $subscription->get_total_refund_pending() ?? 0 );
-									if ( $refund > 0 ) {
-										echo '<span class="chefpress-badge-warning">&dollar;' . number_format( $refund, 2 ) . '</span>';
+									$pending_refund = SubscriptionManager::get_pending_refund_amount( $subscription->get_id() );
+									if ( $pending_refund > 0 ) {
+										echo '<span class="chefpress-badge-warning">&dollar;' . number_format( $pending_refund, 2 ) . '</span>';
 									} else {
 										echo '—';
 									}
@@ -439,7 +444,7 @@ final class SubscriptionsAdminPage {
 					</table>
 				</div>
 
-				<?php if ( $subscription->get_total_refund_pending() > 0 ) : ?>
+				<?php if ( SubscriptionManager::has_pending_refund( $subscription->get_id() ) ) : ?>
 				<div class="chefpress-detail-section">
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<?php wp_nonce_field( 'chefpress_mark_refund_completed_action', 'chefpress_mark_refund_completed_nonce' ); ?>

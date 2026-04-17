@@ -861,6 +861,9 @@ class Frontend {
 				return $refund_result;
 			}
 
+			// Reload subscription after handle_price_decrease updated it
+			$subscription = UserSubscription::get_by_id( $subscription_id );
+
 			// Update subscription with new meal plan data
 			$plan_name = sanitize_text_field( $state['planDuration'] ?? $state['planName'] ?? 'Meal Plan' );
 			$subscription->set_plan_name( $plan_name )
