@@ -16,6 +16,7 @@ class Migrations {
 	public static function run(): void {
 		self::create_user_subscriptions_table();
 		self::create_subscription_history_table();
+		self::create_weekly_recipes_table();
 	}
 
 	/**
@@ -77,6 +78,36 @@ class Migrations {
 			KEY order_id (order_id),
 			KEY change_type (change_type),
 			KEY refund_status (refund_status)
+		) $charset_collate;";
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $sql );
+	}
+
+	/**
+	 * Create weekly recipes table for storing menu selections per week
+	 */
+	public static function create_weekly_recipes_table(): void {
+		global $wpdb;
+		$table_name      = $wpdb->prefix . 'devchefpress_weekly_recipes';
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			order_id BIGINT(20) UNSIGNED NOT NULL,
+			subscription_id BIGINT(20) UNSIGNED NOT NULL,
+			week_number INT UNSIGNED NOT NULL,
+			week_start_date DATE NOT NULL COMMENT 'Sunday start of the week',
+			day VARCHAR(20) NOT NULL COMMENT 'Mon, Tue, Wed, Thu, Fri, Sat, Sun',
+			meal VARCHAR(50) NOT NULL COMMENT 'Breakfast, Lunch, Dinner, Snacks',
+			recipe_id BIGINT(20) UNSIGNED NOT NULL,
+			recipe_title TEXT NOT NULL,
+			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			KEY order_id (order_id),
+			KEY subscription_id (subscription_id),
+			KEY week_number (week_number),
+			KEY week_start_date (week_start_date)
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

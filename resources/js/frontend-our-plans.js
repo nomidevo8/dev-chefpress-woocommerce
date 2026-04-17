@@ -110,6 +110,7 @@
       prefillOrderData(parseInt(editOrderId));
     }else if(bookingRecipes){
       state.isBookingRecipes = true;
+      state.editOrderId = parseInt(bookingRecipes);
       prefillOrderData(bookingRecipes);
     }
   }
@@ -607,6 +608,46 @@
       saveProgress();
       var container = document.getElementById('dev_chefpress_plan_step-content');
       renderLoginRequired(container);
+      return;
+    }
+    if (state.currentStep === 9 && state.isBookingRecipes) {
+      // Submit menu selection to backend with order_id
+      var ajaxData = {
+        action: 'devchefpress_save_menu_selection',
+        state: JSON.stringify(state),
+        menu: JSON.stringify(state.menu),
+        nonce: window.ChefPressOurPlans.nonce || ''
+      };
+      // Add order_id or edit_order_id if available
+      if (state.editOrderId && state.editOrderId > 0) {
+        ajaxData.edit_order_id = state.editOrderId;
+      } else if (state.isEditMode && state.currentStep === 9) {
+        // For edit mode on step 9, use editOrderId
+        ajaxData.edit_order_id = state.editOrderId;
+      }
+
+      $.ajax({
+        url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
+        type: 'POST',
+        data: ajaxData,
+        success: function(response) {
+          if (response.success) {
+            // Proceed to next step
+            console.log('Menu selection saved successfully');
+            console.log('Response data:', response.data);
+            state.currentStep++;
+            if (window && window.scrollTo) {
+              window.scrollTo({ top: 100, behavior: 'smooth' });
+            }
+            renderStep();
+          } else {
+            alert('Failed to save menu selection: ' + (response.data.message || 'Unknown error'));
+          }
+        },
+        error: function(xhr, status, error) {
+          alert('Error saving menu selection: ' + error);
+        }
+      });
       return;
     }
     if (state.currentStep < 14) {

@@ -47,6 +47,10 @@ class Frontend {
 		$this->loader->add_action( 'wp_ajax_devchefpress_get_subscription_details', $this, 'handle_get_subscription_details' );
 		$this->loader->add_action( 'wp_ajax_nopriv_devchefpress_get_subscription_details', $this, 'handle_get_subscription_details' );
 
+		$this->loader->add_action( 'wp_ajax_devchefpress_save_menu_selection', $this, 'handle_save_menu_selection' );
+		$this->loader->add_action( 'wp_ajax_nopriv_devchefpress_save_menu_selection', $this, 'handle_save_menu_selection' );
+
+
 		// Register shortcodes directly.
 		add_shortcode( 'weekly_menu', [ $this, 'render_weekly_menu' ] );
 		add_shortcode( 'dev_chefpress_our_plans', [ $this, 'render_our_plans' ] );
@@ -1132,5 +1136,192 @@ class Frontend {
 		}
 
 		wp_send_json_success( $response_data );
+	}
+
+
+	/**
+	 * AJAX handler for saving menu selection (weekly recipes).
+	 * 
+	 * Stores selected recipes per day + meal in a separate custom table.
+	 * Does NOT modify _meal_plan_state.
+	 */
+	public function handle_save_menu_selection(): void {
+		// Verify nonce
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'devchefpress_subscription_nonce' ) ) {
+			wp_send_json_error( [ 'message' => 'Security verification failed' ], 403 );
+		}
+
+		// Verify user is logged in
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( [ 'message' => 'User not logged in' ], 401 );
+		}
+
+		$user_id = get_current_user_id();
+
+		// Parse request data
+		$state = isset( $_POST['state'] ) ? json_decode( wp_unslash( $_POST['state'] ), true ) : [];
+		$menu = isset( $_POST['menu'] ) ? json_decode( wp_unslash( $_POST['menu'] ), true ) : [];
+		$order_id = isset( $_POST['order_id'] ) ? intval( $_POST['order_id'] ) : 0;
+		$edit_order_id = isset( $_POST['edit_order_id'] ) ? intval( $_POST['edit_order_id'] ) : 0;
+
+		// Use edit_order_id if available (editing existing recipe selection)
+		if ( $edit_order_id > 0 ) {
+			$order_id = $edit_order_id;
+		}
+
+		// Validate order_id
+		if ( $order_id <= 0 ) {
+			wp_send_json_error( [ 'message' => 'Order ID is required' ], 400 );
+		}
+
+		// Load order
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			wp_send_json_error( [ 'message' => 'Order not found' ], 404 );
+		}
+
+		// Verify user owns this order
+		if ( $order->get_customer_id() !== $user_id ) {
+			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
+		}
+
+		// Get subscription ID and meal plan state
+		$subscription_id = (int) $order->get_meta( '_subscription_id' );
+		$meal_plan_state = $order->get_meta( '_meal_plan_state' );
+
+		if ( ! $subscription_id || empty( $meal_plan_state ) ) {
+			wp_send_json_error( [ 'message' => 'Subscription data not found' ], 404 );
+		}
+
+		// Extract plan details
+		$start_date = isset( $meal_plan_state['startDate'] ) ? $meal_plan_state['startDate'] : '';
+		$plan_duration = isset( $meal_plan_state['planDuration'] ) ? $meal_plan_state['planDuration'] : '1 Week';
+
+		if ( empty( $start_date ) ) {
+			wp_send_json_error( [ 'message' => 'Start date not found in subscription data' ], 400 );
+		}
+
+		// Check if current date is before start date
+		$current_date = current_time( 'Y-m-d' );
+		if ( $current_date < $start_date ) {
+			wp_send_json_error( [ 'message' => 'You cannot select next week recipes before your subscription start date. Your subscription starts on ' . date( 'F j, Y', strtotime( $start_date ) ) . '.' ], 400 );
+		}
+
+		// Map plan duration to weeks
+		$duration_map = [
+			'1 Week'   => 1,
+			'1 Month'  => 4,
+			'3 Months' => 12,
+			'6 Months' => 24,
+		];
+
+		$total_weeks = $duration_map[ $plan_duration ] ?? 1;
+
+		// Calculate current week number (Sunday-Saturday alignment)
+		try {
+			$start = new \DateTime( $start_date );
+			$today = new \DateTime( $current_date );
+
+			// Get the Sunday of the start week
+			$start_week_start = clone $start;
+			$start_week_start->modify( 'last sunday' );
+
+			// If start date itself is Sunday, keep it
+			if ( 0 === (int) $start->format( 'w' ) ) {
+				$start_week_start = clone $start;
+			}
+
+			// Get current week's Sunday
+			$current_week_start = clone $today;
+			$current_week_start->modify( 'last sunday' );
+
+			if ( 0 === (int) $today->format( 'w' ) ) {
+				$current_week_start = clone $today;
+			}
+
+			// Calculate difference in weeks
+			$diff_days = (int) $start_week_start->diff( $current_week_start )->days;
+			$week_number = floor( $diff_days / 7 ) + 1;
+
+			// Ensure week number is within valid range
+			$week_number = max( 1, min( $week_number, $total_weeks ) );
+
+			// Calculate week start date (aligned to Sunday)
+			$week_start_date_str = $current_week_start->format('Y-m-d');
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => 'Error calculating week number: ' . $e->getMessage() ], 500 );
+		}
+
+		// Get slots from state
+		$slots = isset( $state['slots'] ) ? $state['slots'] : [];
+
+		if ( empty( $slots ) ) {
+			wp_send_json_error( [ 'message' => 'No recipes selected' ], 400 );
+		}
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'devchefpress_weekly_recipes';
+
+		// Delete existing records for this week before inserting new ones
+		$wpdb->delete(
+			$table_name,
+			[
+				'order_id'    => $order_id,
+				'week_number' => $week_number,
+			],
+			[ '%d', '%d' ]
+		);
+
+		// Insert new recipe selections
+		$insert_count = 0;
+		foreach ( $slots as $slot ) {
+			$day = isset( $slot['day'] ) ? sanitize_text_field( $slot['day'] ) : '';
+			$meal = isset( $slot['meal'] ) ? sanitize_text_field( $slot['meal'] ) : '';
+
+			if ( empty( $day ) || empty( $meal ) ) {
+				continue;
+			}
+
+			$recipe_selected = isset( $slot['recipeSelected'] ) ? $slot['recipeSelected'] : [];
+
+			if ( empty( $recipe_selected ) ) {
+				continue;
+			}
+
+			$recipe_id = (int) $recipe_selected['id'];
+			$recipe_title = sanitize_text_field( $recipe_selected['title'] ?? 'Unknown Recipe' );
+
+			$insert_result = $wpdb->insert(
+				$table_name,
+				[
+					'order_id'        => $order_id,
+					'subscription_id' => $subscription_id,
+					'week_number'     => $week_number,
+					'week_start_date' => $week_start_date_str,
+					'day'             => $day,
+					'meal'            => $meal,
+					'recipe_id'       => $recipe_id,
+					'recipe_title'    => $recipe_title,
+					'created_at'      => current_time( 'mysql' ),
+				],
+				[ '%d', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' ]
+			);
+
+			if ( $insert_result ) {
+				$insert_count++;
+			}
+		}
+
+		if ( $insert_count === 0 ) {
+			wp_send_json_error( [ 'message' => 'Failed to save any recipes' ], 500 );
+		}
+
+		// Return success response
+		wp_send_json_success( [
+			'message'         => 'Weekly recipes saved successfully',
+			'week_number'     => $week_number,
+			'week_start_date' => $week_start_date_str,
+			'recipes_saved'   => $insert_count,
+		] );
 	}
 }
