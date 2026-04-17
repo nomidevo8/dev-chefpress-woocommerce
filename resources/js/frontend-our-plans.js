@@ -291,13 +291,26 @@
     var promoDiscount = state.isPromoApplied ? state.promoDiscount : 0;
     var totalDiscountPercent = planDiscount + promoDiscount;
     var totalDiscount = totalDiscountPercent / 100;
-    var finalPrice = weeklyBase * (1 - totalDiscount);
-    var perDay = finalPrice / (state.selectedDays.length || 1);
+
+    var planWeeksMap = {
+      '1 Week': 1,
+      '1 Month': 4,
+      '3 Months': 12,
+      '6 Months': 24
+    };
+    var packageWeeks = state.planDuration ? (planWeeksMap[state.planDuration] || 1) : 1;
+    var packageBase = weeklyBase * packageWeeks;
+    var packageFinal = packageBase * (1 - totalDiscount);
+    var perDay = weeklyBase ? (weeklyBase * (1 - totalDiscount)) / (state.selectedDays.length || 1) : 0;
+
     return {
       base: weeklyBase.toFixed(2),
       discount: totalDiscountPercent.toFixed(2),
-      final: finalPrice.toFixed(2),
-      perDay: perDay.toFixed(2)
+      final: (weeklyBase * (1 - totalDiscount)).toFixed(2),
+      perDay: perDay.toFixed(2),
+      packageWeeks: packageWeeks,
+      packageBase: packageBase.toFixed(2),
+      packageFinal: packageFinal.toFixed(2)
     };
   }
 
@@ -1458,11 +1471,11 @@
           '<div style="background:#fff !important;border:1px solid var(--gray-100) !important;padding:' + (isMobile ? '1rem' : '1.5rem') + ' !important;border-radius:2rem !important;box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;">' +
             '<h3 style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;font-weight:700 !important;color:var(--gray-400) !important;text-transform:uppercase !important;letter-spacing:0.1em !important;margin-bottom:1rem !important;">Billing Details</h3>' +
             '<div class="dev_chefpress_plan_space-y-2" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;">' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Base (' + state.selectedDays.length + ' days)</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
-              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="color:var(--emerald-600) !important;font-weight:700 !important;"><span>Discount (' + pricing.discount + '%)</span><span>-AED ' + (Number(pricing.base) * (Number(pricing.discount) / 100)).toFixed(2) + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between"><span style="color:var(--gray-500) !important;">Package Base (' + pricing.packageWeeks + ' weeks)</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.packageBase + '</span></div>' +
+              '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="color:var(--emerald-600) !important;font-weight:700 !important;"><span>Discount (' + pricing.discount + '%)</span><span>-AED ' + (Number(pricing.packageBase) * (Number(pricing.discount) / 100)).toFixed(2) + '</span></div>' +
               '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-50) !important;">' +
                 '<span style="font-weight:700 !important;color:var(--gray-900) !important;">Total to Pay</span>' +
-                '<span style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +
+                '<span style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.packageFinal + '</span>' +
               '</div>' +
             '</div>' +
             '<p style="font-size:0.625rem !important;color:var(--gray-400) !important;margin-top:1rem !important;line-height:1.625 !important;">Subscription auto-renews every ' + state.planDuration + '. Cancel anytime.</p>' +
@@ -1660,7 +1673,16 @@
   function renderPayment(el) {
     var isMobile = window.innerWidth < 640;
     var pricing = calculatePricing();
-    var label = state.planDuration === '1 Week' ? 'Weekly Total' : 'Monthly Total';
+    var label = 'Total';
+    if (state.planDuration === '1 Week') {
+      label = 'Weekly Total';
+    } else if (state.planDuration === '1 Month') {
+      label = 'Monthly Total';
+    } else if (state.planDuration === '3 Months') {
+      label = '3-Month Total';
+    } else if (state.planDuration === '6 Months') {
+      label = '6-Month Total';
+    }
     var planDisc = PLAN_DISCOUNTS[state.planDuration || '1 Week'];
 
     el.innerHTML =
@@ -1671,12 +1693,12 @@
       '<div class="dev_chefpress_plan_grid dev_chefpress_plan_gap-8 dev_chefpress_plan_mb-8" id="dev_chefpress_plan_pay-grid" style="grid-template-columns:repeat(1,minmax(0,1fr)) !important;gap:' + (isMobile ? '1.5rem' : '2rem') + ' !important;">' +
         '<div class="dev_chefpress_plan_space-y-6" style="row-gap:' + (isMobile ? '1rem' : '1.5rem') + ' !important;">' +
           '<div style="background:var(--gray-50) !important;padding:' + (isMobile ? '1rem' : '1.5rem') + ' !important;border-radius:2rem !important;" class="dev_chefpress_plan_space-y-4" style="row-gap:' + (isMobile ? '0.75rem' : '1rem') + ' !important;">' +
-            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;flex-direction:' + (isMobile ? 'column' : 'row') + ' !important;gap:' + (isMobile ? '0.5rem' : '0') + ' !important;"><span style="color:var(--gray-500) !important;">Plan: ' + state.planDuration + '</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.base + '</span></div>' +
+            '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;flex-direction:' + (isMobile ? 'column' : 'row') + ' !important;gap:' + (isMobile ? '0.5rem' : '0') + ' !important;"><span style="color:var(--gray-500) !important;">Plan: ' + state.planDuration + '</span><span style="font-weight:700 !important;color:var(--gray-900) !important;">AED ' + pricing.packageBase + '</span></div>' +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;color:var(--emerald-600) !important;font-weight:700 !important;flex-direction:' + (isMobile ? 'column' : 'row') + ' !important;gap:' + (isMobile ? '0.5rem' : '0') + ' !important;"><span>Plan Discount</span><span>-' + planDisc + '%</span></div>' +
             (state.isPromoApplied ? '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between" style="font-size:' + (isMobile ? '0.8125rem' : '0.875rem') + ' !important;color:var(--emerald-600) !important;font-weight:700 !important;flex-direction:' + (isMobile ? 'column' : 'row') + ' !important;gap:' + (isMobile ? '0.5rem' : '0') + ' !important;"><span>Promo: ' + state.promoCode + '</span><span>-' + state.promoDiscount + '%</span></div>' : '') +
             '<div class="dev_chefpress_plan_flex dev_chefpress_plan_justify-between dev_chefpress_plan_items-end dev_chefpress_plan_pt-4" style="border-top:1px solid var(--gray-200) !important;flex-direction:' + (isMobile ? 'column' : 'row') + ' !important;gap:' + (isMobile ? '0.5rem' : '0') + ' !important;align-items:' + (isMobile ? 'flex-start' : 'flex-end') + ' !important;">' +
               '<span style="font-weight:700 !important;color:var(--gray-900) !important;font-size:' + (isMobile ? '0.8125rem' : '1rem') + ' !important;">' + label + '</span>' +
-              '<span style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.final + '</span>' +
+              '<span style="font-size:' + (isMobile ? '1.5rem' : '1.875rem') + ' !important;font-weight:900 !important;color:var(--emerald-900) !important;">AED ' + pricing.packageFinal + '</span>' +
             '</div>' +
           '</div>' +
           '<div style="display:flex !important;align-items:flex-start !important;gap:' + (isMobile ? '0.75rem' : '1rem') + ' !important;padding:' + (isMobile ? '0.75rem' : '1rem') + ' !important;background:var(--emerald-50) !important;border-radius:1rem !important;border:1px solid var(--emerald-100) !important;">' +
