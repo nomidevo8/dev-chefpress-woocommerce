@@ -729,14 +729,8 @@
         success: function(response) {
           if (response.success) {
             clearFrontendMessage();
-            // Proceed to next step
-            console.log('Menu selection saved successfully');
-            console.log('Response data:', response.data);
-            state.currentStep++;
-            if (window && window.scrollTo) {
-              window.scrollTo({ top: 100, behavior: 'smooth' });
-            }
-            renderStep();
+            alert('Menu selection saved successfully!');
+            window.location.href = '/subscriptions';
           } else {
             var messageText = 'Unknown error';
             if (response.data && response.data.message) {
