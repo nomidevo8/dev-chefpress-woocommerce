@@ -267,7 +267,7 @@ class SubscriptionDetailsHelper {
 		$html = '<div class="devchefpress-section">';
 		$html .= '<h3 class="devchefpress-section-title">💰 Pricing Summary</h3>';
 		$html .= '<div class="devchefpress-pricing-card">';
-
+		$subscription = \DevChefPress\Models\UserSubscription::get_by_id( $subscription_id );
 		// Subtotal
 		$base_price = 0;
 		if ( isset( $data['pricing']['subtotal'] ) ) {
@@ -304,7 +304,7 @@ class SubscriptionDetailsHelper {
 			$html .= '<span><strong>$' . number_format( (float) $data['pricing']['total'], 2 ) . '</strong></span>';
 			$html .= '</div>';
 			$html .= '<div class="devchefpress-pricing-row devchefpress-pricing-total">';
-			$html .= '<span><strong>Current price :</strong></span> <span><strong>$' . number_format( SubscriptionManager::calculate_current_price_from_history( $subscription_id, $base_price ), 2 ) . '</span></strong>';
+			$html .= '<span><strong>Current price :</strong></span> <span><strong>$'. $subscription->get_current_price() . '</span></strong>';
 			$html .= '</div>';
 		}
 

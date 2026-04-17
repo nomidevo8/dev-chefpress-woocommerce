@@ -104,14 +104,13 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
 
                                 // Get current price and calculate with history adjustments
                                 $total_price = $subscription->get_current_price();
-                                
                                 // Apply history-based price adjustments
-                                if ( class_exists( '\DevChefPress\Services\SubscriptionManager' ) ) {
-                                    $total_price = \DevChefPress\Services\SubscriptionManager::calculate_current_price_from_history(
-                                        $subscription->get_id(),
-                                        $total_price
-                                    );
-                                }
+                                // if ( class_exists( '\DevChefPress\Services\SubscriptionManager' ) ) {
+                                //     $total_price = \DevChefPress\Services\SubscriptionManager::calculate_current_price_from_history(
+                                //         $subscription->get_id(),
+                                //         $total_price
+                                //     );
+                                // }
                                 
                                 $formatted_price = '$' . number_format( (float) $total_price, 2 );
                                 $disabled_attr = $order_id ? '' : 'disabled';
