@@ -720,6 +720,35 @@ class Frontend {
 
 			$price_difference = $result['price_difference'];
 
+			// Update order meta with new state details
+			$order->update_meta_data( '_meal_plan_state', $state );
+			$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
+
+			// Update billing/shipping address if available
+			if ( isset( $state['address'] ) ) {
+				$address = $state['address'];
+				$order->set_billing_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_billing_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_billing_city( '' );
+				$order->set_billing_postcode( '' );
+				$order->set_billing_country( 'AE' );
+				$order->set_shipping_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_shipping_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_shipping_city( '' );
+				$order->set_shipping_postcode( '' );
+				$order->set_shipping_country( 'AE' );
+			}
+
+			// Update delivery date and slot
+			if ( isset( $state['startDate'] ) ) {
+				$order->update_meta_data( '_delivery_date', sanitize_text_field( $state['startDate'] ) );
+			}
+			if ( isset( $state['deliverySlot'] ) ) {
+				$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
+			}
+
+			$order->save();
+
 			// Notify user
 			NotificationService::notify_edit_unpaid( $user_id, $order_id, $price_difference );
 
@@ -755,6 +784,51 @@ class Frontend {
 				return $adjustment_order_id;
 			}
 
+			// Update subscription with new meal plan data
+			if ( $subscription_id > 0 ) {
+				$subscription = UserSubscription::get_by_id( $subscription_id );
+				if ( $subscription ) {
+					$plan_name = sanitize_text_field( $state['planDuration'] ?? $state['planName'] ?? 'Meal Plan' );
+					$subscription->set_plan_name( $plan_name )
+						->set_meals_data( $state['slots'] ?? array() )
+						->set_delivery_details( [
+							'startDate'    => $state['startDate'] ?? '',
+							'deliverySlot' => $state['deliverySlot'] ?? '',
+							'address'      => $state['address'] ?? [],
+						] )
+						->save();
+				}
+			}
+
+			// Update order meta with new state details
+			$order->update_meta_data( '_meal_plan_state', $state );
+			$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
+
+			// Update billing/shipping address if available
+			if ( isset( $state['address'] ) ) {
+				$address = $state['address'];
+				$order->set_billing_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_billing_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_billing_city( '' );
+				$order->set_billing_postcode( '' );
+				$order->set_billing_country( 'AE' );
+				$order->set_shipping_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_shipping_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_shipping_city( '' );
+				$order->set_shipping_postcode( '' );
+				$order->set_shipping_country( 'AE' );
+			}
+
+			// Update delivery date and slot
+			if ( isset( $state['startDate'] ) ) {
+				$order->update_meta_data( '_delivery_date', sanitize_text_field( $state['startDate'] ) );
+			}
+			if ( isset( $state['deliverySlot'] ) ) {
+				$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
+			}
+
+			$order->save();
+
 			// Notify user and admin
 			NotificationService::notify_price_increase( $user_id, $adjustment_order_id, $price_difference );
 			NotificationService::notify_admin( $order_id, 'price_increase' );
@@ -787,6 +861,46 @@ class Frontend {
 				return $refund_result;
 			}
 
+			// Update subscription with new meal plan data
+			$plan_name = sanitize_text_field( $state['planDuration'] ?? $state['planName'] ?? 'Meal Plan' );
+			$subscription->set_plan_name( $plan_name )
+				->set_meals_data( $state['slots'] ?? array() )
+				->set_delivery_details( [
+					'startDate'    => $state['startDate'] ?? '',
+					'deliverySlot' => $state['deliverySlot'] ?? '',
+					'address'      => $state['address'] ?? [],
+				] )
+				->save();
+
+			// Update order meta with new state details
+			$order->update_meta_data( '_meal_plan_state', $state );
+			$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
+
+			// Update billing/shipping address if available
+			if ( isset( $state['address'] ) ) {
+				$address = $state['address'];
+				$order->set_billing_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_billing_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_billing_city( '' );
+				$order->set_billing_postcode( '' );
+				$order->set_billing_country( 'AE' );
+				$order->set_shipping_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_shipping_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_shipping_city( '' );
+				$order->set_shipping_postcode( '' );
+				$order->set_shipping_country( 'AE' );
+			}
+
+			// Update delivery date and slot
+			if ( isset( $state['startDate'] ) ) {
+				$order->update_meta_data( '_delivery_date', sanitize_text_field( $state['startDate'] ) );
+			}
+			if ( isset( $state['deliverySlot'] ) ) {
+				$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
+			}
+
+			$order->save();
+
 			// Notify user and admin
 			NotificationService::notify_refund_pending(
 				$user_id,
@@ -808,11 +922,46 @@ class Frontend {
 			if ( $subscription_id > 0 ) {
 				$subscription = UserSubscription::get_by_id( $subscription_id );
 				if ( $subscription ) {
-					$subscription->set_meals_data( $state['slots'] ?? array() )
-						->set_delivery_details( $state['address'] ?? array() )
+					$plan_name = sanitize_text_field( $state['planDuration'] ?? $state['planName'] ?? 'Meal Plan' );
+					$subscription->set_plan_name( $plan_name )
+						->set_meals_data( $state['slots'] ?? array() )
+						->set_delivery_details( [
+							'startDate'    => $state['startDate'] ?? '',
+							'deliverySlot' => $state['deliverySlot'] ?? '',
+							'address'      => $state['address'] ?? [],
+						] )
 						->save();
 				}
 			}
+
+			// Update order meta with new state details
+			$order->update_meta_data( '_meal_plan_state', $state );
+			$order->update_meta_data( '_meal_plan_pricing', $new_pricing );
+
+			// Update billing/shipping address if available
+			if ( isset( $state['address'] ) ) {
+				$address = $state['address'];
+				$order->set_billing_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_billing_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_billing_city( '' );
+				$order->set_billing_postcode( '' );
+				$order->set_billing_country( 'AE' );
+				$order->set_shipping_address_1( sanitize_text_field( $address['building'] ?? '' ) );
+				$order->set_shipping_address_2( sanitize_text_field( ( $address['floor'] ?? '' ) . ' ' . ( $address['flat'] ?? '' ) ) );
+				$order->set_shipping_city( '' );
+				$order->set_shipping_postcode( '' );
+				$order->set_shipping_country( 'AE' );
+			}
+
+			// Update delivery date and slot
+			if ( isset( $state['startDate'] ) ) {
+				$order->update_meta_data( '_delivery_date', sanitize_text_field( $state['startDate'] ) );
+			}
+			if ( isset( $state['deliverySlot'] ) ) {
+				$order->update_meta_data( '_delivery_slot', sanitize_text_field( $state['deliverySlot'] ) );
+			}
+
+			$order->save();
 
 			// Record history for the edit
 			if ( $subscription_id > 0 ) {
