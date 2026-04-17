@@ -93,6 +93,7 @@
     menuFilter: 'All',
     isEditMode: false,
     editOrderId: null,
+    isBookingRecipes: false,
     originalOrderTotal: 0
   };
 
@@ -102,37 +103,44 @@
   function detectEditMode() {
     var urlParams = new URLSearchParams(window.location.search);
     var editOrderId = urlParams.get('edit_order');
+    var bookingRecipes = urlParams.get('booking_recipes');
     if (editOrderId && !isNaN(editOrderId)) {
       state.isEditMode = true;
       state.editOrderId = parseInt(editOrderId);
-      prefillOrderData();
+      prefillOrderData(parseInt(editOrderId));
+    }else if(bookingRecipes){
+      state.isBookingRecipes = true;
+      prefillOrderData(bookingRecipes);
     }
   }
 
-  function prefillOrderData() {
+  function prefillOrderData(orderId) {
     $.ajax({
       url: window.ChefPressOurPlans.ajax_url || '/wp-admin/admin-ajax.php',
       type: 'POST',
       data: {
         action: 'devchefpress_get_subscription_details',
-        order_id: state.editOrderId,
+        order_id: orderId,
         nonce: window.ChefPressOurPlans.nonce || ''
       },
       success: function(response) {
         if (response.success && response.data) {
           var orderData = response.data;
           prefillStateFromOrderData(orderData);
+          renderNinthStepRecipes();
         } else {
           alert('Failed to load subscription data: ' + (response.data.message || 'Unknown error'));
           // Reset to normal mode
           state.isEditMode = false;
           state.editOrderId = null;
+          state.isBookingRecipes = false;
         }
       },
       error: function(xhr, status, error) {
         alert('Error loading subscription data: ' + error);
         state.isEditMode = false;
         state.editOrderId = null;
+        state.isBookingRecipes = false;
       }
     });
   }
@@ -190,6 +198,14 @@
     // Render the UI with prefilled data and update navigation
     renderStep();
     updateNavBar();
+  }
+
+  function renderNinthStepRecipes() {
+    // This function will be used to direct jump on 9th step with prefilled recipes if user is coming from edit mode or booking flow
+    if (state.isEditMode || state.isBookingRecipes) {
+      state.currentStep = 9;
+      renderStep();
+    }
   }
 
   // ─────────────────────────────────────────────────────────
