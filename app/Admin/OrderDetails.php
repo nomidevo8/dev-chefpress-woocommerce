@@ -526,7 +526,6 @@ class OrderDetails {
                             // Initialize map if coordinates exist with longer delay for proper rendering
                             setTimeout(function() {
                                 const mapContainer = document.getElementById('devchefpress-delivery-map');
-                                console.log('Map container found:', mapContainer ? 'Yes' : 'No');
                                 
                                 if (mapContainer && mapContainer.dataset.lat && mapContainer.dataset.lng) {
                                     try {
@@ -538,8 +537,6 @@ class OrderDetails {
                                         
                                         const lat = parseFloat(mapContainer.dataset.lat);
                                         const lng = parseFloat(mapContainer.dataset.lng);
-                                        console.log('Initializing map with coordinates:', lat, lng);
-                                        
                                         // Ensure container is visible and properly sized
                                         mapContainer.style.width = '100%';
                                         mapContainer.style.height = '350px';
@@ -547,15 +544,11 @@ class OrderDetails {
                                         mapContainer.style.position = 'relative';
                                         mapContainer.style.zIndex = '1';
                                         
-                                        console.log('Map container styles applied');
-                                        
                                         // Initialize Leaflet map
                                         const map = L.map('devchefpress-delivery-map', {
                                             scrollWheelZoom: true,
                                             zoomControl: true
                                         }).setView([lat, lng], 15);
-                                        
-                                        console.log('Leaflet map initialized');
                                         
                                         // Add tile layer
                                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -564,7 +557,6 @@ class OrderDetails {
                                             maxNativeZoom: 18
                                         }).addTo(map);
                                         
-                                        console.log('Tile layer added');
                                         
                                         // Add marker at delivery location
                                         const marker = L.marker([lat, lng], {

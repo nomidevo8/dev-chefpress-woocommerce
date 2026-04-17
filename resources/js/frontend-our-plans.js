@@ -1395,7 +1395,6 @@
   }
 
   function assignRecipeToSlotIds(recipeId, slotIds, recipeData) {
-    console.log('Assigning recipe ID', recipeId, 'to slot IDs:', slotIds, 'with recipe data:', recipeData);
     if (!recipeId || !Array.isArray(slotIds) || !slotIds.length) {
       return;
     }
@@ -1410,12 +1409,10 @@
           });
           if (slotIndex !== -1) {
             state.slots[slotIndex].recipeSelected = recipeData;
-            console.log('Updated slot at index', slotIndex, ':', state.slots[slotIndex]);
           }
         }
       }
     });
-    console.log('Final state.slots:', state.slots);
     renderStep();
 
     // Update popup content if it's currently open
@@ -1441,7 +1438,6 @@
     var recipeId = $popup.data('recipe-id');
     var recipeData = $popup.data('recipe-data');
     var slotIds = [];
-    console.log('Assigning recipe ID', recipeId, 'to selected slots. Recipe data:', recipeData);
     $popup.find('input[name="cp_weekly_slot_option"]:checked').each(function () {
       slotIds.push($(this).val());
     });
@@ -1579,7 +1575,6 @@
     var isMobile = window.innerWidth < 640;
     var pricing = calculatePricing();
     var totalCals = 0, totalProtein = 0, totalCarbs = 0;
-    console.log('Calculating summary for menu:', state);
 
     if (Array.isArray(state.slots)) {
       state.slots.forEach(function(slot) {
@@ -1716,7 +1711,6 @@
 
   // Step 13 – Address
   function renderAddress(el) {
-    console.log('state in renderAddress:', state);  
     var isMobile = window.innerWidth < 640;
     var typeBtns = ['Apartment', 'Home', 'Office'].map(function(type) {
       var sel = state.selectedAddressType === type;
@@ -2398,8 +2392,6 @@
   }
 
   function removeRecipeFromSlot(slotId, recipeId) {
-    console.log('Removing recipe', recipeId, 'from slot', slotId);
-
     // Remove from state.menu
     if (state.menu && Object.prototype.hasOwnProperty.call(state.menu, slotId)) {
       delete state.menu[slotId];
@@ -2412,7 +2404,6 @@
       });
       if (slotIndex !== -1) {
         state.slots[slotIndex].recipeSelected = null;
-        console.log('Removed recipe from slot at index', slotIndex);
       }
     }
 
@@ -2738,7 +2729,6 @@
             // Normal creation flow
             window.location.href = response.data.checkout_url;
           }
-          console.log('Order processed successfully. Response:', response);
         } else {
           alert('Error processing order: ' + (response.data || 'Unknown error'));
           // Go back to previous step

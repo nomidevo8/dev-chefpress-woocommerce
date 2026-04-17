@@ -342,13 +342,11 @@
         e.preventDefault();
         const orderId = $(this).data('order-id');
         
-        console.log('View Details clicked for order:', orderId);
 
         // Show modal
         $('#devchefpressSubscriptionModal').css('display', 'flex');
         $('#devchefpressSubscriptionContent').html('<div class="devchefpress-loading">Loading subscription details...</div>');
 
-        console.log('Sending AJAX request for order:', orderId);
         $.ajax({
             url: devchefpress_ajax.ajax_url,
             type: 'POST',
@@ -358,7 +356,6 @@
                 order_id: orderId
             },
             success: function(res) {
-                console.log('AJAX success response:', res);
                 if (res.success && res.data) {
                     window.devChefpressCurrentSubscription = res.data;
                     
