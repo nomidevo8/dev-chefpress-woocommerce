@@ -24,6 +24,7 @@ class SubscriptionDetailsHelper {
 		$html = self::build_basic_info( $data );
 		$html .= self::build_address_section( $data );
 		$html .= self::build_meal_plan_section( $data );
+		$html .= self::build_weekly_selection_section( $subscription_id, $order_id );
 		$html .= self::build_pricing_section( $data, $subscription_id );
 		$html .= self::build_history_section( $subscription_id, $order_id );
 		$html .= self::build_refund_section( $subscription_id, $order_id );
@@ -255,6 +256,114 @@ class SubscriptionDetailsHelper {
 		$html .= '</div>';
 
 		return $html;
+	}
+
+	/**
+	 * Build selected weeks and recipes section from saved weekly selections.
+	 *
+	 * @param int $subscription_id
+	 * @param int $order_id
+	 * @return string
+	 */
+	private static function build_weekly_selection_section( int $subscription_id, int $order_id ): string {
+		$selections = self::get_saved_weekly_recipes( $subscription_id, $order_id );
+
+		if ( empty( $selections ) ) {
+			return '';
+		}
+
+		$html = '<div class="devchefpress-section">';
+		$html .= '<h3 class="devchefpress-section-title">📅 Selected Weeks & Recipes</h3>';
+
+		$weeks = array();
+		foreach ( $selections as $item ) {
+			$week_number = (int) $item['week_number'];
+			if ( ! isset( $weeks[ $week_number ] ) ) {
+				$weeks[ $week_number ] = array(
+					'week_start_date' => $item['week_start_date'],
+					'rows' => array(),
+				);
+			}
+			$weeks[ $week_number ]['rows'][] = $item;
+		}
+
+		$days_display = array(
+			'Mon' => 'Monday',
+			'Tue' => 'Tuesday',
+			'Wed' => 'Wednesday',
+			'Thu' => 'Thursday',
+			'Fri' => 'Friday',
+			'Sat' => 'Saturday',
+			'Sun' => 'Sunday',
+		);
+
+		foreach ( $weeks as $week_number => $week_data ) {
+			$week_start = $week_data['week_start_date'] ? date( 'M j, Y', strtotime( $week_data['week_start_date'] ) ) : '';
+			$html .= '<div class="devchefpress-week-card">';
+			$html .= '<div class="devchefpress-week-card-header">';
+			$html .= '<span class="devchefpress-week-title">Week ' . esc_html( $week_number ) . '</span>';
+			if ( $week_start ) {
+				$html .= '<span class="devchefpress-week-start">Starting ' . esc_html( $week_start ) . '</span>';
+			}
+			$html .= '</div>';
+
+			$week_days = array();
+			foreach ( $week_data['rows'] as $row ) {
+				$day_key = $row['day'] ?? '';
+				if ( ! isset( $week_days[ $day_key ] ) ) {
+					$week_days[ $day_key ] = array();
+				}
+				$week_days[ $day_key ][] = $row;
+			}
+
+			foreach ( $days_display as $day_code => $day_label ) {
+				if ( ! isset( $week_days[ $day_code ] ) ) {
+					continue;
+				}
+
+				$html .= '<div class="devchefpress-week-day">';
+				$html .= '<div class="devchefpress-week-day-title">' . esc_html( $day_label ) . '</div>';
+
+				foreach ( $week_days[ $day_code ] as $recipe ) {
+					$recipe_title = ! empty( $recipe['recipe_title'] ) ? $recipe['recipe_title'] : 'Selected Recipe';
+					$meal_type = ! empty( $recipe['meal'] ) ? $recipe['meal'] : 'Meal';
+
+					$html .= '<div class="devchefpress-week-recipe-item">';
+					$html .= '<div class="devchefpress-week-recipe-meal">' . esc_html( $meal_type ) . '</div>';
+					$html .= '<div class="devchefpress-week-recipe-title">' . esc_html( $recipe_title ) . '</div>';
+					$html .= '</div>';
+				}
+
+				$html .= '</div>';
+			}
+
+			$html .= '</div>';
+		}
+
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	/**
+	 * Get saved weekly recipes from the database.
+	 *
+	 * @param int $subscription_id
+	 * @param int $order_id
+	 * @return array
+	 */
+	private static function get_saved_weekly_recipes( int $subscription_id, int $order_id ): array {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'devchefpress_weekly_recipes';
+
+		$query = $wpdb->prepare(
+			"SELECT * FROM {$table_name} WHERE subscription_id = %d AND order_id = %d ORDER BY week_number ASC, FIELD(day, 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') ASC, meal ASC",
+			$subscription_id,
+			$order_id
+		);
+
+		$results = $wpdb->get_results( $query, ARRAY_A );
+		return $results ? $results : array();
 	}
 
 	/**
