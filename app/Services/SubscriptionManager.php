@@ -129,11 +129,13 @@ class SubscriptionManager {
 			);
 		}
 		
-		$remaining_days = max( 1, (int) ceil( ( $end_ts - $today_ts ) / ( 24 * 60 * 60 ) ) );
-		
-		// Calculate refund ratio
+		$remaining_days = max( 0, (int) ceil( ( $end_ts - $today_ts ) / ( 24 * 60 * 60 ) ) );
+		$remaining_days = min( $remaining_days, $total_days );
+
 		$refund_ratio = $remaining_days / $total_days;
-		$refund_amount = abs( $price_difference ) * $refund_ratio;
+		$refund_ratio = min( $refund_ratio, 1 );
+
+		$refund_amount = round( $price_difference * $refund_ratio, 2 );
 		
 		return array(
 			'refund_amount' => round( $refund_amount, 2 ),

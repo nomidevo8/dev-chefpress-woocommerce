@@ -349,10 +349,16 @@ class SubscriptionDetailsHelper {
 				$html .= '<div><strong>Price Change:</strong> $' . number_format( (float) $record['old_price'], 2 ) . ' → $' . number_format( (float) $record['new_price'], 2 ) . '</div>';
 			}
 
-			if ( $record['difference'] ) {
-				$diff = (float) $record['difference'];
+			if ( isset( $record['difference'] ) && $record['difference'] !== '' ) {
+				// Normalize and fix floating precision
+				$diff = round( (float) $record['difference'], 2 );
+				
+				// Add + only for positive values
 				$prefix = $diff > 0 ? '+' : '';
-				$html .= '<div><strong>Difference:</strong> ' . $prefix . '$' . number_format( abs( $diff ), 2 ) . '</div>';
+			
+				$html .= '<div><strong>testDifference:</strong> ' 
+					. $prefix . '$' . number_format( abs( $diff ), 2, '.', '' ) 
+					. '</div>';
 			}
 
 			if ( $record['refund_amount'] > 0 ) {
