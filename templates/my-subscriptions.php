@@ -49,6 +49,39 @@ function devchefpress_is_subscription_completed( $start_date, $plan_duration ) {
     return current_time( 'timestamp' ) >= $end_ts;
 }
 
+/**
+ * Check if subscription is still in its first week (current week of start date)
+ * Booking should be disabled during the first week as it's already the initial week
+ * Also disabled if today is before the start date (subscription hasn't started yet)
+ */
+function devchefpress_is_in_first_week( $start_date ) {
+    if ( empty( $start_date ) ) {
+        return false;
+    }
+
+    $start_ts = strtotime( $start_date );
+    if ( ! $start_ts ) {
+        return false;
+    }
+
+    $now_ts = current_time( 'timestamp' );
+
+    // If today is before the start date, disable booking (subscription hasn't started)
+    if ( $now_ts < $start_ts ) {
+        return true;
+    }
+
+    // Get the start of the week (Sunday) for the subscription start date
+    $start_day_of_week = date( 'w', $start_ts ); // 0 = Sunday, 6 = Saturday
+    $week_start_ts = $start_ts - ( $start_day_of_week * DAY_IN_SECONDS );
+
+    // Get the end of the week (Saturday) for the subscription start date
+    $week_end_ts = $week_start_ts + ( 6 * DAY_IN_SECONDS );
+
+    // If current time is within the first week (Sunday to Saturday of start date), return true
+    return ( $now_ts >= $week_start_ts && $now_ts <= $week_end_ts );
+}
+
 // Get subscriptions from the custom subscription table by current user
 $subscriptions = array();
 if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
@@ -171,15 +204,16 @@ if ( class_exists( '\DevChefPress\Models\UserSubscription' ) ) {
                                             <?php
                                                 $is_week_plan = strtolower( trim( $plan_duration ) ) === '1 week';
                                                 $is_completed = devchefpress_is_subscription_completed( $start_date, $plan_duration );
+                                                $is_first_week = devchefpress_is_in_first_week( $start_date );
                                             ?>
-                                            <?php if ( ! $is_week_plan && ! $is_completed && $order_id ) : ?>
+                                            <?php if ( ! $is_week_plan && ! $is_completed && ! $is_first_week && $order_id ) : ?>
                                                 <a href="<?php echo esc_url(home_url('/our-plans?booking_recipes=' . $order_id)); ?>" class="devchefpress-action-icon devchefpress-book-week" title="Book Current Week">
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                     </svg>
                                                 </a>
                                             <?php else : ?>
-                                                <button type="button" class="devchefpress-action-icon devchefpress-book-week devchefpress-action-icon--disabled" title="Booking disabled for 1-week plans or completed subscriptions" disabled>
+                                                <button type="button" class="devchefpress-action-icon devchefpress-book-week devchefpress-action-icon--disabled" title="<?php echo $is_first_week ? 'Booking disabled during first week of subscription' : 'Booking disabled for 1-week plans or completed subscriptions'; ?>" disabled>
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                     </svg>
