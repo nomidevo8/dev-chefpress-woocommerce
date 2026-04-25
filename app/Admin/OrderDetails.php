@@ -570,11 +570,8 @@ class OrderDetails {
                                             })
                                         }).addTo(map);
                                         
-                                        console.log('Marker added');
                                         
                                         marker.bindPopup('<div style="font-weight: 600; color: var(--cp_product_color-brand); margin: 5px 0;">📍 Delivery Location</div>').openPopup();
-                                        
-                                        console.log('Map initialization complete');
                                         
                                         // Fit map bounds
                                         map.invalidateSize();
