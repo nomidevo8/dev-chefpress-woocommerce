@@ -29,9 +29,7 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 	define( 'DEVCHEFPRESS_VERSION', time() );
 } else {
 	// For production, use plugin version or filemtime for cache busting.
-	define( 'DEVCHEFPRESS_VERSION', time() );
-
-	define( 'DEVCHEFPRESS_VERSION', '1.0.0' );
+	define( 'DEVCHEFPRESS_VERSION', '1.0.0.01' );
 }
 define( 'DEVCHEFPRESS_FILE', __FILE__ );
 define( 'DEVCHEFPRESS_PATH', plugin_dir_path( __FILE__ ) );
@@ -111,4 +109,4 @@ register_deactivation_hook( __FILE__, function (): void {
 	flush_rewrite_rules();
 } );
 
-require_once plugin_dir_path(__FILE__) . 'generate-test-recipes.php';
+// require_once plugin_dir_path(__FILE__) . 'generate-test-recipes.php';
