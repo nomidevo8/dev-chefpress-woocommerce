@@ -1398,12 +1398,15 @@ class Frontend {
 			wp_send_json_error( [ 'message' => 'Failed to save any recipes' ], 500 );
 		}
 
-		// Return success response
-		wp_send_json_success( [
-			'message'         => 'Weekly recipes saved successfully',
-			'week_number'     => $week_number,
-			'week_start_date' => $week_start_date_str,
-			'recipes_saved'   => $insert_count,
-		] );
-	}
+        // Notify admin about weekly recipe selection
+        NotificationService::notify_admin( $order_id, 'weekly_recipes_selected' );
+
+        // Return success response
+        wp_send_json_success( [
+            'message'         => 'Weekly recipes saved successfully',
+            'week_number'     => $week_number,
+            'week_start_date' => $week_start_date_str,
+            'recipes_saved'   => $insert_count,
+        ] );
+    }
 }

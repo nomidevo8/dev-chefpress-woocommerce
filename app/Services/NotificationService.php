@@ -76,7 +76,7 @@ class NotificationService {
 	 * Send admin notification
 	 * 
 	 * @param int $order_id
-	 * @param string $notification_type 'price_increase' | 'refund_required'
+	 * @param string $notification_type 'price_increase' | 'refund_required' | 'weekly_recipes_selected'
 	 */
 	public static function notify_admin( int $order_id, string $notification_type ): void {
 		$admin_email = get_option( 'admin_email' );
@@ -115,6 +115,20 @@ class NotificationService {
 			$subject = sprintf( 'Meal Plan Updated: Refund Processing Required (Order #%d)', $order_id );
 			$message = sprintf(
 				'A customer has updated their meal plan subscription. A refund needs to be processed.' . "\n\n" .
+				'Customer: %s' . "\n" .
+				'Email: %s' . "\n" .
+				'Order: %s',
+				esc_html( $customer_name ),
+				esc_html( $customer_email ),
+				$order_url
+			);
+			if ( $subscription_url ) {
+				$message .= sprintf( "\n" . 'Subscription Details: %s', $subscription_url );
+			}
+		} elseif ( 'weekly_recipes_selected' === $notification_type ) {
+			$subject = sprintf( 'Weekly Recipes Selected (Order #%d)', $order_id );
+			$message = sprintf(
+				'A customer has selected their weekly recipes for the current week.' . "\n\n" .
 				'Customer: %s' . "\n" .
 				'Email: %s' . "\n" .
 				'Order: %s',
